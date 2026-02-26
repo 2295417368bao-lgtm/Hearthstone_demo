@@ -10,7 +10,7 @@ namespace HearthstoneServer.Entities;
 /// A weapon entity. Weapons have attack and durability, and lose durability
 /// when the hero attacks.
 /// </summary>
-public class Weapon : BuffableEntity
+public class Weapon : BuffableEntity, IDestroyable
 {
 	private static readonly ILogger _log = LogConfig.ForType<Weapon>();
 
@@ -133,6 +133,26 @@ public class Weapon : BuffableEntity
 		}
 		SetZone(Zone.Graveyard);
 		_log.Debug("Weapon {Weapon} destroyed", EntityId);
+	}
+
+	// ── IDestroyable ──
+
+	/// <summary>
+	/// Execute death processing: break weapon, publish event, trigger deathrattle.
+	/// </summary>
+	public void OnDeath(Game game)
+	{
+		if (Controller?.Hero != null)
+			Controller.Hero.EquippedWeapon = null;
+		_log.Debug("Weapon {EntityId} breaks", EntityId);
+
+		game.EventBus.Publish(new Events.DeathEvent(this, this), Events.MiscPhase.On);
+
+		var script = game.ScriptRegistry.GetScript(CardId ?? "");
+		if (script?.Deathrattle.Length > 0)
+			game.ActionBlock(this, script.Deathrattle.ToList(), BlockType.Trigger);
+
+		game.EventBus.UnsubscribeAll(this);
 	}
 
 	/// <summary>

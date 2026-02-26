@@ -11,7 +11,7 @@ namespace HearthstoneServer.Entities;
 /// 每次使用消耗 1 耐久并进入 1 回合冷却，耐久归零后销毁。
 /// 地标不可被攻击，但可以被效果（如战吼）指定为目标并摧毁。
 /// </summary>
-public class Location : BuffableEntity
+public class Location : BuffableEntity, IDestroyable
 {
 	private static readonly ILogger _log = LogConfig.ForType<Location>();
 
@@ -97,6 +97,22 @@ public class Location : BuffableEntity
 		player.Summon(this, index);
 		_log.Debug("Location {Location} placed (Durability={Dur})",
 			EntityId, Durability);
+	}
+
+	// ── IDestroyable ──
+
+	/// <summary>
+	/// Execute death processing: move to graveyard, publish event.
+	/// </summary>
+	public void OnDeath(Game game)
+	{
+		Controller?.Field.Remove(this);
+		Controller?.Graveyard.Add(this);
+		Zone = Zone.Graveyard;
+		_log.Debug("Location {EntityId} destroyed", EntityId);
+
+		game.EventBus.Publish(new Events.DeathEvent(this, this), Events.MiscPhase.On);
+		game.EventBus.UnsubscribeAll(this);
 	}
 
 	/// <summary>

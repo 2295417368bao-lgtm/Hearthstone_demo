@@ -150,38 +150,16 @@ public class GameHub : Hub
 
 		try
 		{
-			var history = ctrl.Mulligan(caller, cardIndices);
+			var history = ctrl.SubmitMulligan(caller, cardIndices);
 
-			if (session.Mode == "ai")
+			// AI 模式：替 AI 也完成 Mulligan
+			if (session.Mode == "ai" && !ctrl.Player2MulliganDone)
 			{
-				if (ctrl.MulliganDone) return;
-				// AI mulligan: replace cards costing >= 4
 				var aiReplace = ctrl.Player2.Hand.OfType<BuffableEntity>()
 					.Where(c => c.Cost >= 4 && c.CardId != "GAME_005")
 					.Select(c => ctrl.Player2.Hand.IndexOf(c))
 					.Where(i => i >= 0).ToArray();
-				history.AddRange(ctrl.Mulligan(ctrl.Player2, aiReplace));
-
-				// Start first turn
-				var turnHistory = ctrl.BeginFirstTurn(ctrl.Player1);
-				history.AddRange(turnHistory);
-				ctrl.MulliganDone = true;
-			}
-			else // pvp
-			{
-				// 阻止已完成 Mulligan 的玩家重复提交
-				if (caller == ctrl.Player1 && session.Player1MulliganDone) return;
-				if (caller == ctrl.Player2 && session.Player2MulliganDone) return;
-
-				if (caller == ctrl.Player1) session.Player1MulliganDone = true;
-				else session.Player2MulliganDone = true;
-
-				if (session.Player1MulliganDone && session.Player2MulliganDone && !ctrl.MulliganDone)
-				{
-					var turnHistory = ctrl.BeginFirstTurn(ctrl.Player1);
-					history.AddRange(turnHistory);
-					ctrl.MulliganDone = true;
-				}
+				history.AddRange(ctrl.SubmitMulligan(ctrl.Player2, aiReplace));
 			}
 
 			await BroadcastActions(session, history);
@@ -382,10 +360,6 @@ public class HubSession
 	public string? Player1ConnectionId { get; set; }
 	public string? Player2ConnectionId { get; set; }
 	public string? RoomCode { get; set; }
-
-	// Mulligan tracking
-	public bool Player1MulliganDone { get; set; }
-	public bool Player2MulliganDone { get; set; }
 
 	// PvP setup (temporary, before game creation)
 	public string PvpP1Class { get; set; } = "Mage";

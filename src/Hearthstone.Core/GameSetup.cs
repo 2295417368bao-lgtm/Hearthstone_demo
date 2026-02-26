@@ -192,8 +192,8 @@ public static class GameSetup
 	}
 
 	/// <summary>
-	/// Internal: create Game, players, setup, initial draw.
-	/// Uses Game.InitialDraw() instead of manual for loops.
+	/// Internal: create Game, players, and initialize to mulligan-ready state.
+	/// Uses Game.Initialize() for unified Setup + InitialDraw + GiveCoin.
 	/// </summary>
 	private static (Game game, Player p1, Player p2) CreateGameInternal(
 		string p1Class, List<string>? p1CustomDeck,
@@ -224,8 +224,7 @@ public static class GameSetup
 
 		p1.PrepareForGame();
 		p2.PrepareForGame();
-		game.Setup();
-		game.InitialDraw();  // 优化点4: 复用 Game.InitialDraw()
+		game.Initialize();  // Setup + InitialDraw + GiveCoin
 
 		return (game, p1, p2);
 	}

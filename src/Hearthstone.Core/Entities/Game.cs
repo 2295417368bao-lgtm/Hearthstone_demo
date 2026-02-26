@@ -378,37 +378,25 @@ public class Game : BuffableEntity
 	/// </summary>
 	public void RefreshAuras()
 	{
-		// 收集所有 entity 的 update_scripts
+		// 收集所有 entity 的 update_scripts（按 EntityId 去重，防止重复刷新）
 		var refreshQueue = new List<(BuffableEntity entity, Auras.Refresh script)>();
+		var seen = new HashSet<int>();
 
-		foreach (var entity in Entities)
+		void CollectFrom(IEnumerable<BaseEntity> source)
 		{
-			if (entity is BuffableEntity be)
+			foreach (var entity in source)
 			{
-				foreach (var script in be.UpdateScripts)
-					refreshQueue.Add((be, script));
+				if (entity is BuffableEntity be && seen.Add(be.EntityId))
+				{
+					foreach (var script in be.UpdateScripts)
+						refreshQueue.Add((be, script));
+				}
 			}
 		}
 
-		// 手牌中的 entity 也可能有 aura 脚本（如手上的卡效果）
-		foreach (var hand in Hands)
-		{
-			if (hand is BuffableEntity be)
-			{
-				foreach (var script in be.UpdateScripts)
-					refreshQueue.Add((be, script));
-			}
-		}
-
-		// 牌库中的 entity 可能有 DeckUpdate 光环
-		foreach (var deckCard in Decks)
-		{
-			if (deckCard is BuffableEntity be)
-			{
-				foreach (var script in be.UpdateScripts)
-					refreshQueue.Add((be, script));
-			}
-		}
+		CollectFrom(Entities);
+		CollectFrom(Hands);
+		CollectFrom(Decks);
 
 		// 按 priority 排序（数字越小越先执行）
 		refreshQueue.Sort((a, b) => a.script.Priority.CompareTo(b.script.Priority));
@@ -541,6 +529,18 @@ public class Game : BuffableEntity
 			}
 		}
 
+		// ── 法力校验 ──
+		if (!player.CanPayCost(card.Cost))
+			throw new InvalidActionException(
+				$"Not enough mana to play {card.CardId} (cost={card.Cost}, available={player.Mana})");
+
+		// ── 统计快照（用于异常回滚） ──
+		var oldCardsPlayed = player.CardsPlayedThisTurn;
+		var oldMinionsPlayed = player.MinionsPlayedThisTurn;
+		var oldCombo = player.Combo;
+		var oldSpentMana = player.SpentManaOnSpellsThisGame;
+		var oldLastCard = player.LastCardPlayed;
+
 		// ── 统计更新（在 SequenceRunner 执行前记录） ──
 		player.CardsPlayedThisTurn++;
 		if (card is Minion) player.MinionsPlayedThisTurn++;
@@ -573,40 +573,54 @@ public class Game : BuffableEntity
 			card.CurrentTargets = targets.Cast<BaseEntity>().ToList();
 		}
 
-		// ── 分派到 SequenceRunner ──
-		var chooseCards = script?.ChooseCards ?? Array.Empty<string>();
-
-		if (chooseCards.Length > 0)
+		// ── 分派到 SequenceRunner（异常时回滚统计） ──
+		try
 		{
-			// Choose One 分支
-			bool chooseBoth = player.GetBoolProperty("choose_both");
-			if (chooseBoth)
+			var chooseCards = script?.ChooseCards ?? Array.Empty<string>();
+
+			if (chooseCards.Length > 0)
 			{
-				_log.Information("{Card} plays both choose-one options (ChooseBoth)", card.CardId);
-				DispatchToSequence(card, script, target, index, false, isOutcast);
+				// Choose One 分支
+				bool chooseBoth = player.GetBoolProperty("choose_both");
+				if (chooseBoth)
+				{
+					_log.Information("{Card} plays both choose-one options (ChooseBoth)", card.CardId);
+					DispatchToSequence(card, script, target, index, false, isOutcast);
+				}
+				else
+				{
+					_log.Information("{Card} has choose-one options: {Options}", card.CardId, chooseCards);
+					player.PayCost(card.Cost);
+					card.SetZone(Zone.Play);
+					card.TurnPlayed = Turn;
+
+					var choiceEntities = new List<BaseEntity>();
+					foreach (var choiceId in chooseCards)
+					{
+						var choiceCard = player.CreateCard(choiceId);
+						if (choiceCard != null)
+							choiceEntities.Add(choiceCard);
+					}
+					if (choiceEntities.Count > 0)
+						player.Choice = new Dsl.ChooseOneChoice(card, target, choiceEntities);
+				}
 			}
 			else
 			{
-				_log.Information("{Card} has choose-one options: {Options}", card.CardId, chooseCards);
-				player.PayCost(card.Cost);
-				card.SetZone(Zone.Play);
-				card.TurnPlayed = Turn;
-
-				var choiceEntities = new List<BaseEntity>();
-				foreach (var choiceId in chooseCards)
-				{
-					var choiceCard = player.CreateCard(choiceId);
-					if (choiceCard != null)
-						choiceEntities.Add(choiceCard);
-				}
-				if (choiceEntities.Count > 0)
-					player.Choice = new Dsl.ChooseOneChoice(card, target, choiceEntities);
+				// 正常打出（或 Combo）
+				DispatchToSequence(card, script, target, index, useCombo, isOutcast);
 			}
 		}
-		else
+		catch
 		{
-			// 正常打出（或 Combo）
-			DispatchToSequence(card, script, target, index, useCombo, isOutcast);
+			// 回滚统计
+			player.CardsPlayedThisTurn = oldCardsPlayed;
+			player.MinionsPlayedThisTurn = oldMinionsPlayed;
+			player.Combo = oldCombo;
+			player.SpentManaOnSpellsThisGame = oldSpentMana;
+			player.LastCardPlayed = oldLastCard;
+			player.CardsPlayedThisGame.Remove(card);
+			throw;
 		}
 	}
 
@@ -653,7 +667,8 @@ public class Game : BuffableEntity
 	}
 
 	/// <summary>
-	/// Use a player's hero power. Validates playability, pays mana, and triggers the power's script.
+	/// Use a player's hero power. Validates playability, pays mana,
+	/// and delegates to SequenceRunner for complete event pipeline.
 	/// </summary>
 	public void UseHeroPower(Player player, Character? target = null)
 	{
@@ -672,15 +687,8 @@ public class Game : BuffableEntity
 		// Increment activation counter
 		power.ActivationsThisTurn++;
 
-		// Trigger hero power script (Play actions)
-		var cardId = power.CardId ?? "";
-		var script = ScriptRegistry.GetScript(cardId);
-		_log.Information("UseHeroPower: CardId={CardId}, CardData={CardData}, ScriptFound={Found}, TotalScripts={Total}",
-			cardId, power.CardData?.CardId ?? "null", script != null, ScriptRegistry.Count);
-		if (script != null && script.Play.Length > 0)
-		{
-			ActionBlock(power, script.Play.ToList(), BlockType.Power, target: target);
-		}
+		// 委托给 SequenceRunner（完整事件管线：OnPlay → Effect → AfterPlay）
+		Sequences.UseHeroPower(player, power, target);
 	}
 
 	/// <summary>
@@ -856,18 +864,24 @@ public class Game : BuffableEntity
 	}
 
 	/// <summary>
-	/// Start the game: setup, begin first turn.
+	/// Initialize the game to a mulligan-ready state:
+	/// Setup → InitialDraw → GiveCoin.
+	/// Callers are responsible for Mulligan + BeginFirstTurn.
+	/// </summary>
+	public void Initialize()
+	{
+		Setup();
+		InitialDraw();
+		GiveCoin(Player2);
+	}
+
+	/// <summary>
+	/// Full start (no mulligan): Initialize + BeginTurn.
+	/// Used by tests and AI solo.
 	/// </summary>
 	public void Start()
 	{
-		Setup();
-
-		// Initial draw: first player draws 3, second player draws 4
-		InitialDraw();
-
-		// Give The Coin to the second player
-		GiveCoin(Player2);
-
+		Initialize();
 		BeginTurn(Player1);
 	}
 
@@ -967,16 +981,12 @@ public class Game : BuffableEntity
 		bool hasNewDeaths;
 		do
 		{
-			var deadEntities = new List<BaseEntity>();
+			var deadEntities = new List<IDestroyable>();
 
 			foreach (var entity in LiveEntities)
 			{
-				if (entity is Minion m && m.Dead)
-					deadEntities.Add(entity);
-				else if (entity is Weapon w && w.Dead)
-					deadEntities.Add(entity);
-				else if (entity is Location loc && loc.Dead)
-					deadEntities.Add(entity);
+				if (entity is IDestroyable d && d.Dead)
+					deadEntities.Add(d);
 			}
 
 			hasNewDeaths = deadEntities.Count > 0;
@@ -987,79 +997,8 @@ public class Game : BuffableEntity
 			// 用 DEATHS 类型包装
 			ActionStart(BlockType.Deaths, this, 0, null);
 
-			foreach (var entity in deadEntities)
-			{
-				if (entity is Minion m)
-				{
-					// Save field position for deathrattle summon positioning
-					int fieldIdx = m.Controller?.Field.IndexOf(m) ?? -1;
-					m.SetIntProperty("death_field_index", fieldIdx);
-					m.SummonIndex = 0; // Reset for deathrattle multi-summon
-
-					// 移入墓地
-					m.Controller?.Field.Remove(m);
-					m.Controller?.Graveyard.Add(m);
-					if (m.Controller != null)
-						m.Controller.MinionsKilledThisTurn++;
-					m.Zone = Zone.Graveyard;
-					_log.Debug("Minion {EntityId} dies", m.EntityId);
-
-					// 残骸系统：友方随从死亡时获得 1 份残骸
-					m.Controller?.GainCorpses(1);
-
-					// Publish DeathEvent（亡语触发前，让 "在...死亡时" 订阅者参与队列）
-					EventBus.Publish(new DeathEvent(m, m), MiscPhase.On);
-
-					// 触发亡语脚本
-					var script = ScriptRegistry.GetScript(m.CardId ?? "");
-					if (script?.Deathrattle.Length > 0)
-					{
-						_log.Debug("Triggering deathrattle for {EntityId}", m.EntityId);
-						ActionBlock(m, script.Deathrattle.ToList(), BlockType.Trigger);
-					}
-
-					// 秘密抉择亡语：根据 secret_deathrattle tag 选择索引对应的亡语变体
-					int secretIdx = m.GetIntProperty("secret_deathrattle");
-					if (secretIdx > 0 && script?.SecretDeathrattles.Length >= secretIdx)
-					{
-						_log.Debug("Triggering secret deathrattle index {Idx} for {EntityId}",
-							secretIdx, m.EntityId);
-						ActionBlock(m, script.SecretDeathrattles[secretIdx - 1].ToList(), BlockType.Trigger);
-					}
-
-					// 死亡后清除 EventBus 订阅
-					EventBus.UnsubscribeAll(m);
-				}
-				else if (entity is Weapon w)
-				{
-					if (w.Controller?.Hero != null)
-						w.Controller.Hero.EquippedWeapon = null;
-					_log.Debug("Weapon {EntityId} breaks", w.EntityId);
-
-					// Publish DeathEvent for weapon
-					EventBus.Publish(new DeathEvent(w, w), MiscPhase.On);
-
-					// 武器亡语
-					var wScript = ScriptRegistry.GetScript(w.CardId ?? "");
-					if (wScript?.Deathrattle.Length > 0)
-					{
-						ActionBlock(w, wScript.Deathrattle.ToList(), BlockType.Trigger);
-					}
-
-					// 清除 EventBus 订阅
-					EventBus.UnsubscribeAll(w);
-				}
-				else if (entity is Location loc)
-				{
-					loc.Controller?.Field.Remove(loc);
-					loc.Controller?.Graveyard.Add(loc);
-					loc.Zone = Zone.Graveyard;
-					_log.Debug("Location {EntityId} destroyed", loc.EntityId);
-
-					EventBus.Publish(new DeathEvent(loc, loc), MiscPhase.On);
-					EventBus.UnsubscribeAll(loc);
-				}
-			}
+			foreach (var dead in deadEntities)
+				dead.OnDeath(this);
 
 			ActionEnd(BlockType.Deaths, this);
 

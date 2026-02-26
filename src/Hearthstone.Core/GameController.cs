@@ -14,7 +14,11 @@ public class GameController
 	public Game Game { get; }
 	public Player Player1 { get; }
 	public Player Player2 { get; }
-	public bool MulliganDone { get; set; }
+
+	// ── Mulligan 状态 ──
+	public bool Player1MulliganDone { get; private set; }
+	public bool Player2MulliganDone { get; private set; }
+	public bool MulliganDone => Player1MulliganDone && Player2MulliganDone;
 
 	public GameController(Game game, Player player1, Player player2)
 	{
@@ -103,13 +107,37 @@ public class GameController
 	{
 		var hand = player.Hand.OfType<BuffableEntity>().ToList();
 		var toReplace = new List<BaseEntity>();
-		foreach (var idx in cardIndices)
+		foreach (var idx in cardIndices.Distinct())
 		{
 			if (idx >= 0 && idx < hand.Count)
 				toReplace.Add(hand[idx]);
 		}
 
 		return Execute(() => Game.Mulligan(player, toReplace));
+	}
+
+	/// <summary>
+	/// Submit a player's mulligan with guard and auto-transition.
+	/// Blocks duplicate submissions, and when both players are done,
+	/// automatically triggers BeginFirstTurn.
+	/// </summary>
+	public List<PowerHistoryEntry> SubmitMulligan(Player player, int[] cardIndices)
+	{
+		if (player == Player1 && Player1MulliganDone)
+			throw new InvalidActionException("Player 1 已完成 Mulligan");
+		if (player == Player2 && Player2MulliganDone)
+			throw new InvalidActionException("Player 2 已完成 Mulligan");
+
+		var history = Mulligan(player, cardIndices);
+
+		if (player == Player1) Player1MulliganDone = true;
+		else Player2MulliganDone = true;
+
+		// 双方都完成后自动开始第一回合
+		if (MulliganDone)
+			history.AddRange(BeginFirstTurn(Game.CurrentPlayer));
+
+		return history;
 	}
 
 	/// <summary>Begin the first turn (called after mulligan). Collects PowerHistory.</summary>

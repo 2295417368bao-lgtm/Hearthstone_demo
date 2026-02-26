@@ -10,7 +10,7 @@ namespace HearthstoneServer.Entities;
 /// A minion entity. Minions have keywords, can be silenced, and have
 /// board-position-dependent behaviors (adjacent minions, asleep).
 /// </summary>
-public class Minion : Character
+public class Minion : Character, IDestroyable
 {
 	private static readonly ILogger _log = LogConfig.ForType<Minion>();
 
@@ -274,6 +274,53 @@ public class Minion : Character
 	{
 		if (Controller == null) return false;
 		return Controller.Field.Count < 7; // MAX_MINIONS_ON_FIELD
+	}
+
+	// ── IDestroyable ──
+
+	/// <summary>
+	/// Execute death processing: move to graveyard, publish event, trigger deathrattle.
+	/// </summary>
+	public void OnDeath(Game game)
+	{
+		// Save field position for deathrattle summon positioning
+		int fieldIdx = Controller?.Field.IndexOf(this) ?? -1;
+		SetIntProperty("death_field_index", fieldIdx);
+		SummonIndex = 0;
+
+		// 移入墓地
+		Controller?.Field.Remove(this);
+		Controller?.Graveyard.Add(this);
+		if (Controller != null)
+			Controller.MinionsKilledThisTurn++;
+		Zone = Zone.Graveyard;
+		_log.Debug("Minion {EntityId} dies", EntityId);
+
+		// 残骸系统
+		Controller?.GainCorpses(1);
+
+		// Publish DeathEvent
+		game.EventBus.Publish(new Events.DeathEvent(this, this), Events.MiscPhase.On);
+
+		// 触发亡语脚本
+		var script = game.ScriptRegistry.GetScript(CardId ?? "");
+		if (script?.Deathrattle.Length > 0)
+		{
+			_log.Debug("Triggering deathrattle for {EntityId}", EntityId);
+			game.ActionBlock(this, script.Deathrattle.ToList(), BlockType.Trigger);
+		}
+
+		// 秘密抉择亡语
+		int secretIdx = GetIntProperty("secret_deathrattle");
+		if (secretIdx > 0 && script?.SecretDeathrattles.Length >= secretIdx)
+		{
+			_log.Debug("Triggering secret deathrattle index {Idx} for {EntityId}",
+				secretIdx, EntityId);
+			game.ActionBlock(this, script.SecretDeathrattles[secretIdx - 1].ToList(), BlockType.Trigger);
+		}
+
+		// 死亡后清除 EventBus 订阅
+		game.EventBus.UnsubscribeAll(this);
 	}
 
 	// ── Dump ──
