@@ -7,8 +7,19 @@ using Serilog.Events;
 var builder = WebApplication.CreateBuilder(args);
 
 // Initialize Serilog before anything else
+var logFile = Environment.GetEnvironmentVariable("HS_LOG_FILE");
+if (string.IsNullOrWhiteSpace(logFile) && OperatingSystem.IsWindows())
+	logFile = @"d:\hs\fireplace\fireplace\debug.log";
+
+if (!string.IsNullOrWhiteSpace(logFile))
+{
+	var dir = Path.GetDirectoryName(logFile);
+	if (!string.IsNullOrWhiteSpace(dir))
+		Directory.CreateDirectory(dir);
+}
+
 HearthstoneServer.LogConfig.Init(
-	logFile: @"d:\hs\fireplace\fireplace\debug.log",
+	logFile: string.IsNullOrWhiteSpace(logFile) ? null : logFile,
 	minimumLevel: LogEventLevel.Information,
 	enableConsole: true);
 
