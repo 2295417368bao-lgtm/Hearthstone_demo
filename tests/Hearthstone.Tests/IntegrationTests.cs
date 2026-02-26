@@ -262,7 +262,7 @@ public class IntegrationTests
 	/// <summary>Test script: deals 2 damage to enemy hero as battlecry.</summary>
 	private class TestBattlecryScript : CardScriptBase
 	{
-		public override HearthstoneServer.Dsl.Action[] Play => new HearthstoneServer.Dsl.Action[]
+		public override HearthstoneServer.Dsl.Action[] Battlecry => new HearthstoneServer.Dsl.Action[]
 		{
 			new DealDamage(S.ENEMY_HERO, 2)
 		};
@@ -323,7 +323,7 @@ public class IntegrationTests
 	/// <summary>Test script: Battlecry buffs TARGET with +1/+1.</summary>
 	private class TestBuffBattlecryScript : CardScriptBase
 	{
-		public override HearthstoneServer.Dsl.Action[] Play => new HearthstoneServer.Dsl.Action[]
+		public override HearthstoneServer.Dsl.Action[] Battlecry => new HearthstoneServer.Dsl.Action[]
 		{
 			new Enchant(S.TARGET, "TEST_BUFF_E")
 		};
@@ -371,7 +371,7 @@ public class IntegrationTests
 	/// <summary>Test script: Battlecry draws a card.</summary>
 	private class TestDrawBattlecryScript : CardScriptBase
 	{
-		public override HearthstoneServer.Dsl.Action[] Play => new HearthstoneServer.Dsl.Action[]
+		public override HearthstoneServer.Dsl.Action[] Battlecry => new HearthstoneServer.Dsl.Action[]
 		{
 			new DrawCard(S.CONTROLLER)
 		};

@@ -334,7 +334,7 @@ public class GameFlowTests
 		Assert.Null(drawn);
 		Assert.Equal(10, p.Hand.Count);
 		Assert.Empty(p.Deck);
-		Assert.Single(p.Graveyard); // milled
+		Assert.Empty(p.Graveyard); // milled cards go to SetAside
 	}
 
 	[Fact]

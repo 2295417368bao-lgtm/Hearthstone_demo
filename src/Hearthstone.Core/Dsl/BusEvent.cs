@@ -44,18 +44,20 @@ public enum TriggerTiming
 /// </summary>
 public class BusEvent
 {
-	private readonly System.Action<BuffableEntity, EventBus, bool> _register;
+	private readonly System.Action<BuffableEntity, EventBus, bool, Zone[]?> _register;
 	private readonly bool _once;
+	private readonly Zone[]? _zones;
 
-	private BusEvent(System.Action<BuffableEntity, EventBus, bool> register, bool once = false)
+	private BusEvent(System.Action<BuffableEntity, EventBus, bool, Zone[]?> register, bool once = false, Zone[]? zones = null)
 	{
 		_register = register;
 		_once = once;
+		_zones = zones;
 	}
 
 
 	/// <summary>标记为一次性（奥秘用）。</summary>
-	public BusEvent Once() => new(_register, true);
+	public BusEvent Once() => new(_register, true, _zones);
 
 	/// <summary>
 	/// 包装为奥秘触发：动作执行前自动 RevealSecret + 自动 Once()。
@@ -64,16 +66,36 @@ public class BusEvent
 	public BusEvent WrapSecret()
 	{
 		var original = _register;
-		return new BusEvent((self, bus, once) =>
+		return new BusEvent((self, bus, once, zones) =>
 		{
 			self.SetBoolProperty("__secret__", true);
-			original(self, bus, true);
-		}, true);
+			original(self, bus, true, zones);
+		}, true, _zones);
 	}
+
+	// ── 区域声明 ──
+
+	/// <summary>仅在手牌中触发。</summary>
+	public BusEvent InHand() => new(_register, _once, new[] { Zone.Hand });
+
+	/// <summary>仅在牌库中触发。</summary>
+	public BusEvent InDeck() => new(_register, _once, new[] { Zone.Deck });
+
+	/// <summary>仅在场上触发（默认行为的显式版本）。</summary>
+	public BusEvent InPlay() => new(_register, _once, new[] { Zone.Play });
+
+	/// <summary>在手牌或场上触发。</summary>
+	public BusEvent InHandOrPlay() => new(_register, _once, new[] { Zone.Hand, Zone.Play });
+
+	/// <summary>在手牌或牌库中触发。</summary>
+	public BusEvent InHandOrDeck() => new(_register, _once, new[] { Zone.Hand, Zone.Deck });
+
+	/// <summary>自定义区域列表。</summary>
+	public BusEvent InZone(params Zone[] zones) => new(_register, _once, zones);
 
 	/// <summary>在卡牌入场时注册订阅。</summary>
 	internal void Activate(BuffableEntity entity, Game game)
-		=> _register(entity, game.EventBus, _once);
+		=> _register(entity, game.EventBus, _once, _zones);
 
 	/// <summary>隐式转换：单个 BusEvent → BusEvent[]。</summary>
 	public static implicit operator BusEvent[](BusEvent single) => new[] { single };
@@ -103,13 +125,14 @@ public class BusEvent
 		where TEvent : GameEvent
 	{
 		var phase = ResolvePhase<TEvent>(timing);
-		return new BusEvent((self, bus, once) =>
+		return new BusEvent((self, bus, once, zones) =>
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner),
 				evt => BindAndRun(evt, self, () => { foreach (var a in actions) a.Trigger(self); }),
-				once);
+				once,
+				zones);
 		});
 	}
 
@@ -122,13 +145,14 @@ public class BusEvent
 		where TEvent : GameEvent
 	{
 		var phase = ResolvePhase<TEvent>(timing);
-		return new BusEvent((self, bus, once) =>
+		return new BusEvent((self, bus, once, zones) =>
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner),
 				evt => BindAndRun(evt, self, () => action.Trigger(self)),
-				once);
+				once,
+				zones);
 		});
 	}
 
@@ -142,13 +166,14 @@ public class BusEvent
 		where TEvent : GameEvent
 	{
 		var phase = ResolvePhase<TEvent>(timing);
-		return new BusEvent((self, bus, once) =>
+		return new BusEvent((self, bus, once, zones) =>
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner),
 				evt => BindAndRun(evt, self, () => handler(evt, self)),
-				once);
+				once,
+				zones);
 		});
 	}
 
@@ -163,13 +188,14 @@ public class BusEvent
 		where TEvent : GameEvent
 	{
 		var phase = ResolvePhase<TEvent>(timing);
-		return new BusEvent((self, bus, once) =>
+		return new BusEvent((self, bus, once, zones) =>
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner) && when(evt, self),
 				evt => BindAndRun(evt, self, () => { foreach (var a in actions) a.Trigger(self); }),
-				once);
+				once,
+				zones);
 		});
 	}
 
@@ -184,13 +210,14 @@ public class BusEvent
 		where TEvent : GameEvent
 	{
 		var phase = ResolvePhase<TEvent>(timing);
-		return new BusEvent((self, bus, once) =>
+		return new BusEvent((self, bus, once, zones) =>
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner) && when.Check(self),
 				evt => BindAndRun(evt, self, () => { foreach (var a in actions) a.Trigger(self); }),
-				once);
+				once,
+				zones);
 		});
 	}
 
@@ -205,13 +232,14 @@ public class BusEvent
 		where TEvent : GameEvent
 	{
 		var phase = ResolvePhase<TEvent>(timing);
-		return new BusEvent((self, bus, once) =>
+		return new BusEvent((self, bus, once, zones) =>
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner) && when.Check(self),
 				evt => BindAndRun(evt, self, () => action.Trigger(self)),
-				once);
+				once,
+				zones);
 		});
 	}
 
@@ -226,13 +254,14 @@ public class BusEvent
 		where TEvent : GameEvent
 	{
 		var phase = ResolvePhase<TEvent>(timing);
-		return new BusEvent((self, bus, once) =>
+		return new BusEvent((self, bus, once, zones) =>
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner) && when(evt, self),
 				evt => BindAndRun(evt, self, () => action.Trigger(self)),
-				once);
+				once,
+				zones);
 		});
 	}
 

@@ -335,11 +335,9 @@ public class BlackrockAdventure : CardPack
 
 		// BRMA12_3/3H — 红色：回合开始时对你的英雄造成 1/3 点伤害（仅在手牌中）
 		b.Card("BRMA12_3",
-			on: When<TurnStartEvent>(OWN, ON, new DealDamage(S.FRIENDLY_HERO, 1),
-				when: InZone<TurnStartEvent>(Zone.Hand)));
+			on: When<TurnStartEvent>(OWN, ON, new DealDamage(S.FRIENDLY_HERO, 1)).InHand());
 		b.Card("BRMA12_3H",
-			on: When<TurnStartEvent>(OWN, ON, new DealDamage(S.FRIENDLY_HERO, 3),
-				when: InZone<TurnStartEvent>(Zone.Hand)));
+			on: When<TurnStartEvent>(OWN, ON, new DealDamage(S.FRIENDLY_HERO, 3)).InHand());
 
 		// BRMA12_4/4H — 绿色：回合开始时恢复敌方英雄生命值
 		b.Card("BRMA12_4",

@@ -656,6 +656,16 @@ public class ConditionalAction : TargetedAction
 		_falseActions = falseActions ?? Array.Empty<Action>();
 	}
 
+	/// <summary>
+	/// Override Trigger to call Do directly — ConditionalAction has no Args,
+	/// so the base TargetedAction.Trigger would get 0 targets and never call Do.
+	/// </summary>
+	public override List<object?> Trigger(BaseEntity source)
+	{
+		var result = Do(source, source);
+		return new List<object?> { result };
+	}
+
 	public override object? Do(BaseEntity source, BaseEntity target, params object[] args)
 	{
 		var actions = _condition.Check(source)

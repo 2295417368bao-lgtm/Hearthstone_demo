@@ -423,7 +423,7 @@ public class ActionTests
 		// Card should be milled �?hand unchanged, deck empty, graveyard has the card
 		Assert.Equal(handBefore, p1.Hand.Count);
 		Assert.Empty(p1.Deck);
-		Assert.Contains(deckCard, p1.Graveyard);
+		Assert.DoesNotContain(deckCard, p1.Graveyard); // milled cards go to SetAside
 	}
 
 	// ─── Summon tests ──────────

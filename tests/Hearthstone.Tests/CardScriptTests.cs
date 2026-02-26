@@ -120,8 +120,8 @@ public class CardScriptTests
 	{
 		var registry = CreateRegistry();
 		var script = registry.GetScript("EX1_015")!;
-		Assert.Single(script.Play);
-		Assert.IsType<DrawCard>(script.Play[0]);
+		Assert.Single(script.Battlecry);
+		Assert.IsType<DrawCard>(script.Battlecry[0]);
 	}
 
 	[Fact]

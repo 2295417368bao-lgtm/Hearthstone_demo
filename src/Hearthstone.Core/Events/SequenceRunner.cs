@@ -69,6 +69,8 @@ public class SequenceRunner
 			player.Give(s.TwinspellCopyId);
 
 		// 注册 OnActivate（入场后、OnPlay 前）
+		// 先清理手牌/牌库阶段注册的订阅，防止双重注册
+		_bus.UnsubscribeAll(spell);
 		script?.OnActivate?.Invoke(spell, _game);
 
 		// Step 2: On Play Phase — "每当打出卡牌/法术" + 反制
@@ -164,6 +166,8 @@ public class SequenceRunner
 		minion.ZonePosition = player.Field.IndexOf(minion) + 1;
 
 		// 注册 OnActivate（入场后、OnPlay 前）
+		// 先清理手牌/牌库阶段注册的订阅，防止双重注册
+		_bus.UnsubscribeAll(minion);
 		script?.OnActivate?.Invoke(minion, _game);
 
 		// Step 2: On Play Phase — "每当打出卡牌/随从"

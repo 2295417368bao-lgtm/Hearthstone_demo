@@ -18,6 +18,7 @@ public class Subscription : IDisposable
 	public Func<GameEvent, bool> Condition { get; }
 	public Action<GameEvent> Handler { get; }
 	public bool Once { get; }
+	public Zone[]? ActiveZones { get; }
 	public bool IsAlive { get; private set; } = true;
 
 	private readonly EventBus _bus;
@@ -29,7 +30,8 @@ public class Subscription : IDisposable
 		BuffableEntity? subscriber,
 		Func<GameEvent, bool> condition,
 		Action<GameEvent> handler,
-		bool once)
+		bool once,
+		Zone[]? activeZones = null)
 	{
 		_bus = bus;
 		_key = key;
@@ -37,6 +39,7 @@ public class Subscription : IDisposable
 		Condition = condition;
 		Handler = handler;
 		Once = once;
+		ActiveZones = activeZones;
 	}
 
 	public void Dispose()
@@ -80,7 +83,8 @@ public class EventBus
 		object phase,
 		Func<TEvent, bool> condition,
 		Action<TEvent> handler,
-		bool once = false) where TEvent : GameEvent
+		bool once = false,
+		Zone[]? zones = null) where TEvent : GameEvent
 	{
 		var key = (typeof(TEvent), phase);
 		if (!_subscriptions.ContainsKey(key))
@@ -90,7 +94,8 @@ public class EventBus
 			this, key, subscriber,
 			evt => evt is TEvent te && condition(te),
 			evt => { if (evt is TEvent te) handler(te); },
-			once);
+			once,
+			zones);
 
 		_subscriptions[key].Add(sub);
 		_log.Debug("Subscribed {Entity} to {Event}@{Phase} (once={Once})",
@@ -112,7 +117,7 @@ public class EventBus
 
 		// Snapshot and sort by play-order (stable: ties resolved by registration order)
 		var queue = subs
-			.Where(s => s.IsAlive && IsInActiveZone(s.Subscriber) && s.Condition(evt))
+			.Where(s => s.IsAlive && IsInActiveZone(s) && s.Condition(evt))
 			.OrderBy(s => s.Subscriber?.PlayCounter ?? 0)
 			.ToList();
 
@@ -162,10 +167,18 @@ public class EventBus
 
 	/// <summary>
 	/// Check if a subscriber is in an active zone where it should receive events.
-	/// Minions/weapons must be in Play or Secret zone. Players always receive events.
+	/// Uses subscription-level ActiveZones if specified; otherwise defaults to Play + Secret.
+	/// Players always receive events regardless of zone.
 	/// </summary>
-	private static bool IsInActiveZone(BuffableEntity? entity) =>
-		entity is Player || entity?.Zone == Zone.Play || entity?.Zone == Zone.Secret;
+	private static bool IsInActiveZone(Subscription sub)
+	{
+		var entity = sub.Subscriber;
+		if (entity is Player) return true;
+		if (entity == null) return false;
+		var zones = sub.ActiveZones;
+		if (zones == null) return entity.Zone == Zone.Play || entity.Zone == Zone.Secret;
+		return zones.Contains(entity.Zone);
+	}
 
 	/// <summary>
 	/// Unsubscribe all subscriptions for the given entity (on silence, death, etc.).

@@ -218,7 +218,7 @@ public class GvgCards : CardPack
 		// GVG_063 — 博尔瓦·弗塔根：在手中时，每当一个友方随从死亡获得 +1 攻击力
 		b.Card("GVG_063",
 			on: When<DeathEvent>(OWN, AFTER, new Enchant(S.SELF, "GVG_063a"),
-				when: InZone<DeathEvent>(Zone.Hand)));
+				when: DeadIsMinion()).InHand());
 
 		// GVG_101 — 猩红净化者：对所有具有亡语的随从造成 2 点伤害
 		b.Card("GVG_101", battlecry: new DealDamage(S.ALL_MINIONS + S.DEATHRATTLE, 2));
