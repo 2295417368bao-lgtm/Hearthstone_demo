@@ -457,6 +457,14 @@ public class Player : BuffableEntity
 		Game?.RegisterEntity(entity);
 		entity.SetZone(zone, this);
 
+		// 在创建时立即注册所有事件订阅（不依赖区域）
+		// EventBus.IsInActiveZone 会根据 Subscription.ActiveZones 过滤
+		if (Game != null)
+		{
+			foreach (var script in entity.GetAllScripts())
+				script.OnActivate?.Invoke(entity, Game);
+		}
+
 		return entity;
 	}
 

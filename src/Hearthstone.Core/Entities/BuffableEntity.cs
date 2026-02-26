@@ -333,6 +333,7 @@ public class BuffableEntity : BaseEntity
 		}
 	}
 
+
 	/// <summary>添加自己到指定区域的列表，并注册区域相关的脚本效果。</summary>
 	protected virtual void AddToZone(Player controller, Zone zone)
 	{
@@ -354,14 +355,8 @@ public class BuffableEntity : BaseEntity
 				controller.Secrets.Add(this);
 				break;
 		}
-
-		// 进入牌库/手牌时，自动注册声明式触发器（如帕奇斯从牌库监听事件）
-		if (zone == Zone.Deck || zone == Zone.Hand)
-		{
-			foreach (var script in GetAllScripts())
-				script.OnActivate?.Invoke(this, controller.Game!);
-		}
 	}
+
 
 	/// <summary>
 	/// 召唤/打出前检查是否可召唤。子类可 override 添加额外限制（如 Secret 唯一性）。
