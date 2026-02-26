@@ -40,7 +40,16 @@ public static class CardDatabase
     {
         var cardsPath = Path.Combine(AppContext.BaseDirectory, "data", "cards_dbfid.json");
         if (!File.Exists(cardsPath))
-            cardsPath = @"d:\hs\Hearthstone.CSharp\data\cards_dbfid.json";
+        {
+            // 尝试环境变量
+            var envPath = Environment.GetEnvironmentVariable("HS_CARDS_PATH");
+            if (envPath != null && File.Exists(envPath))
+                cardsPath = envPath;
+            else
+                throw new FileNotFoundException(
+                    $"Card database not found at '{cardsPath}'. " +
+                    "Set HS_CARDS_PATH environment variable to specify the path to cards_dbfid.json.");
+        }
         Initialize(cardsPath);
     }
 }

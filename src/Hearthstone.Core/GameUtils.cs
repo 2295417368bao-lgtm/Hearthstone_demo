@@ -88,16 +88,42 @@ public static class GameUtils
 		var deck1 = cardDb != null ? RandomDraft(class1, cardDb, rng: rng) : new List<string>();
 		var deck2 = cardDb != null ? RandomDraft(class2, cardDb, rng: rng) : new List<string>();
 
-		var player1 = new Player($"Player1 ({class1})");
-		var player2 = new Player($"Player2 ({class2})");
+		var player1 = new Player($"Player1 ({class1})")
+		{
+			StartingHero = GameSetup.GetHeroId(ClassToName(class1)),
+			StartingDeck = deck1,
+		};
+		var player2 = new Player($"Player2 ({class2})")
+		{
+			StartingHero = GameSetup.GetHeroId(ClassToName(class2)),
+			StartingDeck = deck2,
+		};
 
 		var game = new Game(player1, player2);
 		game.CardDb = cardDb;
+
+		player1.PrepareForGame();
+		player2.PrepareForGame();
 		game.Setup();
 
 		Log.Information("Game setup: {P1} vs {P2}", player1.Name, player2.Name);
 		return game;
 	}
+
+	/// <summary>Convert CardClass enum to class name string.</summary>
+	private static string ClassToName(CardClass cc) => cc switch
+	{
+		CardClass.Mage => "Mage",
+		CardClass.Hunter => "Hunter",
+		CardClass.Warrior => "Warrior",
+		CardClass.Priest => "Priest",
+		CardClass.Druid => "Druid",
+		CardClass.Warlock => "Warlock",
+		CardClass.Paladin => "Paladin",
+		CardClass.Rogue => "Rogue",
+		CardClass.Shaman => "Shaman",
+		_ => "Mage",
+	};
 
 	/// <summary>
 	/// Play one turn with random AI decisions.

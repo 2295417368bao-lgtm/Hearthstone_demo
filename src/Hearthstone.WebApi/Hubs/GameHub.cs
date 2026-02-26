@@ -169,6 +169,10 @@ public class GameHub : Hub
 			}
 			else // pvp
 			{
+				// 阻止已完成 Mulligan 的玩家重复提交
+				if (caller == ctrl.Player1 && session.Player1MulliganDone) return;
+				if (caller == ctrl.Player2 && session.Player2MulliganDone) return;
+
 				if (caller == ctrl.Player1) session.Player1MulliganDone = true;
 				else session.Player2MulliganDone = true;
 
