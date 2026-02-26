@@ -40,3 +40,6 @@ Desktop.ini
 
 # dotnet
 *.DotSettings.user
+
+# Large data files
+data/res/CardDefs.xml
