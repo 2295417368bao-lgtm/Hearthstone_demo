@@ -69,7 +69,20 @@ public class Game : BuffableEntity
 		set
 		{
 			_cardDb = value;
-			CardDbByDbfId = value?.Values.ToDictionary(c => c.DbfId, c => c);
+			if (value != null)
+			{
+				var byDbf = new Dictionary<int, LoadCardIntoDbf.Card>();
+				foreach (var c in value.Values)
+				{
+					if (c.DbfId != 0)
+						byDbf[c.DbfId] = c;
+				}
+				CardDbByDbfId = byDbf;
+			}
+			else
+			{
+				CardDbByDbfId = null;
+			}
 		}
 	}
 

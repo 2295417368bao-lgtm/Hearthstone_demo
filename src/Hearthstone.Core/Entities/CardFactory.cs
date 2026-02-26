@@ -20,7 +20,7 @@ public static class CardFactory
 		{
 			CardType.Minion => new Minion { MaxHealth = cardData.Health, Atk = cardData.Attack },
 			CardType.Spell => CreateSpellOrSecret(cardData),
-			CardType.Weapon => new Weapon { MaxDurability = cardData.Health, Atk = cardData.Attack },
+			CardType.Weapon => new Weapon { MaxDurability = cardData.Durability > 0 ? cardData.Durability : cardData.Health, Atk = cardData.Attack },
 			CardType.Location => new Location { MaxDurability = cardData.Health },
 			CardType.Hero => new Hero { MaxHealth = cardData.Health },
 			CardType.HeroPower => new HeroPower(),
