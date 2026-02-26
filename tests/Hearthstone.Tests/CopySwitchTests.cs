@@ -1,0 +1,271 @@
+using HearthstoneServer;
+using HearthstoneServer.Dsl;
+using HearthstoneServer.Entities;
+using HearthstoneServer.LoadCardIntoDbf;
+using HearthstoneServer.Managers;
+using Xunit;
+using Action = HearthstoneServer.Dsl.Action;
+
+namespace Hearthstone.Tests;
+
+public class CopySwitchTests
+{
+	/// <summary>Minion subclass that initializes Tags (protected set).</summary>
+	private class TestMinion : Minion
+	{
+		public TestMinion(int controllerId)
+		{
+			Tags = new CardManager(this);
+			Tags[GameTag.Controller] = controllerId;
+			Zone = Zone.Play;
+		}
+	}
+
+	private static Game Setup()
+	{
+		var game = new Game(new Player("P1"), new Player("P2"));
+		game.Setup();
+		game.CardDb = new Dictionary<string, Card>
+		{
+			["M001"] = new Card { CardId = "M001", CardType = CardType.Minion, Cost = 2, Attack = 3, Health = 4, Races = Array.Empty<Race>() },
+			["M002"] = new Card { CardId = "M002", CardType = CardType.Minion, Cost = 5, Attack = 5, Health = 5, Races = Array.Empty<Race>() },
+			["E001"] = new Card { CardId = "E001", CardType = CardType.Enchantment, Races = Array.Empty<Race>() },
+		};
+		return game;
+	}
+
+	/// <summary>Register a TestMinion via Game.RegisterEntity (unique EntityIds).</summary>
+	private static TestMinion Add(Game g, Player p, string id)
+	{
+		var m = new TestMinion(p.EntityId);
+		m.CardData = g.CardDb![id];
+		m.Controller = p;
+		m.Tags[GameTag.Atk] = g.CardDb[id].Attack;
+		m.Tags[GameTag.Health] = g.CardDb[id].Health;
+		g.RegisterEntity(m);
+		return m;
+	}
+
+	// ══════════════════════════════════════�?
+	// Copy Tests
+	// ══════════════════════════════════════�?
+
+	[Fact]
+	public void Copy_BasicCopy_CreatesNewEntity()
+	{
+		var game = Setup();
+		var minion = Add(game, game.Player1, "M001");
+
+		var result = new Copy(S.FRIENDLY_MINIONS).Evaluate(minion) as List<BuffableEntity>;
+		Assert.NotNull(result);
+		Assert.Single(result!);
+		Assert.IsType<Minion>(result![0]);
+		Assert.NotSame(minion, result[0]);
+		Assert.Equal("M001", result[0].CardId);
+	}
+
+	[Fact]
+	public void Copy_MultipleSources_CopiesAll()
+	{
+		var game = Setup();
+		Add(game, game.Player1, "M001");
+		var m2 = Add(game, game.Player1, "M002");
+
+		var result = new Copy(S.FRIENDLY_MINIONS).Evaluate(m2) as List<BuffableEntity>;
+		Assert.NotNull(result);
+		Assert.Equal(2, result!.Count);
+	}
+
+	[Fact]
+	public void Copy_NoTargets_ReturnsEmpty()
+	{
+		var game = Setup();
+		var src = Add(game, game.Player1, "M001");
+
+		var result = new Copy(S.ENEMY_MINIONS).Evaluate(src) as List<BuffableEntity>;
+		Assert.NotNull(result);
+		Assert.Empty(result!);
+	}
+
+	[Fact]
+	public void Copy_NoController_ReturnsEmpty()
+	{
+		var game = Setup();
+		var result = new Copy(S.ALL_MINIONS).Evaluate(game) as List<BuffableEntity>;
+		Assert.NotNull(result);
+		Assert.Empty(result!);
+	}
+
+	// ══════════════════════════════════════�?
+	// ExactCopy Tests
+	// ══════════════════════════════════════�?
+
+	[Fact]
+	public void ExactCopy_Works()
+	{
+		var game = Setup();
+		var minion = Add(game, game.Player1, "M001");
+
+		var result = new ExactCopy(S.FRIENDLY_MINIONS).Evaluate(minion) as List<BuffableEntity>;
+		Assert.NotNull(result);
+		Assert.Single(result!);
+		Assert.NotSame(minion, result![0]);
+		Assert.Equal("M001", result[0].CardId);
+	}
+
+	[Fact]
+	public void ExactCopy_WithOverrideId()
+	{
+		var game = Setup();
+		var minion = Add(game, game.Player1, "M001");
+
+		var result = new ExactCopy(S.FRIENDLY_MINIONS, "M002").Evaluate(minion) as List<BuffableEntity>;
+		Assert.NotNull(result);
+		Assert.Single(result!);
+		Assert.Equal("M002", result![0].CardId);
+	}
+
+	[Fact]
+	public void ExactCopy_CopiesSilencedState()
+	{
+		var game = Setup();
+		var minion = Add(game, game.Player1, "M001");
+		minion.Silenced = true;
+
+		var result = new ExactCopy(S.FRIENDLY_MINIONS).Evaluate(minion) as List<BuffableEntity>;
+		Assert.NotNull(result);
+		Assert.Single(result!);
+		Assert.True((result![0] as Minion)!.Silenced);
+	}
+
+	// ══════════════════════════════════════�?
+	// RebornCopy Tests
+	// ══════════════════════════════════════�?
+
+	[Fact]
+	public void RebornCopy_RemovesReborn_SetsHealthTo1()
+	{
+		var game = Setup();
+		var minion = Add(game, game.Player1, "M001");
+		minion.Reborn = true;
+
+		var result = new RebornCopy(S.FRIENDLY_MINIONS).Evaluate(minion) as List<BuffableEntity>;
+		Assert.NotNull(result);
+		Assert.Single(result!);
+		var copied = result![0] as Minion;
+		Assert.NotNull(copied);
+		Assert.False(copied!.Reborn);
+
+		if (copied.Tags != null)
+		{
+			var maxHealth = copied.Tags[GameTag.Health];
+			var damage = copied.Tags[GameTag.Damage];
+			Assert.Equal(maxHealth - 1, damage);
+		}
+	}
+
+	// ══════════════════════════════════════�?
+	// KeepMagneticCopy Tests
+	// ══════════════════════════════════════�?
+
+	[Fact]
+	public void KeepMagneticCopy_BasicCopy()
+	{
+		var game = Setup();
+		var minion = Add(game, game.Player1, "M001");
+
+		var result = new KeepMagneticCopy(S.FRIENDLY_MINIONS).Evaluate(minion) as List<BuffableEntity>;
+		Assert.NotNull(result);
+		Assert.Single(result!);
+		Assert.Equal("M001", (result![0] as Minion)!.CardId);
+	}
+
+	[Fact]
+	public void KeepMagneticCopy_WithOverrideId()
+	{
+		var game = Setup();
+		var minion = Add(game, game.Player1, "M001");
+
+		var result = new KeepMagneticCopy(S.FRIENDLY_MINIONS, "M002").Evaluate(minion) as List<BuffableEntity>;
+		Assert.NotNull(result);
+		Assert.Single(result!);
+		Assert.Equal("M002", (result![0] as Minion)!.CardId);
+	}
+
+	// ══════════════════════════════════════�?
+	// Switch Tests
+	// ══════════════════════════════════════�?
+
+	[Fact]
+	public void Switch_MatchesCardId()
+	{
+		var game = Setup();
+		var minion = Add(game, game.Player1, "M001");
+
+		var action1 = new List<Action> { new Destroy(S.ALL_MINIONS) };
+		var switchDsl = new Switch(S.FRIENDLY_MINIONS, new Dictionary<string, List<Action>>
+		{
+			["M001"] = action1,
+			["M002"] = new List<Action>(),
+		});
+
+		var result = switchDsl.Evaluate(minion);
+		Assert.Same(action1, result);
+	}
+
+	[Fact]
+	public void Switch_ReturnsDefault_WhenNoMatch()
+	{
+		var game = Setup();
+		var minion = Add(game, game.Player1, "M001");
+
+		var defaultAction = new List<Action>();
+		var switchDsl = new Switch(S.FRIENDLY_MINIONS, new Dictionary<string, List<Action>>
+		{
+			["M002"] = new List<Action>(),
+			[""] = defaultAction,
+		});
+
+		Assert.Same(defaultAction, switchDsl.Evaluate(minion));
+	}
+
+	[Fact]
+	public void Switch_ReturnsDefault_WhenNoEntities()
+	{
+		var game = Setup();
+		var src = Add(game, game.Player1, "M001");
+
+		var defaultAction = new List<Action>();
+		var switchDsl = new Switch(S.ENEMY_MINIONS, new Dictionary<string, List<Action>>
+		{
+			["M001"] = new List<Action>(),
+			[""] = defaultAction,
+		});
+
+		Assert.Same(defaultAction, switchDsl.Evaluate(src));
+	}
+
+	[Fact]
+	public void Switch_EmptyDefault_WhenNoKeyAndNoDefault()
+	{
+		var game = Setup();
+		var minion = Add(game, game.Player1, "M001");
+
+		var switchDsl = new Switch(S.FRIENDLY_MINIONS, new Dictionary<string, List<Action>>
+		{
+			["M002"] = new List<Action>(),
+		});
+
+		Assert.Empty(switchDsl.Evaluate(minion));
+	}
+
+	// ══════════════════════════════════════�?
+	// Copy.ToString()
+	// ══════════════════════════════════════�?
+
+	[Fact]
+	public void Copy_ToString_IncludesSelectorInfo()
+	{
+		Assert.Contains("Copy(", new Copy(S.FRIENDLY_MINIONS).ToString());
+	}
+}

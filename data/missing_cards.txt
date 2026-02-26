@@ -1,0 +1,6 @@
+Columns: ['CardId', 'DbfId', 'Type', 'Class', 'Cost', 'Atk', 'HP', 'Rarity', 'Coll', 'NameZH', 'NameEN', 'Desc', 'Mechanics']
+Total rows: 457
+Collectible: 288
+Implemented b.Card: 301
+Missing collectible: 0
+

@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2dfc2ae0-e859-4c49-9e63-b9453ec10a9b" name="22954@DESKTOP_ANANAN 2026-02-19 21:13:37" runUser="DESKTOP_ANANAN\22954" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-02-19T21:13:37.6222440+08:00" queuing="2026-02-19T21:13:37.6222442+08:00" start="2026-02-19T21:13:37.2034473+08:00" finish="2026-02-19T21:13:37.6318646+08:00" />
+  <TestSettings name="default" id="60b82fb0-924f-4162-8b5f-b533a9ddfb77">
+    <Deployment runDeploymentRoot="22954_DESKTOP_ANANAN_2026-02-19_21_13_37" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="bbad8479-ae45-440c-a23d-9dd2a11d9566" testId="89aa0f39-5a9f-c7f8-73ce-57b99966093c" testName="Fireplace.Tests.GameFlowTests.Game_Attack_MutualDamage" computerName="DESKTOP_ANANAN" duration="00:00:00.0053726" startTime="2026-02-19T21:13:37.5458648+08:00" endTime="2026-02-19T21:13:37.5458745+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bbad8479-ae45-440c-a23d-9dd2a11d9566">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at HearthstoneServer.Events.SequenceRunner.Combat(Character attacker, Character defender) in D:\hs\fireplace\fireplace\Fireplace.CSharp\src\Fireplace.Core\Events\SequenceRunner.cs:line 320&#xD;
+   at HearthstoneServer.Entities.Game.Attack(Character attacker, Character defender) in D:\hs\fireplace\fireplace\Fireplace.CSharp\src\Fireplace.Core\Entities\Game.cs:line 538&#xD;
+   at Fireplace.Tests.GameFlowTests.Game_Attack_MutualDamage() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\GameFlowTests.cs:line 1142&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Fireplace.Tests.GameFlowTests.Game_Attack_MutualDamage" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="89aa0f39-5a9f-c7f8-73ce-57b99966093c">
+      <Execution id="bbad8479-ae45-440c-a23d-9dd2a11d9566" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.GameFlowTests" name="Game_Attack_MutualDamage" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="89aa0f39-5a9f-c7f8-73ce-57b99966093c" executionId="bbad8479-ae45-440c-a23d-9dd2a11d9566" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.3)&#xD;
+[xUnit.net 00:00:00.04]   Discovering: Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.06]   Discovered:  Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.07]   Starting:    Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.10]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.10]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.10]         D:\hs\fireplace\fireplace\Fireplace.CSharp\src\Fireplace.Core\Events\SequenceRunner.cs(320,0): at HearthstoneServer.Events.SequenceRunner.Combat(Character attacker, Character defender)&#xD;
+[xUnit.net 00:00:00.10]         D:\hs\fireplace\fireplace\Fireplace.CSharp\src\Fireplace.Core\Entities\Game.cs(538,0): at HearthstoneServer.Entities.Game.Attack(Character attacker, Character defender)&#xD;
+[xUnit.net 00:00:00.10]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\GameFlowTests.cs(1142,0): at Fireplace.Tests.GameFlowTests.Game_Attack_MutualDamage()&#xD;
+[xUnit.net 00:00:00.10]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.10]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.10]   Finished:    Fireplace.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-19T21:13:37.5447632+08:00">
+        <Text>[xUnit.net 00:00:00.10]     Fireplace.Tests.GameFlowTests.Game_Attack_MutualDamage [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

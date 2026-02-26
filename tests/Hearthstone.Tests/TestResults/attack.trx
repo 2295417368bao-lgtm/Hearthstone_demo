@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7f2d3aa6-7500-41b9-acbe-5ac1893c77d9" name="22954@DESKTOP_ANANAN 2026-02-20 21:11:13" runUser="DESKTOP_ANANAN\22954" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-02-20T21:11:13.1030854+08:00" queuing="2026-02-20T21:11:13.1030857+08:00" start="2026-02-20T21:11:12.6287736+08:00" finish="2026-02-20T21:11:13.1078882+08:00" />
+  <TestSettings name="default" id="802d9fc6-77fb-4468-90c7-cca370866b23">
+    <Deployment runDeploymentRoot="22954_DESKTOP_ANANAN_2026-02-20_21_11_13" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="4deeb97f-3f04-415d-a10f-5345b828960c" testId="98038de1-f0fc-879a-c8f3-e88314f0e5b9" testName="Fireplace.Tests.ActionTests.Attack_KillsMinion" computerName="DESKTOP_ANANAN" duration="00:00:00.0069551" startTime="2026-02-20T21:11:13.0367679+08:00" endTime="2026-02-20T21:11:13.0367779+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4deeb97f-3f04-415d-a10f-5345b828960c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure&#xD;
+Expected: True&#xD;
+Actual:   False</Message>
+          <StackTrace>   at Fireplace.Tests.ActionTests.Attack_KillsMinion() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\ActionTests.cs:line 518&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Fireplace.Tests.ActionTests.Attack_KillsMinion" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="98038de1-f0fc-879a-c8f3-e88314f0e5b9">
+      <Execution id="4deeb97f-3f04-415d-a10f-5345b828960c" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ActionTests" name="Attack_KillsMinion" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="98038de1-f0fc-879a-c8f3-e88314f0e5b9" executionId="4deeb97f-3f04-415d-a10f-5345b828960c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.3)&#xD;
+[xUnit.net 00:00:00.04]   Discovering: Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.08]   Discovered:  Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.09]   Starting:    Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.12]       Assert.True() Failure&#xD;
+[xUnit.net 00:00:00.12]       Expected: True&#xD;
+[xUnit.net 00:00:00.12]       Actual:   False&#xD;
+[xUnit.net 00:00:00.12]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.12]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\ActionTests.cs(518,0): at Fireplace.Tests.ActionTests.Attack_KillsMinion()&#xD;
+[xUnit.net 00:00:00.12]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.12]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.13]   Finished:    Fireplace.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-20T21:11:13.0357678+08:00">
+        <Text>[xUnit.net 00:00:00.12]     Fireplace.Tests.ActionTests.Attack_KillsMinion [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>炉石传说 — Web 对战</title>
+  <meta name="description" content="Hearthstone Web Simulator — Play classic Hearthstone in your browser">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <!-- Main Menu (Hub) -->
+  <div id="menu-screen" class="screen active">
+    <div class="menu-container">
+      <h1 class="menu-title">⚔️ 炉石传说</h1>
+      <p class="menu-subtitle">Web 对战模拟器</p>
+      <div class="menu-buttons">
+        <button class="menu-btn menu-btn-play" id="menu-play-btn">
+          <span class="menu-btn-icon">⚔️</span>
+          <span class="menu-btn-label">传统对战</span>
+        </button>
+        <button class="menu-btn menu-btn-collection" id="menu-collection-btn">
+          <span class="menu-btn-icon">📚</span>
+          <span class="menu-btn-label">我的收藏</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Play Screen (Mode + Deck Selection) -->
+  <div id="play-screen" class="screen">
+    <div class="play-layout">
+      <button class="nav-back-btn" id="play-back-btn">← 返回</button>
+      <h2 class="play-title">⚔️ 传统对战</h2>
+
+      <!-- Mode Selection -->
+      <div class="mode-selection" id="mode-selection">
+        <p class="play-subtitle">选择对战模式</p>
+        <div class="mode-buttons">
+          <button class="mode-btn mode-btn-ai" id="mode-ai-btn">
+            <span class="mode-icon">🤖</span>
+            <span class="mode-label">AI 对战</span>
+            <span class="mode-desc">与电脑 AI 对战</span>
+          </button>
+          <button class="mode-btn mode-btn-pvp" id="mode-pvp-btn">
+            <span class="mode-icon">👥</span>
+            <span class="mode-label">双人对战</span>
+            <span class="mode-desc">与好友在线对战</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PvP Room UI: Create or Join (hidden by default) -->
+      <div class="pvp-room-ui hidden" id="pvp-room-ui">
+        <p class="play-subtitle">双人对战</p>
+        <div class="pvp-actions">
+          <button class="pvp-btn pvp-create-btn" id="pvp-create-btn">🏠 创建房间</button>
+          <div class="pvp-join-group">
+            <input type="text" class="pvp-room-input" id="pvp-room-input" placeholder="输入房间号" maxlength="4">
+            <button class="pvp-btn pvp-join-btn" id="pvp-join-btn">🚪 加入房间</button>
+          </div>
+        </div>
+        <button class="nav-back-btn" id="pvp-back-btn">← 返回模式选择</button>
+      </div>
+
+      <!-- PvP Status Bar: shows room code on top of deck grid -->
+      <div class="pvp-status-bar hidden" id="pvp-status-bar">
+        <div class="pvp-room-code">房间号: <span id="pvp-room-code" class="room-code-text">----</span></div>
+        <span class="pvp-opponent-status" id="pvp-opponent-status">等待对手...</span>
+      </div>
+
+      <!-- PvP Waiting overlay (after deck submitted) -->
+      <div class="pvp-waiting hidden" id="pvp-waiting">
+        <p class="pvp-waiting-text">⏳ 已提交卡组，等待对手准备...</p>
+      </div>
+
+      <!-- Deck Selection (shown after mode chosen) -->
+      <p class="play-subtitle deck-subtitle hidden" id="deck-subtitle">选择一个卡组开始对战</p>
+      <div class="play-deck-grid hidden" id="play-deck-grid">
+        <!-- Saved decks rendered by JS -->
+      </div>
+      <button class="play-collection-link hidden" id="play-goto-collection-always">📚 去我的收藏创建新卡组</button>
+      <div class="play-no-decks hidden" id="play-no-decks">
+        <p>还没有卡组，先去收藏创建一个吧！</p>
+        <button class="menu-btn menu-btn-collection" id="play-goto-collection">📚 去我的收藏</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Collection / Deck Builder Screen -->
+  <div id="deckbuilder-screen" class="screen">
+    <div class="db-layout">
+      <!-- Left: Card Book (2/3) -->
+      <div class="db-book">
+        <div class="db-book-header">
+          <button class="nav-back-btn" id="db-back-menu-btn">← 返回</button>
+          <span class="db-book-title">我的收藏</span>
+        </div>
+        <div class="db-tabs" id="db-tabs">
+          <!-- All class tabs rendered by JS -->
+        </div>
+        <div class="db-page" id="db-page">
+          <!-- 8 card slots rendered by JS -->
+        </div>
+        <div class="db-page-nav">
+          <button class="db-page-btn" id="db-prev-page">◀</button>
+          <span class="db-page-info" id="db-page-info">第 1 / 1 页</span>
+          <button class="db-page-btn" id="db-next-page">▶</button>
+        </div>
+        <!-- Mana Filter -->
+        <div class="db-filters">
+          <div class="db-mana-filter" id="db-mana-filter">
+            <button class="db-mana-btn active" data-cost="all">全部</button>
+            <button class="db-mana-btn" data-cost="0">0</button>
+            <button class="db-mana-btn" data-cost="1">1</button>
+            <button class="db-mana-btn" data-cost="2">2</button>
+            <button class="db-mana-btn" data-cost="3">3</button>
+            <button class="db-mana-btn" data-cost="4">4</button>
+            <button class="db-mana-btn" data-cost="5">5</button>
+            <button class="db-mana-btn" data-cost="6">6</button>
+            <button class="db-mana-btn" data-cost="7">7+</button>
+          </div>
+          <input type="text" class="db-search" id="db-search" placeholder="🔍 搜索卡牌名称...">
+        </div>
+      </div>
+      <!-- Right: Deck Column (1/3) -->
+      <div class="db-deck-col">
+        <!-- Mode A: Saved Decks List -->
+        <div id="db-decks-panel">
+          <div class="db-hero-header">
+            <div class="db-hero-icon">📚</div>
+            <div class="db-deck-name">我的卡组</div>
+          </div>
+          <div class="db-saved-list" id="db-saved-list">
+            <!-- Saved decks rendered by JS -->
+          </div>
+          <button class="db-new-deck-btn" id="db-new-deck-btn">＋ 新建卡组</button>
+        </div>
+        <!-- Mode B: Deck Editing -->
+        <div id="db-edit-panel" class="hidden">
+          <div class="db-hero-header">
+            <div class="db-hero-icon" id="db-hero-icon">🔮</div>
+            <div class="db-deck-name" id="db-deck-name">自定义卡组</div>
+            <button class="db-back-btn" id="db-back-btn">✕</button>
+          </div>
+          <div class="db-mana-curve" id="db-mana-curve">
+            <div class="db-curve-bars">
+              <div class="db-curve-col" data-cost="0">
+                <div class="db-curve-bar"></div><span>0</span>
+              </div>
+              <div class="db-curve-col" data-cost="1">
+                <div class="db-curve-bar"></div><span>1</span>
+              </div>
+              <div class="db-curve-col" data-cost="2">
+                <div class="db-curve-bar"></div><span>2</span>
+              </div>
+              <div class="db-curve-col" data-cost="3">
+                <div class="db-curve-bar"></div><span>3</span>
+              </div>
+              <div class="db-curve-col" data-cost="4">
+                <div class="db-curve-bar"></div><span>4</span>
+              </div>
+              <div class="db-curve-col" data-cost="5">
+                <div class="db-curve-bar"></div><span>5</span>
+              </div>
+              <div class="db-curve-col" data-cost="6">
+                <div class="db-curve-bar"></div><span>6</span>
+              </div>
+              <div class="db-curve-col" data-cost="7">
+                <div class="db-curve-bar"></div><span>7+</span>
+              </div>
+            </div>
+          </div>
+          <div class="db-deck-list" id="db-deck-list"></div>
+          <div class="db-deck-footer">
+            <div class="db-card-count"><span id="db-count">0</span> / 30</div>
+            <div class="db-actions">
+              <button class="db-fill-btn" id="db-fill-btn">⚡ 快速填充</button>
+              <button class="db-done-btn disabled" id="db-done-btn">💾 保存卡组</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Class Picker Modal -->
+  <div id="class-picker-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <h2 class="modal-title">选择职业</h2>
+      <div class="class-picker" id="class-picker-grid">
+        <button class="class-btn" data-class="Mage">🔮 法师</button>
+        <button class="class-btn" data-class="Hunter">🏹 猎人</button>
+        <button class="class-btn" data-class="Warrior">⚔️ 战士</button>
+        <button class="class-btn" data-class="Warlock">🔥 术士</button>
+        <button class="class-btn" data-class="Paladin">🛡️ 骑士</button>
+        <button class="class-btn" data-class="Druid">🌿 德鲁伊</button>
+        <button class="class-btn" data-class="Rogue">🗡️ 盗贼</button>
+        <button class="class-btn" data-class="Priest">✝️ 牧师</button>
+        <button class="class-btn" data-class="Shaman">🌊 萨满</button>
+      </div>
+      <button class="modal-cancel" id="class-picker-cancel">取消</button>
+    </div>
+  </div>
+
+  <!-- Mulligan Screen -->
+  <div id="mulligan-overlay" class="mulligan-overlay hidden">
+    <div class="mulligan-container">
+      <h2 class="mulligan-title">🃏 调度阶段</h2>
+      <p class="mulligan-subtitle">点击选择要替换的手牌，然后确认</p>
+      <div class="mulligan-cards" id="mulligan-cards"></div>
+      <button id="mulligan-confirm-btn" class="mulligan-confirm-btn">✅ 确认换牌</button>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen" class="screen">
+    <!-- Top bar: opponent info -->
+    <div class="top-bar">
+      <div class="player-info opponent-info">
+        <div class="hero-portrait opponent-hero" id="opponent-hero">
+          <div class="hero-hp" id="opponent-hp">30</div>
+          <div class="hero-armor hidden" id="opponent-armor">0</div>
+        </div>
+        <div class="player-stats">
+          <span class="player-name" id="opponent-name">对手</span>
+          <div class="mana-display">
+            <span class="mana-icon">💎</span>
+            <span id="opponent-mana">0</span>/<span id="opponent-max-mana">0</span>
+          </div>
+          <div class="deck-count">🃏 <span id="opponent-deck-count">0</span></div>
+          <div class="hand-count">✋ <span id="opponent-hand-count">0</span></div>
+        </div>
+      </div>
+      <div class="turn-indicator" id="turn-indicator">你的回合</div>
+    </div>
+
+    <!-- Opponent secrets -->
+    <div class="secrets-zone opponent-secrets" id="opponent-secrets"></div>
+
+    <!-- Opponent field -->
+    <div class="field-zone opponent-field" id="opponent-field"></div>
+
+    <!-- Center divider -->
+    <div class="board-divider"></div>
+
+    <!-- Player field -->
+    <div class="field-zone player-field" id="player-field"></div>
+
+    <!-- Player secrets -->
+    <div class="secrets-zone player-secrets" id="player-secrets"></div>
+
+    <!-- Player hero / hero power / weapon -->
+    <div class="player-hero-bar">
+      <div class="hero-portrait player-hero" id="player-hero">
+        <div class="hero-hp" id="player-hp">30</div>
+        <div class="hero-armor hidden" id="player-armor">0</div>
+      </div>
+      <div class="hero-power-wrapper">
+        <button class="hero-power-btn" id="hero-power-btn" title="英雄技能">
+          <span class="hp-cost" id="hp-cost">2</span>
+          <span class="hp-name" id="hp-name"></span>
+        </button>
+      </div>
+      <button class="end-turn-btn" id="end-turn-btn">结束回合</button>
+    </div>
+
+    <!-- Player hand -->
+    <div class="hand-zone" id="player-hand"></div>
+
+    <!-- Targeting overlay -->
+    <div class="target-overlay hidden" id="target-overlay">
+      <div class="target-prompt">选择目标 (点击实体或按 Esc 取消)</div>
+    </div>
+
+    <!-- Game over overlay -->
+    <div class="gameover-overlay hidden" id="gameover-overlay">
+      <div class="gameover-content">
+        <h2 id="gameover-title">游戏结束</h2>
+        <button class="start-btn" onclick="location.reload()">再来一局</button>
+      </div>
+    </div>
+
+    <!-- History Log (left side) -->
+    <div class="history-panel" id="history-panel">
+      <div class="history-header">📜 行动记录</div>
+      <div class="history-entries" id="history-entries"></div>
+    </div>
+
+    <!-- Card Reveal Overlay (Phase 2) -->
+    <div class="card-reveal-overlay hidden" id="card-reveal-overlay">
+      <div class="card-reveal" id="card-reveal"></div>
+    </div>
+
+    <!-- Card Tooltip (hover preview) -->
+    <div class="card-tooltip hidden" id="card-tooltip"></div>
+
+    <!-- Action log (debug, hidden) -->
+    <div class="action-log hidden" id="action-log"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="58bc97f9-12e6-4dc4-965b-d61ae6ce0349" name="22954@DESKTOP_ANANAN 2026-02-17 17:41:44" runUser="DESKTOP_ANANAN\22954" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-02-17T17:41:44.8126445+08:00" queuing="2026-02-17T17:41:44.8126446+08:00" start="2026-02-17T17:41:44.4395314+08:00" finish="2026-02-17T17:41:44.8320922+08:00" />
+  <TestSettings name="default" id="4a986d77-1b69-460c-af06-647ecf2bc655">
+    <Deployment runDeploymentRoot="22954_DESKTOP_ANANAN_2026-02-17_17_41_44" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d7669eeb-57fd-4fc2-b8fd-74d5ce423b4c" testId="94c14236-68af-34c1-3fea-af8bf58c146a" testName="Fireplace.Tests.FullGameTests.Mulligan_ReplacesCards" computerName="DESKTOP_ANANAN" duration="00:00:00.0003882" startTime="2026-02-17T17:41:44.8016843+08:00" endTime="2026-02-17T17:41:44.8016844+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d7669eeb-57fd-4fc2-b8fd-74d5ce423b4c" />
+    <UnitTestResult executionId="9a0e8dc5-5879-49b8-86d0-c3a99280485f" testId="18b265e3-e2e6-97b3-2665-9da8daf5adf4" testName="Fireplace.Tests.FullGameTests.FullGame_ExhaustDecks_ReachesGameOver" computerName="DESKTOP_ANANAN" duration="00:00:00.0030162" startTime="2026-02-17T17:41:44.8015707+08:00" endTime="2026-02-17T17:41:44.8015708+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a0e8dc5-5879-49b8-86d0-c3a99280485f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: Complete&#xD;
+Actual:   Running</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.FullGame_ExhaustDecks_ReachesGameOver() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 453&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aded65ab-00d1-4ca5-8dca-90ce44b80e6d" testId="10403f69-6ab0-723a-620b-bdeccd4ec41e" testName="Fireplace.Tests.FullGameTests.ProcessDeaths_MovesToGraveyard" computerName="DESKTOP_ANANAN" duration="00:00:00.0005275" startTime="2026-02-17T17:41:44.8017050+08:00" endTime="2026-02-17T17:41:44.8017050+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aded65ab-00d1-4ca5-8dca-90ce44b80e6d" />
+    <UnitTestResult executionId="11160cf8-0dfd-49be-bbe9-86d0e1efeb43" testId="3b0fe60a-29d7-3ef3-3a7e-7ddba2d5511b" testName="Fireplace.Tests.FullGameTests.EndTurn_SwitchesToOpponent" computerName="DESKTOP_ANANAN" duration="00:00:00.0002166" startTime="2026-02-17T17:41:44.7864262+08:00" endTime="2026-02-17T17:41:44.7864262+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="11160cf8-0dfd-49be-bbe9-86d0e1efeb43" />
+    <UnitTestResult executionId="d7c1c682-e656-4b30-ace9-8fd0ddb7742e" testId="9f773df1-0f8c-b209-0652-7e5513015840" testName="Fireplace.Tests.FullGameTests.Attack_HeroTakesDamage" computerName="DESKTOP_ANANAN" duration="00:00:00.0035098" startTime="2026-02-17T17:41:44.7831688+08:00" endTime="2026-02-17T17:41:44.7831689+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d7c1c682-e656-4b30-ace9-8fd0ddb7742e" />
+    <UnitTestResult executionId="99e12963-de54-4624-9434-4b418d3b9417" testId="a7472309-2b0e-750b-446a-cff82be401ad" testName="Fireplace.Tests.FullGameTests.Start_DrawsInitialHands_AndGivesCoin" computerName="DESKTOP_ANANAN" duration="00:00:00.0001967" startTime="2026-02-17T17:41:44.7845340+08:00" endTime="2026-02-17T17:41:44.7845340+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="99e12963-de54-4624-9434-4b418d3b9417" />
+    <UnitTestResult executionId="34fdf68a-93d2-4804-951a-308870c6381f" testId="909bc8a1-9360-c7c6-3882-832f63cebe3a" testName="Fireplace.Tests.FullGameTests.FullGame_MultiTurnSimulation_CompletesWithoutCrash" computerName="DESKTOP_ANANAN" duration="00:00:00.0011437" startTime="2026-02-17T17:41:44.7843131+08:00" endTime="2026-02-17T17:41:44.7843131+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="34fdf68a-93d2-4804-951a-308870c6381f" />
+    <UnitTestResult executionId="71c37be3-d7ae-420a-9841-a8cdc2237c30" testId="aae4f9e4-d4d7-ab46-5d27-19e17f892742" testName="Fireplace.Tests.FullGameTests.BeginTurn_IncrementsManaAndDrawsCard" computerName="DESKTOP_ANANAN" duration="00:00:00.0001380" startTime="2026-02-17T17:41:44.8017429+08:00" endTime="2026-02-17T17:41:44.8017429+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="71c37be3-d7ae-420a-9841-a8cdc2237c30" />
+    <UnitTestResult executionId="0ba8548f-c27d-44e7-af0f-1a9b7a1abe3b" testId="e7379bd0-daee-5ab3-03a7-e03aa6c8ad6e" testName="Fireplace.Tests.FullGameTests.Fatigue_DamagesHeroWhenDeckEmpty" computerName="DESKTOP_ANANAN" duration="00:00:00.0000968" startTime="2026-02-17T17:41:44.8017211+08:00" endTime="2026-02-17T17:41:44.8017211+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0ba8548f-c27d-44e7-af0f-1a9b7a1abe3b" />
+    <UnitTestResult executionId="7d9edfa0-2ff7-4e94-b0db-078767bc4af3" testId="6fdb7b69-884c-0f50-ea05-cfbbfb9e3029" testName="Fireplace.Tests.FullGameTests.Concede_EndsGame" computerName="DESKTOP_ANANAN" duration="00:00:00.0044220" startTime="2026-02-17T17:41:44.7796970+08:00" endTime="2026-02-17T17:41:44.7796973+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d9edfa0-2ff7-4e94-b0db-078767bc4af3" />
+    <UnitTestResult executionId="6a932213-40b7-4b80-810c-a2af819175e2" testId="b17e5f3b-7219-a508-b0a9-0b886518cd76" testName="Fireplace.Tests.FullGameTests.MultiTurn_ManaIncreasesCorrectly" computerName="DESKTOP_ANANAN" duration="00:00:00.0002334" startTime="2026-02-17T17:41:44.7857642+08:00" endTime="2026-02-17T17:41:44.7857642+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6a932213-40b7-4b80-810c-a2af819175e2" />
+    <UnitTestResult executionId="3558b6fe-13ea-46bb-af3a-6cb943d177c1" testId="7973d85b-9398-9eb0-7d1c-fe3df89b5f36" testName="Fireplace.Tests.FullGameTests.Setup_InitializesGameCorrectly" computerName="DESKTOP_ANANAN" duration="00:00:00.0115742" startTime="2026-02-17T17:41:44.7754782+08:00" endTime="2026-02-17T17:41:44.7754869+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3558b6fe-13ea-46bb-af3a-6cb943d177c1" />
+    <UnitTestResult executionId="94d813ad-a537-4df0-8325-ccaebebc2d55" testId="d58d0357-9029-ce06-99f5-52da7943e959" testName="Fireplace.Tests.FullGameTests.PlayCard_PlacesMinionOnField" computerName="DESKTOP_ANANAN" duration="00:00:00.0009450" startTime="2026-02-17T17:41:44.7855080+08:00" endTime="2026-02-17T17:41:44.7855081+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="94d813ad-a537-4df0-8325-ccaebebc2d55" />
+    <UnitTestResult executionId="ef64810e-02fd-4ff0-831f-286f47480d99" testId="0c6a0603-9678-9cee-2ee9-aff3b0ffa558" testName="Fireplace.Tests.FullGameTests.GameOver_Tie_WhenBothHeroesDie" computerName="DESKTOP_ANANAN" duration="00:00:00.0000953" startTime="2026-02-17T17:41:44.8017839+08:00" endTime="2026-02-17T17:41:44.8017840+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ef64810e-02fd-4ff0-831f-286f47480d99" />
+    <UnitTestResult executionId="8d7b9e68-7395-4134-a870-a5887a0b5aef" testId="4d4d0126-90a9-7522-fef2-a339dffd1acd" testName="Fireplace.Tests.FullGameTests.Attack_MinionsDamageEachOther" computerName="DESKTOP_ANANAN" duration="00:00:00.0003401" startTime="2026-02-17T17:41:44.8017614+08:00" endTime="2026-02-17T17:41:44.8017614+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8d7b9e68-7395-4134-a870-a5887a0b5aef" />
+    <UnitTestResult executionId="0e66c973-a377-4d42-9fdb-6d9adf91cf07" testId="a5741b05-7b1d-9153-7970-6a147037d9f7" testName="Fireplace.Tests.FullGameTests.GameOver_WhenHeroDies" computerName="DESKTOP_ANANAN" duration="00:00:00.0003973" startTime="2026-02-17T17:41:44.7861924+08:00" endTime="2026-02-17T17:41:44.7861925+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0e66c973-a377-4d42-9fdb-6d9adf91cf07" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Fireplace.Tests.FullGameTests.PlayCard_PlacesMinionOnField" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="d58d0357-9029-ce06-99f5-52da7943e959">
+      <Execution id="94d813ad-a537-4df0-8325-ccaebebc2d55" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="PlayCard_PlacesMinionOnField" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Start_DrawsInitialHands_AndGivesCoin" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="a7472309-2b0e-750b-446a-cff82be401ad">
+      <Execution id="99e12963-de54-4624-9434-4b418d3b9417" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Start_DrawsInitialHands_AndGivesCoin" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Attack_MinionsDamageEachOther" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="4d4d0126-90a9-7522-fef2-a339dffd1acd">
+      <Execution id="8d7b9e68-7395-4134-a870-a5887a0b5aef" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Attack_MinionsDamageEachOther" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.MultiTurn_ManaIncreasesCorrectly" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="b17e5f3b-7219-a508-b0a9-0b886518cd76">
+      <Execution id="6a932213-40b7-4b80-810c-a2af819175e2" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="MultiTurn_ManaIncreasesCorrectly" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Mulligan_ReplacesCards" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="94c14236-68af-34c1-3fea-af8bf58c146a">
+      <Execution id="d7669eeb-57fd-4fc2-b8fd-74d5ce423b4c" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Mulligan_ReplacesCards" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Fatigue_DamagesHeroWhenDeckEmpty" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="e7379bd0-daee-5ab3-03a7-e03aa6c8ad6e">
+      <Execution id="0ba8548f-c27d-44e7-af0f-1a9b7a1abe3b" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Fatigue_DamagesHeroWhenDeckEmpty" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.GameOver_WhenHeroDies" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="a5741b05-7b1d-9153-7970-6a147037d9f7">
+      <Execution id="0e66c973-a377-4d42-9fdb-6d9adf91cf07" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="GameOver_WhenHeroDies" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.FullGame_MultiTurnSimulation_CompletesWithoutCrash" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="909bc8a1-9360-c7c6-3882-832f63cebe3a">
+      <Execution id="34fdf68a-93d2-4804-951a-308870c6381f" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="FullGame_MultiTurnSimulation_CompletesWithoutCrash" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Attack_HeroTakesDamage" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="9f773df1-0f8c-b209-0652-7e5513015840">
+      <Execution id="d7c1c682-e656-4b30-ace9-8fd0ddb7742e" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Attack_HeroTakesDamage" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.ProcessDeaths_MovesToGraveyard" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="10403f69-6ab0-723a-620b-bdeccd4ec41e">
+      <Execution id="aded65ab-00d1-4ca5-8dca-90ce44b80e6d" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="ProcessDeaths_MovesToGraveyard" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.BeginTurn_IncrementsManaAndDrawsCard" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="aae4f9e4-d4d7-ab46-5d27-19e17f892742">
+      <Execution id="71c37be3-d7ae-420a-9841-a8cdc2237c30" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="BeginTurn_IncrementsManaAndDrawsCard" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.EndTurn_SwitchesToOpponent" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="3b0fe60a-29d7-3ef3-3a7e-7ddba2d5511b">
+      <Execution id="11160cf8-0dfd-49be-bbe9-86d0e1efeb43" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="EndTurn_SwitchesToOpponent" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Concede_EndsGame" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="6fdb7b69-884c-0f50-ea05-cfbbfb9e3029">
+      <Execution id="7d9edfa0-2ff7-4e94-b0db-078767bc4af3" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Concede_EndsGame" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.GameOver_Tie_WhenBothHeroesDie" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="0c6a0603-9678-9cee-2ee9-aff3b0ffa558">
+      <Execution id="ef64810e-02fd-4ff0-831f-286f47480d99" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="GameOver_Tie_WhenBothHeroesDie" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.FullGame_ExhaustDecks_ReachesGameOver" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="18b265e3-e2e6-97b3-2665-9da8daf5adf4">
+      <Execution id="9a0e8dc5-5879-49b8-86d0-c3a99280485f" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="FullGame_ExhaustDecks_ReachesGameOver" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Setup_InitializesGameCorrectly" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="7973d85b-9398-9eb0-7d1c-fe3df89b5f36">
+      <Execution id="3558b6fe-13ea-46bb-af3a-6cb943d177c1" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Setup_InitializesGameCorrectly" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="94c14236-68af-34c1-3fea-af8bf58c146a" executionId="d7669eeb-57fd-4fc2-b8fd-74d5ce423b4c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18b265e3-e2e6-97b3-2665-9da8daf5adf4" executionId="9a0e8dc5-5879-49b8-86d0-c3a99280485f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10403f69-6ab0-723a-620b-bdeccd4ec41e" executionId="aded65ab-00d1-4ca5-8dca-90ce44b80e6d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b0fe60a-29d7-3ef3-3a7e-7ddba2d5511b" executionId="11160cf8-0dfd-49be-bbe9-86d0e1efeb43" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9f773df1-0f8c-b209-0652-7e5513015840" executionId="d7c1c682-e656-4b30-ace9-8fd0ddb7742e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a7472309-2b0e-750b-446a-cff82be401ad" executionId="99e12963-de54-4624-9434-4b418d3b9417" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="909bc8a1-9360-c7c6-3882-832f63cebe3a" executionId="34fdf68a-93d2-4804-951a-308870c6381f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aae4f9e4-d4d7-ab46-5d27-19e17f892742" executionId="71c37be3-d7ae-420a-9841-a8cdc2237c30" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e7379bd0-daee-5ab3-03a7-e03aa6c8ad6e" executionId="0ba8548f-c27d-44e7-af0f-1a9b7a1abe3b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6fdb7b69-884c-0f50-ea05-cfbbfb9e3029" executionId="7d9edfa0-2ff7-4e94-b0db-078767bc4af3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b17e5f3b-7219-a508-b0a9-0b886518cd76" executionId="6a932213-40b7-4b80-810c-a2af819175e2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7973d85b-9398-9eb0-7d1c-fe3df89b5f36" executionId="3558b6fe-13ea-46bb-af3a-6cb943d177c1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d58d0357-9029-ce06-99f5-52da7943e959" executionId="94d813ad-a537-4df0-8325-ccaebebc2d55" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0c6a0603-9678-9cee-2ee9-aff3b0ffa558" executionId="ef64810e-02fd-4ff0-831f-286f47480d99" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4d4d0126-90a9-7522-fef2-a339dffd1acd" executionId="8d7b9e68-7395-4134-a870-a5887a0b5aef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a5741b05-7b1d-9153-7970-6a147037d9f7" executionId="0e66c973-a377-4d42-9fdb-6d9adf91cf07" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="16" executed="16" passed="15" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.3)&#xD;
+[xUnit.net 00:00:00.03]   Discovering: Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.06]   Discovered:  Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.07]   Starting:    Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.13]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:00.13]       Expected: Complete&#xD;
+[xUnit.net 00:00:00.13]       Actual:   Running&#xD;
+[xUnit.net 00:00:00.13]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.13]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(453,0): at Fireplace.Tests.FullGameTests.FullGame_ExhaustDecks_ReachesGameOver()&#xD;
+[xUnit.net 00:00:00.13]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.13]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.13]   Finished:    Fireplace.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:41:44.8162493+08:00">
+        <Text>[xUnit.net 00:00:00.13]     Fireplace.Tests.FullGameTests.FullGame_ExhaustDecks_ReachesGameOver [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

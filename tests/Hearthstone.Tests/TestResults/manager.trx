@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="445b3958-aba1-4ed5-a29a-93bb832456e2" name="22954@DESKTOP_ANANAN 2026-02-20 21:11:11" runUser="DESKTOP_ANANAN\22954" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-02-20T21:11:11.3521471+08:00" queuing="2026-02-20T21:11:11.3521473+08:00" start="2026-02-20T21:11:10.8698436+08:00" finish="2026-02-20T21:11:11.3751140+08:00" />
+  <TestSettings name="default" id="51a8af1c-e612-4611-b9f9-096968b4fe0a">
+    <Deployment runDeploymentRoot="22954_DESKTOP_ANANAN_2026-02-20_21_11_11" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="94a216e6-f61c-4e2a-8372-b4dae7cb6279" testId="279b199c-8f9c-e1a8-1107-a05afa484d2b" testName="Fireplace.Tests.ManagerTests.PlayerManager_Indexer_GetSet" computerName="DESKTOP_ANANAN" duration="00:00:00.0041050" startTime="2026-02-20T21:11:11.2788975+08:00" endTime="2026-02-20T21:11:11.2788977+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="94a216e6-f61c-4e2a-8372-b4dae7cb6279" />
+    <UnitTestResult executionId="3d577bf1-93c4-473c-bffe-a6470165cc08" testId="de77c9a7-f846-a8b9-5311-332df4e84402" testName="Fireplace.Tests.ManagerTests.Manager_Get_ReturnsValue_ForMappedTag" computerName="DESKTOP_ANANAN" duration="00:00:00.0001021" startTime="2026-02-20T21:11:11.3233039+08:00" endTime="2026-02-20T21:11:11.3233039+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3d577bf1-93c4-473c-bffe-a6470165cc08" />
+    <UnitTestResult executionId="4cf65579-77ae-4cbd-a95c-dc294ebe2bbe" testId="f53a7437-f54e-f1ca-17e1-fb2946912c10" testName="Fireplace.Tests.ManagerTests.NewEntity_IncrementsCounter" computerName="DESKTOP_ANANAN" duration="00:00:00.0021978" startTime="2026-02-20T21:11:11.2830608+08:00" endTime="2026-02-20T21:11:11.2830613+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4cf65579-77ae-4cbd-a95c-dc294ebe2bbe" />
+    <UnitTestResult executionId="06aa0c94-7372-40c6-bce8-46b422d49436" testId="67a32bb1-b935-f488-45d8-8ae4bc18fbc0" testName="Fireplace.Tests.ManagerTests.Manager_Update_IgnoresUnmappedTags" computerName="DESKTOP_ANANAN" duration="00:00:00.0001395" startTime="2026-02-20T21:11:11.3230915+08:00" endTime="2026-02-20T21:11:11.3230916+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="06aa0c94-7372-40c6-bce8-46b422d49436" />
+    <UnitTestResult executionId="344bfa41-99c6-4a48-bbd7-f79b6ad08b22" testId="f866d76b-d13a-1375-8a5a-d24d228ec4b0" testName="Fireplace.Tests.ManagerTests.Manager_Items_ReturnsAllMappedTagValues" computerName="DESKTOP_ANANAN" duration="00:00:00.0043789" startTime="2026-02-20T21:11:11.3232257+08:00" endTime="2026-02-20T21:11:11.3232258+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="344bfa41-99c6-4a48-bbd7-f79b6ad08b22" />
+    <UnitTestResult executionId="b633df0b-4061-47b5-a436-aa7af8add68d" testId="3f09559f-6aa1-242d-235a-90a2298868cc" testName="Fireplace.Tests.ManagerTests.GetBoolProperty_ByGameTag_UsesCardManagerMapping" computerName="DESKTOP_ANANAN" duration="00:00:00.0006909" startTime="2026-02-20T21:11:11.3232674+08:00" endTime="2026-02-20T21:11:11.3232675+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b633df0b-4061-47b5-a436-aa7af8add68d" />
+    <UnitTestResult executionId="89ff5ee7-48ac-4a7a-9721-ac3a972641be" testId="fc281fd3-3e12-4d66-b746-6ebd876b9c95" testName="Fireplace.Tests.ManagerTests.ActionStart_NotifiesObservers" computerName="DESKTOP_ANANAN" duration="00:00:00.0005486" startTime="2026-02-20T21:11:11.2836586+08:00" endTime="2026-02-20T21:11:11.2836587+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="89ff5ee7-48ac-4a7a-9721-ac3a972641be" />
+    <UnitTestResult executionId="893e5d84-8d58-4cbc-816d-9413d2edad58" testId="2692a033-8758-6806-f6ca-bc4698718922" testName="Fireplace.Tests.ManagerTests.Manager_Get_ReturnsDefault_ForUnmappedTag" computerName="DESKTOP_ANANAN" duration="00:00:00.0001521" startTime="2026-02-20T21:11:11.3231801+08:00" endTime="2026-02-20T21:11:11.3231802+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="893e5d84-8d58-4cbc-816d-9413d2edad58" />
+    <UnitTestResult executionId="ce4c8d36-dce3-41c3-b962-458c23fac5c5" testId="1ba56bbe-eea6-f401-7fc8-7255577c672c" testName="Fireplace.Tests.ManagerTests.CardManager_Indexer_ReturnsZero_ForUnmappedTag" computerName="DESKTOP_ANANAN" duration="00:00:00.0001254" startTime="2026-02-20T21:11:11.3229362+08:00" endTime="2026-02-20T21:11:11.3229363+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ce4c8d36-dce3-41c3-b962-458c23fac5c5" />
+    <UnitTestResult executionId="09b4dfe6-1516-4931-ac3d-1979df70769f" testId="6761a889-cd9a-77a4-7e9f-a43b43cb33d4" testName="Fireplace.Tests.ManagerTests.Manager_Update_SetsMultipleTags" computerName="DESKTOP_ANANAN" duration="00:00:00.0014441" startTime="2026-02-20T21:11:11.2807504+08:00" endTime="2026-02-20T21:11:11.2807506+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="09b4dfe6-1516-4931-ac3d-1979df70769f" />
+    <UnitTestResult executionId="f08ec181-95c5-442e-9fd3-086f2b382799" testId="490c0950-57bf-b144-be56-b8e2cd8ee07e" testName="Fireplace.Tests.ManagerTests.Manager_Contains_TrueForMappedTag" computerName="DESKTOP_ANANAN" duration="00:00:00.0073249" startTime="2026-02-20T21:11:11.2749757+08:00" endTime="2026-02-20T21:11:11.2749916+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f08ec181-95c5-442e-9fd3-086f2b382799" />
+    <UnitTestResult executionId="8f797e26-945a-4078-917c-5dd77fc84353" testId="1800b21b-a740-53f5-ff1b-d22752a288a0" testName="Fireplace.Tests.ManagerTests.Observer_Unregister_StopsNotifications" computerName="DESKTOP_ANANAN" duration="00:00:00.0005806" startTime="2026-02-20T21:11:11.2843050+08:00" endTime="2026-02-20T21:11:11.2843052+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8f797e26-945a-4078-917c-5dd77fc84353" />
+    <UnitTestResult executionId="71931386-6e5d-456f-8c71-a1b0fbe554ce" testId="bb072e73-8e9d-f604-02e3-5dd77b9e499d" testName="Fireplace.Tests.ManagerTests.CardManager_GetPropertyName_ReturnsNull_ForUnmapped" computerName="DESKTOP_ANANAN" duration="00:00:00.0000982" startTime="2026-02-20T21:11:11.3233484+08:00" endTime="2026-02-20T21:11:11.3233485+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="71931386-6e5d-456f-8c71-a1b0fbe554ce" />
+    <UnitTestResult executionId="1375c050-1b9e-4957-950e-b10865f48253" testId="1b6f7487-111b-3156-6b10-92f86f8d2e68" testName="Fireplace.Tests.ManagerTests.CardManager_Indexer_GetSet" computerName="DESKTOP_ANANAN" duration="00:00:00.0000941" startTime="2026-02-20T21:11:11.2844394+08:00" endTime="2026-02-20T21:11:11.2844398+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1375c050-1b9e-4957-950e-b10865f48253" />
+    <UnitTestResult executionId="d776b9f5-22c0-4226-9817-b9a63e4654ac" testId="bb0c6312-3f6e-3616-a26c-34843fa9445e" testName="Fireplace.Tests.ManagerTests.NewEntity_NotifiesObservers" computerName="DESKTOP_ANANAN" duration="00:00:00.0002637" startTime="2026-02-20T21:11:11.3231354+08:00" endTime="2026-02-20T21:11:11.3231355+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d776b9f5-22c0-4226-9817-b9a63e4654ac" />
+    <UnitTestResult executionId="322f7301-049a-4b1d-a7cd-19e91b9766e6" testId="b55a60c2-769c-ae35-4cec-97a79e22ad1a" testName="Fireplace.Tests.ManagerTests.GameManager_AssignsEntityId_OnConstruction" computerName="DESKTOP_ANANAN" duration="00:00:00.0002737" startTime="2026-02-20T21:11:11.2792377+08:00" endTime="2026-02-20T21:11:11.2792378+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="322f7301-049a-4b1d-a7cd-19e91b9766e6" />
+    <UnitTestResult executionId="7e763b09-ba18-4280-b76a-b917bd4cb469" testId="6304980e-1e0d-1605-adfb-8b63925a3f9a" testName="Fireplace.Tests.ManagerTests.SetStep_NotifiesObservers" computerName="DESKTOP_ANANAN" duration="00:00:00.0005021" startTime="2026-02-20T21:11:11.3233852+08:00" endTime="2026-02-20T21:11:11.3233853+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7e763b09-ba18-4280-b76a-b917bd4cb469" />
+    <UnitTestResult executionId="2937a752-053d-4327-bda4-642306e15887" testId="1289716d-13f7-37eb-89b8-fbd832af5435" testName="Fireplace.Tests.ManagerTests.CardManager_GetPropertyName_ReturnsName" computerName="DESKTOP_ANANAN" duration="00:00:00.0022489" startTime="2026-02-20T21:11:11.2967051+08:00" endTime="2026-02-20T21:11:11.2967053+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2937a752-053d-4327-bda4-642306e15887">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ&#xD;
+                  ↓ (pos 7)&#xD;
+Expected: "stealthed"&#xD;
+Actual:   "stealth"</Message>
+          <StackTrace>   at Fireplace.Tests.ManagerTests.CardManager_GetPropertyName_ReturnsName() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\ManagerTests.cs:line 239&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Fireplace.Tests.ManagerTests.SetStep_NotifiesObservers" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="6304980e-1e0d-1605-adfb-8b63925a3f9a">
+      <Execution id="7e763b09-ba18-4280-b76a-b917bd4cb469" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="SetStep_NotifiesObservers" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.CardManager_Indexer_GetSet" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="1b6f7487-111b-3156-6b10-92f86f8d2e68">
+      <Execution id="1375c050-1b9e-4957-950e-b10865f48253" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="CardManager_Indexer_GetSet" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.Manager_Update_SetsMultipleTags" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="6761a889-cd9a-77a4-7e9f-a43b43cb33d4">
+      <Execution id="09b4dfe6-1516-4931-ac3d-1979df70769f" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="Manager_Update_SetsMultipleTags" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.NewEntity_IncrementsCounter" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="f53a7437-f54e-f1ca-17e1-fb2946912c10">
+      <Execution id="4cf65579-77ae-4cbd-a95c-dc294ebe2bbe" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="NewEntity_IncrementsCounter" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.Manager_Contains_TrueForMappedTag" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="490c0950-57bf-b144-be56-b8e2cd8ee07e">
+      <Execution id="f08ec181-95c5-442e-9fd3-086f2b382799" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="Manager_Contains_TrueForMappedTag" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.Manager_Get_ReturnsDefault_ForUnmappedTag" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="2692a033-8758-6806-f6ca-bc4698718922">
+      <Execution id="893e5d84-8d58-4cbc-816d-9413d2edad58" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="Manager_Get_ReturnsDefault_ForUnmappedTag" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.Manager_Get_ReturnsValue_ForMappedTag" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="de77c9a7-f846-a8b9-5311-332df4e84402">
+      <Execution id="3d577bf1-93c4-473c-bffe-a6470165cc08" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="Manager_Get_ReturnsValue_ForMappedTag" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.Observer_Unregister_StopsNotifications" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="1800b21b-a740-53f5-ff1b-d22752a288a0">
+      <Execution id="8f797e26-945a-4078-917c-5dd77fc84353" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="Observer_Unregister_StopsNotifications" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.CardManager_GetPropertyName_ReturnsName" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="1289716d-13f7-37eb-89b8-fbd832af5435">
+      <Execution id="2937a752-053d-4327-bda4-642306e15887" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="CardManager_GetPropertyName_ReturnsName" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.Manager_Items_ReturnsAllMappedTagValues" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="f866d76b-d13a-1375-8a5a-d24d228ec4b0">
+      <Execution id="344bfa41-99c6-4a48-bbd7-f79b6ad08b22" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="Manager_Items_ReturnsAllMappedTagValues" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.NewEntity_NotifiesObservers" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="bb0c6312-3f6e-3616-a26c-34843fa9445e">
+      <Execution id="d776b9f5-22c0-4226-9817-b9a63e4654ac" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="NewEntity_NotifiesObservers" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.GetBoolProperty_ByGameTag_UsesCardManagerMapping" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="3f09559f-6aa1-242d-235a-90a2298868cc">
+      <Execution id="b633df0b-4061-47b5-a436-aa7af8add68d" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="GetBoolProperty_ByGameTag_UsesCardManagerMapping" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.ActionStart_NotifiesObservers" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="fc281fd3-3e12-4d66-b746-6ebd876b9c95">
+      <Execution id="89ff5ee7-48ac-4a7a-9721-ac3a972641be" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="ActionStart_NotifiesObservers" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.Manager_Update_IgnoresUnmappedTags" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="67a32bb1-b935-f488-45d8-8ae4bc18fbc0">
+      <Execution id="06aa0c94-7372-40c6-bce8-46b422d49436" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="Manager_Update_IgnoresUnmappedTags" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.CardManager_Indexer_ReturnsZero_ForUnmappedTag" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="1ba56bbe-eea6-f401-7fc8-7255577c672c">
+      <Execution id="ce4c8d36-dce3-41c3-b962-458c23fac5c5" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="CardManager_Indexer_ReturnsZero_ForUnmappedTag" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.PlayerManager_Indexer_GetSet" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="279b199c-8f9c-e1a8-1107-a05afa484d2b">
+      <Execution id="94a216e6-f61c-4e2a-8372-b4dae7cb6279" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="PlayerManager_Indexer_GetSet" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.GameManager_AssignsEntityId_OnConstruction" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="b55a60c2-769c-ae35-4cec-97a79e22ad1a">
+      <Execution id="322f7301-049a-4b1d-a7cd-19e91b9766e6" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="GameManager_AssignsEntityId_OnConstruction" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.ManagerTests.CardManager_GetPropertyName_ReturnsNull_ForUnmapped" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="bb072e73-8e9d-f604-02e3-5dd77b9e499d">
+      <Execution id="71931386-6e5d-456f-8c71-a1b0fbe554ce" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.ManagerTests" name="CardManager_GetPropertyName_ReturnsNull_ForUnmapped" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="279b199c-8f9c-e1a8-1107-a05afa484d2b" executionId="94a216e6-f61c-4e2a-8372-b4dae7cb6279" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="de77c9a7-f846-a8b9-5311-332df4e84402" executionId="3d577bf1-93c4-473c-bffe-a6470165cc08" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f53a7437-f54e-f1ca-17e1-fb2946912c10" executionId="4cf65579-77ae-4cbd-a95c-dc294ebe2bbe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="67a32bb1-b935-f488-45d8-8ae4bc18fbc0" executionId="06aa0c94-7372-40c6-bce8-46b422d49436" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f866d76b-d13a-1375-8a5a-d24d228ec4b0" executionId="344bfa41-99c6-4a48-bbd7-f79b6ad08b22" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3f09559f-6aa1-242d-235a-90a2298868cc" executionId="b633df0b-4061-47b5-a436-aa7af8add68d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fc281fd3-3e12-4d66-b746-6ebd876b9c95" executionId="89ff5ee7-48ac-4a7a-9721-ac3a972641be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2692a033-8758-6806-f6ca-bc4698718922" executionId="893e5d84-8d58-4cbc-816d-9413d2edad58" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ba56bbe-eea6-f401-7fc8-7255577c672c" executionId="ce4c8d36-dce3-41c3-b962-458c23fac5c5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6761a889-cd9a-77a4-7e9f-a43b43cb33d4" executionId="09b4dfe6-1516-4931-ac3d-1979df70769f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="490c0950-57bf-b144-be56-b8e2cd8ee07e" executionId="f08ec181-95c5-442e-9fd3-086f2b382799" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1800b21b-a740-53f5-ff1b-d22752a288a0" executionId="8f797e26-945a-4078-917c-5dd77fc84353" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bb072e73-8e9d-f604-02e3-5dd77b9e499d" executionId="71931386-6e5d-456f-8c71-a1b0fbe554ce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1b6f7487-111b-3156-6b10-92f86f8d2e68" executionId="1375c050-1b9e-4957-950e-b10865f48253" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bb0c6312-3f6e-3616-a26c-34843fa9445e" executionId="d776b9f5-22c0-4226-9817-b9a63e4654ac" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b55a60c2-769c-ae35-4cec-97a79e22ad1a" executionId="322f7301-049a-4b1d-a7cd-19e91b9766e6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6304980e-1e0d-1605-adfb-8b63925a3f9a" executionId="7e763b09-ba18-4280-b76a-b917bd4cb469" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1289716d-13f7-37eb-89b8-fbd832af5435" executionId="2937a752-053d-4327-bda4-642306e15887" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="18" executed="18" passed="17" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.3)&#xD;
+[xUnit.net 00:00:00.05]   Discovering: Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.11]   Discovered:  Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.11]   Starting:    Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.18]       Assert.Equal() Failure: Strings differ&#xD;
+[xUnit.net 00:00:00.18]                         ↓ (pos 7)&#xD;
+[xUnit.net 00:00:00.18]       Expected: "stealthed"&#xD;
+[xUnit.net 00:00:00.18]       Actual:   "stealth"&#xD;
+[xUnit.net 00:00:00.18]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.18]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\ManagerTests.cs(239,0): at Fireplace.Tests.ManagerTests.CardManager_GetPropertyName_ReturnsName()&#xD;
+[xUnit.net 00:00:00.18]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.18]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.21]   Finished:    Fireplace.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-20T21:11:11.2983027+08:00">
+        <Text>[xUnit.net 00:00:00.18]     Fireplace.Tests.ManagerTests.CardManager_GetPropertyName_ReturnsName [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

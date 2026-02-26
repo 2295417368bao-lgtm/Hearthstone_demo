@@ -1,0 +1,430 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="78fa8854-30c8-4e6a-994f-0fcb22b98794" name="22954@DESKTOP_ANANAN 2026-02-17 17:37:36" runUser="DESKTOP_ANANAN\22954" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-02-17T17:37:36.9705019+08:00" queuing="2026-02-17T17:37:36.9705024+08:00" start="2026-02-17T17:37:36.6164153+08:00" finish="2026-02-17T17:37:36.9885220+08:00" />
+  <TestSettings name="default" id="6007e715-14fc-4c47-9f30-735396264bca">
+    <Deployment runDeploymentRoot="22954_DESKTOP_ANANAN_2026-02-17_17_37_36" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="895172d2-4046-4948-a342-5a3c49876bdb" testId="10403f69-6ab0-723a-620b-bdeccd4ec41e" testName="Fireplace.Tests.FullGameTests.ProcessDeaths_MovesToGraveyard" computerName="DESKTOP_ANANAN" duration="00:00:00.0002604" startTime="2026-02-17T17:37:36.9564977+08:00" endTime="2026-02-17T17:37:36.9564977+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="895172d2-4046-4948-a342-5a3c49876bdb">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.ProcessDeaths_MovesToGraveyard() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 267&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c8399a6e-084c-452d-9887-3da29fd641c7" testId="4d4d0126-90a9-7522-fef2-a339dffd1acd" testName="Fireplace.Tests.FullGameTests.Attack_MinionsDamageEachOther" computerName="DESKTOP_ANANAN" duration="00:00:00.0001197" startTime="2026-02-17T17:37:36.9568249+08:00" endTime="2026-02-17T17:37:36.9568249+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c8399a6e-084c-452d-9887-3da29fd641c7">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.Attack_MinionsDamageEachOther() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 212&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d5d273f4-6b9a-4a40-9aaf-4f45991cefc3" testId="e7379bd0-daee-5ab3-03a7-e03aa6c8ad6e" testName="Fireplace.Tests.FullGameTests.Fatigue_DamagesHeroWhenDeckEmpty" computerName="DESKTOP_ANANAN" duration="00:00:00.0001083" startTime="2026-02-17T17:37:36.9566757+08:00" endTime="2026-02-17T17:37:36.9566757+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d5d273f4-6b9a-4a40-9aaf-4f45991cefc3">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.Fatigue_DamagesHeroWhenDeckEmpty() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 352&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2fabfdf9-42bc-441b-8fa0-66917ed51888" testId="94c14236-68af-34c1-3fea-af8bf58c146a" testName="Fireplace.Tests.FullGameTests.Mulligan_ReplacesCards" computerName="DESKTOP_ANANAN" duration="00:00:00.0001232" startTime="2026-02-17T17:37:36.9562884+08:00" endTime="2026-02-17T17:37:36.9562886+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2fabfdf9-42bc-441b-8fa0-66917ed51888">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.Mulligan_ReplacesCards() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 121&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fc2bc47d-22eb-413f-9ab2-147f5f904540" testId="a7472309-2b0e-750b-446a-cff82be401ad" testName="Fireplace.Tests.FullGameTests.Start_DrawsInitialHands_AndGivesCoin" computerName="DESKTOP_ANANAN" duration="00:00:00.0001351" startTime="2026-02-17T17:37:36.9410984+08:00" endTime="2026-02-17T17:37:36.9410985+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc2bc47d-22eb-413f-9ab2-147f5f904540">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.Start_DrawsInitialHands_AndGivesCoin() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 101&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2b134209-d9a7-4d38-8ff5-7f73327b28a2" testId="909bc8a1-9360-c7c6-3882-832f63cebe3a" testName="Fireplace.Tests.FullGameTests.FullGame_MultiTurnSimulation_CompletesWithoutCrash" computerName="DESKTOP_ANANAN" duration="00:00:00.0002879" startTime="2026-02-17T17:37:36.9408410+08:00" endTime="2026-02-17T17:37:36.9408410+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2b134209-d9a7-4d38-8ff5-7f73327b28a2">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.FullGame_MultiTurnSimulation_CompletesWithoutCrash() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 375&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="daebbaa1-4dfa-46fd-a4bb-24b3737c14a5" testId="9f773df1-0f8c-b209-0652-7e5513015840" testName="Fireplace.Tests.FullGameTests.Attack_HeroTakesDamage" computerName="DESKTOP_ANANAN" duration="00:00:00.0001281" startTime="2026-02-17T17:37:36.9406882+08:00" endTime="2026-02-17T17:37:36.9406882+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="daebbaa1-4dfa-46fd-a4bb-24b3737c14a5">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.Attack_HeroTakesDamage() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 242&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="588dd25d-3e4f-4c0e-bab7-8b55c84f6f01" testId="7973d85b-9398-9eb0-7d1c-fe3df89b5f36" testName="Fireplace.Tests.FullGameTests.Setup_InitializesGameCorrectly" computerName="DESKTOP_ANANAN" duration="00:00:00.0024214" startTime="2026-02-17T17:37:36.9383596+08:00" endTime="2026-02-17T17:37:36.9383684+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="588dd25d-3e4f-4c0e-bab7-8b55c84f6f01">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.Setup_InitializesGameCorrectly() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 88&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7629e0f1-492c-410c-a67e-219fd7e51a5d" testId="a5741b05-7b1d-9153-7970-6a147037d9f7" testName="Fireplace.Tests.FullGameTests.GameOver_WhenHeroDies" computerName="DESKTOP_ANANAN" duration="00:00:00.0001124" startTime="2026-02-17T17:37:36.9416350+08:00" endTime="2026-02-17T17:37:36.9416350+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7629e0f1-492c-410c-a67e-219fd7e51a5d">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.GameOver_WhenHeroDies() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 296&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="99960d68-047a-40ec-a104-d2c298abcc3d" testId="0c6a0603-9678-9cee-2ee9-aff3b0ffa558" testName="Fireplace.Tests.FullGameTests.GameOver_Tie_WhenBothHeroesDie" computerName="DESKTOP_ANANAN" duration="00:00:00.0000960" startTime="2026-02-17T17:37:36.9569876+08:00" endTime="2026-02-17T17:37:36.9569876+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="99960d68-047a-40ec-a104-d2c298abcc3d">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.GameOver_Tie_WhenBothHeroesDie() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 314&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="941b0a4b-9d81-4957-9ec7-3fabf8201a5c" testId="3d7a7452-333b-8b93-41aa-ef7d59001663" testName="Fireplace.Tests.FullGameTests.BeginTurn_IncrementsManAndDrawsCard" computerName="DESKTOP_ANANAN" duration="00:00:00.0000921" startTime="2026-02-17T17:37:36.9417833+08:00" endTime="2026-02-17T17:37:36.9417833+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="941b0a4b-9d81-4957-9ec7-3fabf8201a5c">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.BeginTurn_IncrementsManAndDrawsCard() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 141&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5fb05789-41cd-4999-95a1-00d13298971f" testId="3b0fe60a-29d7-3ef3-3a7e-7ddba2d5511b" testName="Fireplace.Tests.FullGameTests.EndTurn_SwitchesToOpponent" computerName="DESKTOP_ANANAN" duration="00:00:00.0000788" startTime="2026-02-17T17:37:36.9557212+08:00" endTime="2026-02-17T17:37:36.9557213+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5fb05789-41cd-4999-95a1-00d13298971f">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.EndTurn_SwitchesToOpponent() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 155&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="88c31cb3-970f-4b24-a33a-39798ec922b2" testId="6fdb7b69-884c-0f50-ea05-cfbbfb9e3029" testName="Fireplace.Tests.FullGameTests.Concede_EndsGame" computerName="DESKTOP_ANANAN" duration="00:00:00.0001488" startTime="2026-02-17T17:37:36.9403344+08:00" endTime="2026-02-17T17:37:36.9403345+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="88c31cb3-970f-4b24-a33a-39798ec922b2">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.Concede_EndsGame() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 333&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c6f2ad0d-91e7-4480-8422-9f97d9ee70e6" testId="18b265e3-e2e6-97b3-2665-9da8daf5adf4" testName="Fireplace.Tests.FullGameTests.FullGame_ExhaustDecks_ReachesGameOver" computerName="DESKTOP_ANANAN" duration="00:00:00.0003373" startTime="2026-02-17T17:37:36.9559603+08:00" endTime="2026-02-17T17:37:36.9559604+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c6f2ad0d-91e7-4480-8422-9f97d9ee70e6">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.FullGame_ExhaustDecks_ReachesGameOver() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 422&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b413e0ae-429c-45d3-a858-dec7cdd0840a" testId="d58d0357-9029-ce06-99f5-52da7943e959" testName="Fireplace.Tests.FullGameTests.PlayCard_PlacesMinionOnField" computerName="DESKTOP_ANANAN" duration="00:00:00.0001154" startTime="2026-02-17T17:37:36.9412654+08:00" endTime="2026-02-17T17:37:36.9412655+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b413e0ae-429c-45d3-a858-dec7cdd0840a">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.PlayCard_PlacesMinionOnField() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 191&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6246a3e4-c4af-4e1c-9182-6126b770f0aa" testId="b17e5f3b-7219-a508-b0a9-0b886518cd76" testName="Fireplace.Tests.FullGameTests.MultiTurn_ManaIncreasesCorrectly" computerName="DESKTOP_ANANAN" duration="00:00:00.0001083" startTime="2026-02-17T17:37:36.9414902+08:00" endTime="2026-02-17T17:37:36.9414903+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6246a3e4-c4af-4e1c-9182-6126b770f0aa">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed) in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 24&#xD;
+   at Fireplace.Tests.FullGameTests.MultiTurn_ManaIncreasesCorrectly() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs:line 169&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Fireplace.Tests.FullGameTests.PlayCard_PlacesMinionOnField" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="d58d0357-9029-ce06-99f5-52da7943e959">
+      <Execution id="b413e0ae-429c-45d3-a858-dec7cdd0840a" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="PlayCard_PlacesMinionOnField" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Start_DrawsInitialHands_AndGivesCoin" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="a7472309-2b0e-750b-446a-cff82be401ad">
+      <Execution id="fc2bc47d-22eb-413f-9ab2-147f5f904540" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Start_DrawsInitialHands_AndGivesCoin" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Attack_MinionsDamageEachOther" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="4d4d0126-90a9-7522-fef2-a339dffd1acd">
+      <Execution id="c8399a6e-084c-452d-9887-3da29fd641c7" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Attack_MinionsDamageEachOther" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.MultiTurn_ManaIncreasesCorrectly" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="b17e5f3b-7219-a508-b0a9-0b886518cd76">
+      <Execution id="6246a3e4-c4af-4e1c-9182-6126b770f0aa" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="MultiTurn_ManaIncreasesCorrectly" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Mulligan_ReplacesCards" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="94c14236-68af-34c1-3fea-af8bf58c146a">
+      <Execution id="2fabfdf9-42bc-441b-8fa0-66917ed51888" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Mulligan_ReplacesCards" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.BeginTurn_IncrementsManAndDrawsCard" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="3d7a7452-333b-8b93-41aa-ef7d59001663">
+      <Execution id="941b0a4b-9d81-4957-9ec7-3fabf8201a5c" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="BeginTurn_IncrementsManAndDrawsCard" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Fatigue_DamagesHeroWhenDeckEmpty" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="e7379bd0-daee-5ab3-03a7-e03aa6c8ad6e">
+      <Execution id="d5d273f4-6b9a-4a40-9aaf-4f45991cefc3" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Fatigue_DamagesHeroWhenDeckEmpty" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.GameOver_WhenHeroDies" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="a5741b05-7b1d-9153-7970-6a147037d9f7">
+      <Execution id="7629e0f1-492c-410c-a67e-219fd7e51a5d" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="GameOver_WhenHeroDies" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.FullGame_MultiTurnSimulation_CompletesWithoutCrash" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="909bc8a1-9360-c7c6-3882-832f63cebe3a">
+      <Execution id="2b134209-d9a7-4d38-8ff5-7f73327b28a2" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="FullGame_MultiTurnSimulation_CompletesWithoutCrash" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Attack_HeroTakesDamage" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="9f773df1-0f8c-b209-0652-7e5513015840">
+      <Execution id="daebbaa1-4dfa-46fd-a4bb-24b3737c14a5" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Attack_HeroTakesDamage" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.ProcessDeaths_MovesToGraveyard" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="10403f69-6ab0-723a-620b-bdeccd4ec41e">
+      <Execution id="895172d2-4046-4948-a342-5a3c49876bdb" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="ProcessDeaths_MovesToGraveyard" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.EndTurn_SwitchesToOpponent" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="3b0fe60a-29d7-3ef3-3a7e-7ddba2d5511b">
+      <Execution id="5fb05789-41cd-4999-95a1-00d13298971f" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="EndTurn_SwitchesToOpponent" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Concede_EndsGame" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="6fdb7b69-884c-0f50-ea05-cfbbfb9e3029">
+      <Execution id="88c31cb3-970f-4b24-a33a-39798ec922b2" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Concede_EndsGame" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.GameOver_Tie_WhenBothHeroesDie" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="0c6a0603-9678-9cee-2ee9-aff3b0ffa558">
+      <Execution id="99960d68-047a-40ec-a104-d2c298abcc3d" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="GameOver_Tie_WhenBothHeroesDie" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.FullGame_ExhaustDecks_ReachesGameOver" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="18b265e3-e2e6-97b3-2665-9da8daf5adf4">
+      <Execution id="c6f2ad0d-91e7-4480-8422-9f97d9ee70e6" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="FullGame_ExhaustDecks_ReachesGameOver" />
+    </UnitTest>
+    <UnitTest name="Fireplace.Tests.FullGameTests.Setup_InitializesGameCorrectly" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="7973d85b-9398-9eb0-7d1c-fe3df89b5f36">
+      <Execution id="588dd25d-3e4f-4c0e-bab7-8b55c84f6f01" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.FullGameTests" name="Setup_InitializesGameCorrectly" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="10403f69-6ab0-723a-620b-bdeccd4ec41e" executionId="895172d2-4046-4948-a342-5a3c49876bdb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4d4d0126-90a9-7522-fef2-a339dffd1acd" executionId="c8399a6e-084c-452d-9887-3da29fd641c7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e7379bd0-daee-5ab3-03a7-e03aa6c8ad6e" executionId="d5d273f4-6b9a-4a40-9aaf-4f45991cefc3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="94c14236-68af-34c1-3fea-af8bf58c146a" executionId="2fabfdf9-42bc-441b-8fa0-66917ed51888" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a7472309-2b0e-750b-446a-cff82be401ad" executionId="fc2bc47d-22eb-413f-9ab2-147f5f904540" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="909bc8a1-9360-c7c6-3882-832f63cebe3a" executionId="2b134209-d9a7-4d38-8ff5-7f73327b28a2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9f773df1-0f8c-b209-0652-7e5513015840" executionId="daebbaa1-4dfa-46fd-a4bb-24b3737c14a5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7973d85b-9398-9eb0-7d1c-fe3df89b5f36" executionId="588dd25d-3e4f-4c0e-bab7-8b55c84f6f01" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a5741b05-7b1d-9153-7970-6a147037d9f7" executionId="7629e0f1-492c-410c-a67e-219fd7e51a5d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0c6a0603-9678-9cee-2ee9-aff3b0ffa558" executionId="99960d68-047a-40ec-a104-d2c298abcc3d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3d7a7452-333b-8b93-41aa-ef7d59001663" executionId="941b0a4b-9d81-4957-9ec7-3fabf8201a5c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b0fe60a-29d7-3ef3-3a7e-7ddba2d5511b" executionId="5fb05789-41cd-4999-95a1-00d13298971f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6fdb7b69-884c-0f50-ea05-cfbbfb9e3029" executionId="88c31cb3-970f-4b24-a33a-39798ec922b2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18b265e3-e2e6-97b3-2665-9da8daf5adf4" executionId="c6f2ad0d-91e7-4480-8422-9f97d9ee70e6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d58d0357-9029-ce06-99f5-52da7943e959" executionId="b413e0ae-429c-45d3-a858-dec7cdd0840a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b17e5f3b-7219-a508-b0a9-0b886518cd76" executionId="6246a3e4-c4af-4e1c-9182-6126b770f0aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="16" executed="16" passed="0" failed="16" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.3)&#xD;
+[xUnit.net 00:00:00.03]   Discovering: Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.06]   Discovered:  Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.06]   Starting:    Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.09]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.09]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(88,0): at Fireplace.Tests.FullGameTests.Setup_InitializesGameCorrectly()&#xD;
+[xUnit.net 00:00:00.09]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.09]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.09]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(333,0): at Fireplace.Tests.FullGameTests.Concede_EndsGame()&#xD;
+[xUnit.net 00:00:00.09]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.09]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.09]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(242,0): at Fireplace.Tests.FullGameTests.Attack_HeroTakesDamage()&#xD;
+[xUnit.net 00:00:00.09]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.09]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.09]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(375,0): at Fireplace.Tests.FullGameTests.FullGame_MultiTurnSimulation_CompletesWithoutCrash()&#xD;
+[xUnit.net 00:00:00.09]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.09]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.09]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(101,0): at Fireplace.Tests.FullGameTests.Start_DrawsInitialHands_AndGivesCoin()&#xD;
+[xUnit.net 00:00:00.09]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.09]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.09]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(191,0): at Fireplace.Tests.FullGameTests.PlayCard_PlacesMinionOnField()&#xD;
+[xUnit.net 00:00:00.09]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.09]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.09]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(169,0): at Fireplace.Tests.FullGameTests.MultiTurn_ManaIncreasesCorrectly()&#xD;
+[xUnit.net 00:00:00.09]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.09]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.09]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(296,0): at Fireplace.Tests.FullGameTests.GameOver_WhenHeroDies()&#xD;
+[xUnit.net 00:00:00.09]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.09]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.09]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.09]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(141,0): at Fireplace.Tests.FullGameTests.BeginTurn_IncrementsManAndDrawsCard()&#xD;
+[xUnit.net 00:00:00.09]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.09]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.10]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.10]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.10]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.10]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(155,0): at Fireplace.Tests.FullGameTests.EndTurn_SwitchesToOpponent()&#xD;
+[xUnit.net 00:00:00.10]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.10]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.11]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.11]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(422,0): at Fireplace.Tests.FullGameTests.FullGame_ExhaustDecks_ReachesGameOver()&#xD;
+[xUnit.net 00:00:00.11]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.11]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.11]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.11]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(121,0): at Fireplace.Tests.FullGameTests.Mulligan_ReplacesCards()&#xD;
+[xUnit.net 00:00:00.11]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.11]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.11]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.11]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(267,0): at Fireplace.Tests.FullGameTests.ProcessDeaths_MovesToGraveyard()&#xD;
+[xUnit.net 00:00:00.11]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.11]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.11]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.11]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(352,0): at Fireplace.Tests.FullGameTests.Fatigue_DamagesHeroWhenDeckEmpty()&#xD;
+[xUnit.net 00:00:00.11]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.11]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.11]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.11]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(212,0): at Fireplace.Tests.FullGameTests.Attack_MinionsDamageEachOther()&#xD;
+[xUnit.net 00:00:00.11]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.11]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.11]       System.NullReferenceException : Object reference not set to an instance of an object.&#xD;
+[xUnit.net 00:00:00.11]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(24,0): at Fireplace.Tests.FullGameTests.CreateGameWithDecks(Int32 deckSize, Int32 seed)&#xD;
+[xUnit.net 00:00:00.11]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\FullGameTests.cs(314,0): at Fireplace.Tests.FullGameTests.GameOver_Tie_WhenBothHeroesDie()&#xD;
+[xUnit.net 00:00:00.11]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.11]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.11]   Finished:    Fireplace.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9374996+08:00">
+        <Text>[xUnit.net 00:00:00.09]     Fireplace.Tests.FullGameTests.Setup_InitializesGameCorrectly [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9403027+08:00">
+        <Text>[xUnit.net 00:00:00.09]     Fireplace.Tests.FullGameTests.Concede_EndsGame [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9405822+08:00">
+        <Text>[xUnit.net 00:00:00.09]     Fireplace.Tests.FullGameTests.Attack_HeroTakesDamage [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9407571+08:00">
+        <Text>[xUnit.net 00:00:00.09]     Fireplace.Tests.FullGameTests.FullGame_MultiTurnSimulation_CompletesWithoutCrash [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9409066+08:00">
+        <Text>[xUnit.net 00:00:00.09]     Fireplace.Tests.FullGameTests.Start_DrawsInitialHands_AndGivesCoin [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9412905+08:00">
+        <Text>[xUnit.net 00:00:00.09]     Fireplace.Tests.FullGameTests.PlayCard_PlacesMinionOnField [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9414068+08:00">
+        <Text>[xUnit.net 00:00:00.09]     Fireplace.Tests.FullGameTests.MultiTurn_ManaIncreasesCorrectly [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9415850+08:00">
+        <Text>[xUnit.net 00:00:00.09]     Fireplace.Tests.FullGameTests.GameOver_WhenHeroDies [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9417103+08:00">
+        <Text>[xUnit.net 00:00:00.09]     Fireplace.Tests.FullGameTests.BeginTurn_IncrementsManAndDrawsCard [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9785659+08:00">
+        <Text>[xUnit.net 00:00:00.10]     Fireplace.Tests.FullGameTests.EndTurn_SwitchesToOpponent [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9786225+08:00">
+        <Text>[xUnit.net 00:00:00.11]     Fireplace.Tests.FullGameTests.FullGame_ExhaustDecks_ReachesGameOver [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9786643+08:00">
+        <Text>[xUnit.net 00:00:00.11]     Fireplace.Tests.FullGameTests.Mulligan_ReplacesCards [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9787030+08:00">
+        <Text>[xUnit.net 00:00:00.11]     Fireplace.Tests.FullGameTests.ProcessDeaths_MovesToGraveyard [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9787492+08:00">
+        <Text>[xUnit.net 00:00:00.11]     Fireplace.Tests.FullGameTests.Fatigue_DamagesHeroWhenDeckEmpty [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9787968+08:00">
+        <Text>[xUnit.net 00:00:00.11]     Fireplace.Tests.FullGameTests.Attack_MinionsDamageEachOther [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-17T17:37:36.9788420+08:00">
+        <Text>[xUnit.net 00:00:00.11]     Fireplace.Tests.FullGameTests.GameOver_Tie_WhenBothHeroesDie [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,70 @@
+Warrior collectible: 17
+
+CORE_REV_990                1   0/ 3  Other         Sanguine Depths                 赤红深渊
+    对一个随从造成1点伤害，并使其获得+2攻击力。
+    Mechanics: 
+
+CORE_CS2_108                1   0/ 0  Spell         Execute                         斩杀
+    消灭一个受伤的敌方随从。
+    Mechanics: 
+
+CORE_EX1_391                1   0/ 0  Spell         Slam                            猛击
+    对一个随从造成2点伤害，如果
+    Mechanics: None
+
+CORE_EX1_410                1   0/ 0  Spell         Shield Slam                     盾牌猛击
+    你每有1点护甲值，便对一个随从造成1点伤害。
+    Mechanics: AFFECTED_BY_SPELL_POWER
+
+CORE_WON_350                1   0/ 0  Spell         I Know a Guy                    盛气凌人
+    发现一张嘲讽随从牌。使其获得+1/+2。
+    Mechanics: DISCOVER
+
+CORE_AT_064                 2   0/ 0  Spell         Bash                            怒袭
+    造成3点伤害。获得3点
+    Mechanics: None
+
+CORE_EX1_606                2   0/ 0  Spell         Shield Block                    盾牌格挡
+    获得5点护甲值。抽一张牌。
+    Mechanics: 
+
+CORE_CS2_106                2   3/ 2  Weapon        Fiery War Axe                   炽炎战斧
+    
+    Mechanics: 
+
+CORE_EX1_604                3   2/ 4  Minion        Frothing Berserker              暴乱狂战士
+    每当一个随从
+    Mechanics: None
+
+CORE_SW_030                 3   2/ 4  Minion        Cargo Guard                     货物保镖
+    在你的回合结束时，获得3点护甲值。
+    Mechanics: TRIGGER_VISUAL
+
+CORE_OG_149                 3   3/ 3  Minion        Ravaging Ghoul                  暴虐食尸鬼
+    战吼：对所有其他随从造成1点伤害。
+    Mechanics: BATTLECRY
+
+CORE_NX2_028                3   4/ 3  Minion        Hookfist-3000                   钩拳-3000型
+    在你的英雄攻击后，获得4点护甲值并抽一张牌。
+    Mechanics: TRIGGER_VISUAL
+
+CORE_SW_094                 3   0/ 0  Spell         Heavy Plate                     厚重板甲
+    可交易
+    Mechanics: None
+
+CORE_BT_781                 3   1/ 4  Weapon        Bulwark of Azzinoth             埃辛诺斯壁垒
+    每当你的英雄即将受到伤害，改为埃辛诺斯壁垒失去1点耐久度。
+    Mechanics: TRIGGER_VISUAL
+
+CORE_OG_218                 4   2/ 6  Minion        Bloodhoof Brave                 血蹄勇士
+    嘲讽
+    Mechanics: None
+
+CORE_EX1_407                5   0/ 0  Spell         Brawl                           绝命乱斗
+    随机选择一个随从，消灭除了该随从外的所有其他随从。
+    Mechanics: 
+
+CORE_EX1_414                8   4/ 9  Minion        Grommash Hellscream             格罗玛什·地狱咆哮
+    冲锋
+    Mechanics: None
+

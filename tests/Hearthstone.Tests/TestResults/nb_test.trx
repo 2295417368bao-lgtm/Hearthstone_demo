@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="313ad72d-c471-4431-9806-5884497fc787" name="22954@DESKTOP_ANANAN 2026-02-19 23:52:48" runUser="DESKTOP_ANANAN\22954" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-02-19T23:52:48.6557747+08:00" queuing="2026-02-19T23:52:48.6557748+08:00" start="2026-02-19T23:52:47.5126269+08:00" finish="2026-02-19T23:52:48.6650307+08:00" />
+  <TestSettings name="default" id="8b9026b0-2405-4f91-980e-1a643553d4ad">
+    <Deployment runDeploymentRoot="22954_DESKTOP_ANANAN_2026-02-19_23_52_48" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="a40aa7dd-700e-446d-9b4a-ebee777d176c" testId="d831f59e-5f5d-3632-27fa-b47f10dd46bd" testName="Fireplace.Tests.IntegrationTests.Nightblade_FullCardDb_Deals3DamageOnly" computerName="DESKTOP_ANANAN" duration="00:00:00.7394370" startTime="2026-02-19T23:52:48.5812169+08:00" endTime="2026-02-19T23:52:48.5812272+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a40aa7dd-700e-446d-9b4a-ebee777d176c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 3&#xD;
+Actual:   6</Message>
+          <StackTrace>   at Fireplace.Tests.IntegrationTests.Nightblade_FullCardDb_Deals3DamageOnly() in D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\IntegrationTests.cs:line 1525&#xD;
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Fireplace.Tests.IntegrationTests.Nightblade_FullCardDb_Deals3DamageOnly" storage="d:\hs\fireplace\fireplace\fireplace.csharp\tests\fireplace.tests\bin\debug\net8.0\fireplace.tests.dll" id="d831f59e-5f5d-3632-27fa-b47f10dd46bd">
+      <Execution id="a40aa7dd-700e-446d-9b4a-ebee777d176c" />
+      <TestMethod codeBase="D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\bin\Debug\net8.0\Fireplace.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="Fireplace.Tests.IntegrationTests" name="Nightblade_FullCardDb_Deals3DamageOnly" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="d831f59e-5f5d-3632-27fa-b47f10dd46bd" executionId="a40aa7dd-700e-446d-9b4a-ebee777d176c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.3)&#xD;
+[xUnit.net 00:00:00.04]   Discovering: Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.06]   Discovered:  Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.07]   Starting:    Fireplace.Tests&#xD;
+[xUnit.net 00:00:00.83]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:00.83]       Expected: 3&#xD;
+[xUnit.net 00:00:00.83]       Actual:   6&#xD;
+[xUnit.net 00:00:00.83]       Stack Trace:&#xD;
+[xUnit.net 00:00:00.83]         D:\hs\fireplace\fireplace\Fireplace.CSharp\tests\Fireplace.Tests\IntegrationTests.cs(1525,0): at Fireplace.Tests.IntegrationTests.Nightblade_FullCardDb_Deals3DamageOnly()&#xD;
+[xUnit.net 00:00:00.83]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)&#xD;
+[xUnit.net 00:00:00.83]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)&#xD;
+[xUnit.net 00:00:00.83]   Finished:    Fireplace.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="DESKTOP_ANANAN" outcome="Error" timestamp="2026-02-19T23:52:48.5796190+08:00">
+        <Text>[xUnit.net 00:00:00.83]     Fireplace.Tests.IntegrationTests.Nightblade_FullCardDb_Deals3DamageOnly [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
