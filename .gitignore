@@ -43,3 +43,13 @@ Desktop.ini
 
 # Large data files
 data/res/CardDefs.xml
+
+# Test results
+TestResults*/
+*.trx
+
+# Temp files
+*.clean.txt
+build_err*.txt
+file_sizes.txt
+test_results*.txt
