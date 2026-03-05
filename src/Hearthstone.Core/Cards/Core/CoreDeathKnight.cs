@@ -70,9 +70,11 @@ public class CoreDeathKnight : CardPack
 			on: When<DeathEvent>(OWN, ON, new DrawCard(S.CONTROLLER),
 				when: DeadRace(Race.Undead)));
 
-		// 死亡金属骑士 CORE_ETC_523 — 嘲讽
-		// TODO: 条件改为消耗生命值
-		b.Card("CORE_ETC_523");
+		// 死亡金属骑士 CORE_ETC_523 — 嘲讽。本回合英雄受到治疗后，改为消耗生命值。
+		// 卡牌数据 CostBlood=2，光环 -1 → 条件满足时 2-1=1（扣血），不满足时保持 2（扣法力）
+		b.Card("CORE_ETC_523",
+			handUpdate: new Refresh(S.SELF, GameTag.CostBlood, -1,
+				condition: new HeroHealed()));
 
 		// 蛛魔护群守卫 CORE_RLK_062 — 嘲讽，战吼：召唤两个复制
 		b.Card("CORE_RLK_062",
@@ -88,10 +90,9 @@ public class CoreDeathKnight : CardPack
 			battlecry: new DealDamage(S.RANDOM_ENEMY_CHARACTER, 2),
 			deathrattle: new DealDamage(S.RANDOM_ENEMY_CHARACTER, 2));
 
-		// 死亡使者萨鲁法尔 RLK_082 — 嘲讽，亡语：移回手牌（改为消耗生命值）
-		// TODO: 消耗生命值机制
+		// 死亡使者萨鲁法尔 RLK_082 — 嘲讽。亡语：移回手牌（下次消耗生命值）
 		b.Card("RLK_082",
-			deathrattle: new AddToHand(S.CONTROLLER, "RLK_082"));
+			deathrattle: new AddToHandWithTag(S.CONTROLLER, "RLK_082", GameTag.CostBlood, 1));
 
 		// 髓骨使御者 CORE_RLK_505 — 战吼：消耗5残骸，每份造成 2 点伤害
 		b.Card("CORE_RLK_505",

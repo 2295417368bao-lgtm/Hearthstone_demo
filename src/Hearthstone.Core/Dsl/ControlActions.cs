@@ -144,6 +144,46 @@ public class AddToHand : TargetedAction
 }
 
 /// <summary>
+/// 给玩家一张卡并设置 GameTag。
+/// <code>new AddToHandWithTag(S.CONTROLLER, "RLK_082", GameTag.CostBlood, 1)</code>
+/// </summary>
+public class AddToHandWithTag : TargetedAction
+{
+	private readonly GameTag _tag;
+	private readonly int _value;
+
+	public AddToHandWithTag(object target, object card, GameTag tag, int value) : base(target, card) 
+	{ 
+		_tag = tag;
+		_value = value;
+	}
+
+	public override object? Do(BaseEntity source, BaseEntity target, params object[] args)
+	{
+		if (target is not Player player) return null;
+		var cardArg = args.Length > 0 ? args[0] : null;
+
+		string? cardId = cardArg switch
+		{
+			string id => id,
+			List<BaseEntity> list when list.Count > 0 => (list[0] as BuffableEntity)?.CardId,
+			BuffableEntity be => be.CardId,
+			_ => null,
+		};
+
+		if (cardId == null) return null;
+		var entity = player.CreateCard(cardId, Zone.Hand);
+		if (entity != null)
+		{
+			entity.EnsureTags();
+			entity.Tags[_tag] = _value;
+		}
+		Log.Information("{Player} receives {Card} with {Tag}={Value}", player.Name, entity, _tag, _value);
+		return entity;
+	}
+}
+
+/// <summary>
 /// Shuffle a card into player's deck.
 /// </summary>
 public class ShuffleIntoDeck : TargetedAction

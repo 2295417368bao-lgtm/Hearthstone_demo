@@ -34,6 +34,7 @@ public class TurnManager
 		player.MinionsPlayedThisTurn = 0;
 		player.MinionsKilledThisTurn = 0;
 		player.Combo = false;
+		player.HeroHealedThisTurn = false;
 		player.MaxMana += 1;
 		player.UsedMana = 0;
 		player.OverloadLocked = player.Overloaded;

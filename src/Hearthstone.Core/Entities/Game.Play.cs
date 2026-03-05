@@ -81,9 +81,14 @@ public partial class Game
 		}
 
 		// ── 法力校验 ──
-		if (!player.CanPayCost(card.Cost))
+		int cb = card.Tags.Contains(GameTag.CostBlood) ? card.Tags[GameTag.CostBlood] : 0;
+		bool payWithHealth = cb == 1;
+		if (!payWithHealth && !player.CanPayCost(card.Cost))
 			throw new InvalidActionException(
 				$"Not enough mana to play {card.CardId} (cost={card.Cost}, available={player.Mana})");
+		if (payWithHealth && player.Hero != null && player.Hero.Health < card.Cost)
+			throw new InvalidActionException(
+				$"Not enough health to play {card.CardId} (cost={card.Cost}, health={player.Hero.Health})");
 
 		// ── 统计快照（用于异常回滚） ──
 		var oldCardsPlayed = player.CardsPlayedThisTurn;

@@ -32,6 +32,26 @@ public class SequenceRunner
 		_bus = bus;
 	}
 
+	/// <summary>
+	/// 支付卡牌费用：CostBlood=1 时扣生命值，否则扣法力。
+	/// </summary>
+	private void PayCardCost(Player player, BuffableEntity card)
+	{
+		int cb = card.Tags.Contains(GameTag.CostBlood) ? card.Tags[GameTag.CostBlood] : 0;
+		bool payWithHealth = cb == 1;
+		
+		if (payWithHealth && player.Hero != null)
+		{
+			player.Hero.Hit(card.Cost);
+			_log.Information("{Player} pays {Cost} health for {Card}",
+				player.Name, card.Cost, card.CardId);
+		}
+		else
+		{
+			player.PayCost(card.Cost);
+		}
+	}
+
 	// ═══════════════════════════════════════════════
 	// PlaySpell — 打出法术
 	// ═══════════════════════════════════════════════
@@ -56,7 +76,7 @@ public class SequenceRunner
 		_game.ActionStart(BlockType.Play, spell, -1, target);
 
 		// Step 1: 准备 — 支付费用，处理过载
-		player.PayCost(spell.Cost);
+		PayCardCost(player, spell);
 		if (spell.Overload > 0)
 		{
 			player.Overloaded += spell.Overload;
@@ -153,7 +173,7 @@ public class SequenceRunner
 		_game.ActionStart(BlockType.Play, minion, index, target);
 
 		// Step 1: 准备 — 支付费用，过载，进入场上
-		player.PayCost(minion.Cost);
+		PayCardCost(player, minion);
 		if (minion.Overload > 0)
 		{
 			player.Overloaded += minion.Overload;
@@ -292,7 +312,7 @@ public class SequenceRunner
 		_game.ActionStart(BlockType.Play, secret, -1, null);
 
 		// 支付费用
-		player.PayCost(secret.Cost);
+		PayCardCost(player, secret);
 		if (secret.Overload > 0)
 		{
 			player.Overloaded += secret.Overload;
@@ -334,7 +354,7 @@ public class SequenceRunner
 		_game.ActionStart(BlockType.Play, weapon, -1, target);
 
 		// 支付费用
-		player.PayCost(weapon.Cost);
+		PayCardCost(player, weapon);
 		if (weapon.Overload > 0)
 		{
 			player.Overloaded += weapon.Overload;
@@ -385,7 +405,7 @@ public class SequenceRunner
 		_game.ActionStart(BlockType.Play, hero, -1, target);
 
 		// 支付费用
-		player.PayCost(hero.Cost);
+		PayCardCost(player, hero);
 		hero.TurnPlayed = _game.Turn;
 
 		// 替换英雄
@@ -610,7 +630,7 @@ public class SequenceRunner
 		_game.ActionStart(BlockType.Play, location, -1, null);
 
 		// 支付费用
-		player.PayCost(location.Cost);
+		PayCardCost(player, location);
 		location.TurnPlayed = _game.Turn;
 
 		// 放入战场

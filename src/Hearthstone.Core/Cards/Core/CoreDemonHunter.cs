@@ -50,8 +50,8 @@ public class CoreDemonHunter : CardPack
 			outcast: new Enchant(S.FRIENDLY_HERO, "CS3_017e"));
 
 		// 凯恩·日怒 CORE_BT_187 — 冲锋，所有友方攻击无视嘲讽（光环）
-		// TODO: 无视嘲讽光环
-		b.Card("CORE_BT_187");
+		b.Card("CORE_BT_187",
+			update: new Refresh(S.FRIENDLY_CHARACTERS, GameTag.IgnoreTaunt, 1));
 
 		// 暴怒邪吼者 CORE_BT_416 — 战吼：下一张恶魔费用减少 (2)
 		b.Card("CORE_BT_416",
@@ -78,8 +78,10 @@ public class CoreDemonHunter : CardPack
 				new DealDamage(S.RANDOM_ENEMY_CHARACTER, 1)));
 
 		// 伊利达雷审判官 CS3_020 — 突袭，英雄攻击后本随从也攻击该敌人
-		// TODO: 联动攻击
-		b.Card("CS3_020");
+		b.Card("CS3_020",
+			on: When<AfterAttackEvent>(OWN, AFTER,
+				new ForceAttack(S.SELF, S.EVT_TARGET),
+				when: AttackerIsHero()));
 
 		// ── 法术 ──
 

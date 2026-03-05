@@ -504,6 +504,16 @@ public partial class Game : BuffableEntity
 	/// </summary>
 	private void SubscribeHistoryTracking()
 	{
+		EventBus.Subscribe<HealEvent>(null, MiscPhase.On,
+			_ => true,
+			evt =>
+			{
+				if (evt.Target is Hero hero && hero.Controller != null)
+				{
+					hero.Controller.HeroHealedThisTurn = true;
+				}
+			});
+
 		EventBus.Subscribe<DeathEvent>(null, MiscPhase.On,
 			_ => true,
 			evt =>

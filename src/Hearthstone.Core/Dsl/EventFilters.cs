@@ -219,6 +219,10 @@ public static class EventFilters
 	public static Func<HealEvent, BuffableEntity, bool> HealTargetIsMinion()
 		=> (evt, self) => evt.Target is Minion;
 
+	/// <summary>治疗目标是友方英雄。</summary>
+	public static Func<HealEvent, BuffableEntity, bool> HealTargetIsHero()
+		=> (evt, self) => evt.Target is Hero h && h.Controller == self.Controller;
+
 	/// <summary>死亡实体属于某种族。</summary>
 	public static Func<DeathEvent, BuffableEntity, bool> DeadIsRace(Race race)
 		=> (evt, self) => evt.Dead is Character c && c.Races.Contains(race);

@@ -157,6 +157,27 @@ public class BusEvent
 	}
 
 	/// <summary>
+	/// 模式 1c：单个 GameAction + Func 额外条件。
+	/// <code>When&lt;AfterAttackEvent&gt;(OWN, AFTER, new ForceAttack(...), when: AttackerIsHero())</code>
+	/// </summary>
+	public static BusEvent When<TEvent>(
+		TriggerOwner owner, TriggerTiming timing, GameAction action,
+		Func<TEvent, BuffableEntity, bool> when)
+		where TEvent : GameEvent
+	{
+		var phase = ResolvePhase<TEvent>(timing);
+		return new BusEvent((self, bus, once, zones) =>
+		{
+			bus.Subscribe<TEvent>(
+				self, phase,
+				evt => OwnerMatches(evt, self, owner) && when(evt, self),
+				evt => BindAndRun(evt, self, () => action.Trigger(self)),
+				once,
+				zones);
+		});
+	}
+
+	/// <summary>
 	/// 模式 2：自定义 handler 回调（复杂逻辑）。
 	/// <code>When&lt;SpellCastEvent&gt;(ENEMY, ON, (evt, self) =&gt; { ... })</code>
 	/// </summary>
@@ -416,6 +437,9 @@ public class BusEvent
 		PreDamageEvent e => e.Target,
 		HealEvent e => e.Target,
 		DeathEvent e => e.Dead,
+		AfterAttackEvent e => e.Defender,
+		AttackEvent e => e.Defender,
+		ProposedAttackEvent e => e.Defender,
 		_ => evt.Source,
 	};
 }

@@ -129,6 +129,7 @@ public class CardManager : Manager
 		[GameTag.KeepBuff] = "keep_buff",
 		[GameTag.DamagedThisTurn] = "damaged_this_turn",
 		[GameTag.ActivationsThisTurn] = "activations_this_turn",
+		[GameTag.CostBlood] = "cost_blood",
 
 		// ── CardText Entity 映射 ──
 		[GameTag.CardtextEntity0] = "cardtext_entity_0",

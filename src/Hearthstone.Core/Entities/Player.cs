@@ -198,6 +198,7 @@ public class Player : BuffableEntity
 
 	public int HeroPowerDouble { get; set; }
 	public int HealingDouble { get; set; }
+	public bool HeroHealedThisTurn { get; set; }
 
 	// ── Game stats ──
 

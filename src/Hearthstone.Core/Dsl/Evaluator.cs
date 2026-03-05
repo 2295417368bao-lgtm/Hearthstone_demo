@@ -457,3 +457,10 @@ public class NotEvaluator : Evaluator
 	/// <summary>工厂方法：Not(evaluator)。</summary>
 	public static NotEvaluator Not(Evaluator eval) => new(eval);
 }
+
+/// <summary>本回合友方英雄是否受到过治疗。</summary>
+public class HeroHealed : Evaluator
+{
+	public override bool Check(BaseEntity source)
+		=> (source as BuffableEntity)?.Controller?.HeroHealedThisTurn == true;
+}

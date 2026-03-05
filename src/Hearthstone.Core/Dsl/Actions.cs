@@ -685,3 +685,35 @@ public class RawDamage : TargetedAction
 	}
 }
 
+/// <summary>
+/// 强制一个角色攻击指定目标，绕过常规攻击校验。
+/// 联动攻击不计入主动攻击次数。
+/// <code>new ForceAttack(S.SELF, S.EVT_TARGET)</code>
+/// </summary>
+public class ForceAttack : GameAction
+{
+	private readonly Selector _attacker;
+	private readonly Selector _defender;
+
+	public ForceAttack(Selector attacker, Selector defender)
+	{
+		_attacker = attacker;
+		_defender = defender;
+	}
+
+	public override void Do(BaseEntity source, params object[] args)
+	{
+		var game = source.Game;
+		if (game == null) return;
+
+		var atk = _attacker.Eval(game.Entities, source).OfType<Character>().FirstOrDefault();
+		var def = _defender.Eval(game.Entities, source).OfType<Character>().FirstOrDefault();
+		if (atk == null || def == null || atk.Dead || def.Dead) return;
+		if (atk.Zone != Zone.Play) return;
+
+		// 保存攻击次数，联动攻击后恢复
+		int savedAttacks = atk.NumAttacks;
+		game.Sequences.Combat(atk, def);
+		atk.NumAttacks = savedAttacks;
+	}
+}
