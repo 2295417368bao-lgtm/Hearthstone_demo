@@ -1,3 +1,4 @@
+using HearthstoneServer.Dsl;
 using HearthstoneServer.Entities;
 using HearthstoneServer.LoadCardIntoDbf;
 
@@ -22,6 +23,23 @@ public static class GameStateMapper
 
             player = MapPlayer(viewer, isViewer: true),
             opponent = MapPlayer(opponent, isViewer: false),
+
+            // 多目标战吼选择状态
+            pendingTargetChoice = MapPendingTargetChoice(viewer),
+        };
+    }
+
+    /// <summary>如果玩家有待处理的 BattlecryTargetChoice，序列化给前端。</summary>
+    private static object? MapPendingTargetChoice(Player viewer)
+    {
+        if (viewer.Choice is not BattlecryTargetChoice btc) return null;
+        return new
+        {
+            type = "battlecryTarget",
+            validTargetIds = btc.Cards.Select(c => c.EntityId).ToArray(),
+            chosenCount = btc.ChosenTargets.Count,
+            totalNeeded = btc.Cards.Count + btc.ChosenTargets.Count, // remaining + already chosen
+            sourceCardId = (btc.Source as BuffableEntity)?.CardId,
         };
     }
 

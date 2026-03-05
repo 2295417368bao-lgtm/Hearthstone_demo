@@ -1,5 +1,6 @@
 using Serilog;
 using HearthstoneServer.Entities;
+using HearthstoneServer.Targeting;
 
 namespace HearthstoneServer.Dsl;
 
@@ -582,4 +583,146 @@ public class MultiStepChoice : Choice
 	{
 		_log.Information("MultipleChoice complete: {Count} cards chosen", ChosenCards.Count);
 	}
+}
+
+// ───────────────────────────────────────
+// BattlecryTargetChoice — 多目标战吼选择
+// ───────────────────────────────────────
+
+/// <summary>
+/// 多目标战吼选择。逐一请求玩家选择目标，全部选完后执行战吼动作。
+/// <para>流程：SequenceRunner 创建此实例 → 设置 Player.Choice →
+/// 前端逐个 Choose(target) → 全部选完后自动执行战吼。</para>
+/// <para>双倍战吼时，SequenceRunner 创建新的实例重新选择目标。</para>
+/// </summary>
+public class BattlecryTargetChoice : Choice
+{
+	private static readonly ILogger _log = LogConfig.ForType<BattlecryTargetChoice>();
+
+	private readonly BuffableEntity _card;
+	private readonly TargetRequirement _targetReq;
+	private readonly List<Action> _battlecryActions;
+	private readonly int _totalTargets;
+	private readonly List<Character> _chosenTargets = new();
+
+	/// <summary>已选择的目标列表（供外部查询）。</summary>
+	public IReadOnlyList<Character> ChosenTargets => _chosenTargets;
+
+	public BattlecryTargetChoice(
+		BuffableEntity card,
+		TargetRequirement targetReq,
+		List<Action> battlecryActions,
+		Character? firstTarget = null)
+	{
+		_card = card;
+		_targetReq = targetReq;
+		_battlecryActions = battlecryActions;
+		_totalTargets = targetReq.TargetCount;
+
+		Source = card;
+		SourcePlayer = card.Controller;
+		MinCount = 1;
+		MaxCount = 1;
+
+		// 如果已有第一个目标（PlayCard 传入的），直接记录
+		if (firstTarget != null)
+		{
+			_chosenTargets.Add(firstTarget);
+		}
+
+		// 如果还需要更多目标，刷新合法目标列表
+		if (_chosenTargets.Count < _totalTargets)
+		{
+			RefreshValidTargets();
+		}
+		else
+		{
+			// 所有目标已就绪，直接执行
+			ExecuteBattlecry();
+		}
+	}
+
+	/// <summary>开始选择流程：将自身设置到 Player.Choice。</summary>
+	public void Begin()
+	{
+		if (_chosenTargets.Count < _totalTargets && SourcePlayer != null)
+		{
+			SourcePlayer.Choice = this;
+			_log.Information("BattlecryTargetChoice: {Player} needs to pick target {N}/{Total} for {Card}",
+				SourcePlayer.Name, _chosenTargets.Count + 1, _totalTargets, _card.CardId);
+		}
+	}
+
+	public override void Choose(BaseEntity target)
+	{
+		if (target is not Character ch)
+			throw new InvalidActionException($"{target} is not a valid Character target");
+
+		// 验证目标合法性
+		if (!TargetingRules.IsValidTarget(_card, target, _targetReq))
+			throw new InvalidActionException($"{target} is not a valid target for {_card.CardId}");
+
+		_chosenTargets.Add(ch);
+		_log.Information("BattlecryTargetChoice: chose target {N}/{Total}: {Target}",
+			_chosenTargets.Count, _totalTargets, target);
+
+		if (_chosenTargets.Count < _totalTargets)
+		{
+			// 还需要更多目标，刷新列表（排除已选的）
+			RefreshValidTargets();
+		}
+		else
+		{
+			// 全部选完，清除 Choice 并执行战吼
+			if (SourcePlayer != null) SourcePlayer.Choice = null;
+			ExecuteBattlecry();
+		}
+	}
+
+	/// <summary>刷新当前可选目标列表（排除已选目标）。</summary>
+	private void RefreshValidTargets()
+	{
+		var validTargets = TargetingRules.GetValidTargets(_card, _targetReq);
+
+		// 排除已选的目标（多目标不能重复选同一个）
+		foreach (var chosen in _chosenTargets)
+		{
+			validTargets.Remove(chosen);
+		}
+
+		Cards = validTargets.Cast<BaseEntity>().ToList();
+
+		if (Cards.Count == 0)
+		{
+			// 没有合法目标了，用已选目标执行
+			_log.Information("BattlecryTargetChoice: no more valid targets, executing with {Count} targets",
+				_chosenTargets.Count);
+			if (SourcePlayer != null) SourcePlayer.Choice = null;
+			ExecuteBattlecry();
+		}
+	}
+
+	/// <summary>将选中的目标存入 card.CurrentTargets，然后执行战吼动作。</summary>
+	private void ExecuteBattlecry()
+	{
+		// 将所有选中目标存入 card 的 CurrentTargets
+		_card.CurrentTargets = _chosenTargets.Cast<BaseEntity>().ToList();
+
+		var game = _card.Game;
+		if (game != null && _battlecryActions.Count > 0)
+		{
+			var target = _chosenTargets.Count > 0 ? _chosenTargets[0] : null;
+			game.ActionBlock(_card, _battlecryActions, BlockType.Power, target: target);
+			game.RefreshAuras();
+			game.ProcessDeaths();
+
+			_log.Information("BattlecryTargetChoice: executed battlecry with {Count} targets for {Card}",
+				_chosenTargets.Count, _card.CardId);
+		}
+	}
+
+	public override object? Do(BaseEntity source, BaseEntity target, params object[] args) => null;
+
+	public override string ToString() =>
+		$"<BattlecryTargetChoice: {_chosenTargets.Count}/{_totalTargets} targets for {_card.CardId}>";
 }

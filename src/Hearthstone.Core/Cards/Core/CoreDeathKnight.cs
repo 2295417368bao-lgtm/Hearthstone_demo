@@ -1,4 +1,5 @@
 using HearthstoneServer.Auras;
+using HearthstoneServer.Entities;
 using HearthstoneServer.Events;
 using static HearthstoneServer.Dsl.BusEvent;
 using static HearthstoneServer.Cards.CardScriptUtils;
@@ -45,10 +46,10 @@ public class CoreDeathKnight : CardPack
 			on: When<SpellCastEvent>(OWN, AFTER,
 				new DealDamage(new RandomSelector(S.ENEMY_CHARACTERS, 2), 1)));
 
-		// 死灵殡葬师 CORE_RLK_116 — 战吼：若上回合有友方亡灵死亡，发现邪恶符文牌
-		// TODO: 条件检测（亡灵种族过滤）
+		// 死灵殡葬师 CORE_RLK_116 — 战吼：若上回合有友方亡灵死亡，发现一张法术
 		b.Card("CORE_RLK_116",
-			battlecry: MakeDiscover(S.CONTROLLER, S.SPELL));
+			battlecry: IfElse(new Find(S.FRIENDLY_DEATHS_LAST_TURN + S.UNDEAD),
+				MakeDiscover(S.CONTROLLER, S.SPELL), NOTHING));
 
 		// 寒冬先锋 RLK_511 — 亡语：抽一张冰霜法术牌
 		b.Card("RLK_511",
@@ -66,7 +67,8 @@ public class CoreDeathKnight : CardPack
 
 		// 死亡侍僧 CORE_RLK_121 — 友方亡灵死亡后抽牌
 		b.Card("CORE_RLK_121",
-			on: When<DeathEvent>(OWN, ON, new DrawCard(S.CONTROLLER)));
+			on: When<DeathEvent>(OWN, ON, new DrawCard(S.CONTROLLER),
+				when: DeadRace(Race.Undead)));
 
 		// 死亡金属骑士 CORE_ETC_523 — 嘲讽
 		// TODO: 条件改为消耗生命值
@@ -98,11 +100,11 @@ public class CoreDeathKnight : CardPack
 
 		// 侏儒嚼嚼怪 RLK_720 — 嘲讽/吸血，回合结束攻击生命值最低敌人
 		b.Card("RLK_720",
-			on: When<TurnEndEvent>(OWN, ON, new DealDamage(S.RANDOM_ENEMY_MINION, 6)));
+			on: When<TurnEndEvent>(OWN, ON, new DealDamage(LOWEST_HEALTH(S.ENEMY_MINIONS), 6)));
 
-		// 缝合巨人 RLK_744 — 消耗过残骸则减费（光环）
-		// TODO: 光环减费（CorpsesSpentThisGame 计数）
-		b.Card("RLK_744");
+		// 缝合巨人 RLK_744 — 每消耗 1 份残骸减费 (1)
+		b.Card("RLK_744",
+			costMod: LazyNum.Of(s => (s as BuffableEntity)?.Controller?.CorpsesSpentThisGame ?? 0) * -1);
 
 		// ── 法术 ──
 
@@ -159,14 +161,14 @@ public class CoreDeathKnight : CardPack
 		b.Card("RLK_709",
 			play: Acts(new DealDamage(S.ENEMY_CHARACTERS, 2), new DrawCard(S.CONTROLLER)));
 
-		// 邪爆 CORE_RLK_035 — 消耗所有残骸，对所有随从各造成 1 点伤害（按残骸数循环）
+		// 邪爆 CORE_RLK_035 — 引爆残骸：每份对全体随从 1 点伤害，有存活则重复
 		b.Card("CORE_RLK_035",
-			play: new DealDamage(S.ALL_MINIONS, 3));
-		// TODO: 循环引爆（按残骸数，每份 1 点全体伤害）
+			play: new RepeatingDamage(S.ALL_MINIONS, 1, hitAll: true,
+				stop: BounceStop.MaxOnly, corpseCostPerRound: 1));
 
-		// 亡者大军 RLK_060 — 将所有残骸复活为 2/2 突袭食尸鬼
+		// 亡者大军 RLK_060 — 消耗最多 5 份残骸，每份召唤一个 2/2 突袭食尸鬼
 		b.Card("RLK_060",
-			play: new SummonPerCorpse(S.CONTROLLER, "RLK_060t"));
+			play: new SpendUpToCorpses(S.CONTROLLER, 5, new Summon(S.CONTROLLER, "RLK_060t")));
 
 		// 冰霜巨龙之怒 CORE_RLK_063 — 造成 5 点伤害，冻结所有敌方随从，召唤 5/5 龙
 		b.Card("CORE_RLK_063",
@@ -178,7 +180,8 @@ public class CoreDeathKnight : CardPack
 
 		// 断魂 CORE_RLK_012 — 英雄攻击并消灭随从后，获得 2 份残骸
 		b.Card("CORE_RLK_012",
-			on: When<DeathEvent>(OWN, ON, new GainCorpses(S.CONTROLLER, 2)));
+			on: When<AfterAttackEvent>(OWN, AFTER, new GainCorpses(S.CONTROLLER, 2),
+				when: And(AttackerIsHero(), DefenderDied())));
 
 		// 霜之哀伤 CORE_RLK_086 — 亡语：召唤被该武器消灭的所有随从
 		// TODO: 记录消灭的随从

@@ -1305,6 +1305,18 @@ function renderGameState() {
     showGameOver();
   }
 
+  // Multi-target battlecry: check for pending target choice
+  const pendingChoice = state.pendingTargetChoice || state.PendingTargetChoice;
+  if (pendingChoice && pendingChoice.type === 'battlecryTarget') {
+    const validIds = pendingChoice.validTargetIds || pendingChoice.ValidTargetIds || [];
+    const chosen = pendingChoice.chosenCount ?? pendingChoice.ChosenCount ?? 0;
+    const total = pendingChoice.totalNeeded ?? pendingChoice.TotalNeeded ?? 0;
+    log(`🎯 多目标战吼: 已选 ${chosen}/${total}, 可选目标 ${validIds.length} 个`);
+    enterTargetMode('battlecryTarget', -1, { validTargets: validIds });
+    highlightTargets(validIds);
+    return; // don't cancelTargeting
+  }
+
   // Clear targeting state
   cancelTargeting();
 }
@@ -1595,6 +1607,15 @@ function handleFieldClick(minionData, isPlayerSide, cardEl) {
       }
       return;
     }
+    if (targetMode === 'battlecryTarget' && selectedCard) {
+      const validTargets = selectedCard.data.validTargets || [];
+      if (validTargets.includes(eid)) {
+        log(`战吼目标选择: E#${eid}`);
+        connection.invoke('ChooseBattlecryTarget', eid);
+        cancelTargeting();
+      }
+      return;
+    }
     if (targetMode === 'attack' && attackingEntity && !isPlayerSide) {
       log(`攻击: E#${attackingEntity.entityId} → E#${eid}`);
       connection.invoke('Attack', attackingEntity.entityId, eid);
@@ -1704,6 +1725,12 @@ document.getElementById('opponent-hero').addEventListener('click', () => {
       connection.invoke('PlayCard', selectedCard.index, eid);
       cancelTargeting();
     }
+  } else if (targetMode === 'battlecryTarget' && selectedCard) {
+    const validTargets = selectedCard.data.validTargets || [];
+    if (validTargets.includes(eid)) {
+      connection.invoke('ChooseBattlecryTarget', eid);
+      cancelTargeting();
+    }
   } else if (targetMode === 'attack' && attackingEntity) {
     log(`攻击英雄: E#${attackingEntity.entityId} → E#${eid}`);
     connection.invoke('Attack', attackingEntity.entityId, eid);
@@ -1727,6 +1754,12 @@ document.getElementById('player-hero').addEventListener('click', () => {
     const validTargets = selectedCard.data.validTargets || selectedCard.data.ValidTargets || [];
     if (validTargets.includes(eid)) {
       connection.invoke('PlayCard', selectedCard.index, eid);
+      cancelTargeting();
+    }
+  } else if (targetMode === 'battlecryTarget' && selectedCard) {
+    const validTargets = selectedCard.data.validTargets || [];
+    if (validTargets.includes(eid)) {
+      connection.invoke('ChooseBattlecryTarget', eid);
       cancelTargeting();
     }
   } else if (targetMode === 'heropower') {

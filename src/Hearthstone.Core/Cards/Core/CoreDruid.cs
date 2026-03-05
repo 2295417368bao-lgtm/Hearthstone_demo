@@ -30,8 +30,13 @@ public class CoreDruid : CardPack
 			deathrattle: new GainArmor(S.FRIENDLY_HERO, 5));
 
 		// 范达尔·鹿盔 CORE_OG_044 — 抉择牌同时拥有两种效果（光环）
-		// TODO: Fandral 光环需要特殊引擎支持
-		b.Card("CORE_OG_044");
+		b.Card("CORE_OG_044", update: new[]
+		{
+			new Refresh(S.CONTROLLER, new Dictionary<GameTag, object>
+			{
+				[GameTag.ChooseBoth] = true
+			})
+		});
 
 		// 花园猎豹 CORE_SW_431 — 突袭，每当本随从攻击，英雄获得 +3 攻击力（本回合）
 		b.Card("CORE_SW_431",

@@ -1,5 +1,6 @@
 using HearthstoneServer.Auras;
-
+using HearthstoneServer.Events;
+using static HearthstoneServer.Dsl.BusEvent;
 using static HearthstoneServer.Cards.CardScriptUtils;
 
 namespace HearthstoneServer.Dsl.Cards;
@@ -21,8 +22,10 @@ public class GameRulesCards : CardPack
 		// 硬币的祝福：+3 生命值（增益）
 		b.Buff("GAME_001", health: 3);
 
-		// 硬币的复仇（卡牌） — TODO: 当打出触发 DSL 就绪后添加事件
-		b.Buff("GAME_003");
+		// 硬币的复仇（附魔） — 拥有者打出卡牌时，给一个随机友方随从 +1/+1
+		b.Buff("GAME_003",
+			on: When<CardPlayedEvent>(OWN, AFTER,
+				new Enchant(S.Random(S.FRIENDLY_MINIONS), "GAME_003e")));
 
 		// 硬币的复仇 +1/+1 增益
 		b.Buff("GAME_003e", atk: 1, health: 1);

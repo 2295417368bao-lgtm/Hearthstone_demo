@@ -1,4 +1,5 @@
 using HearthstoneServer.Auras;
+using HearthstoneServer.Entities;
 using HearthstoneServer.Events;
 using static HearthstoneServer.Dsl.BusEvent;
 using static HearthstoneServer.Cards.CardScriptUtils;
@@ -35,8 +36,10 @@ public class CoreDemonHunter : CardPack
 		b.Buff("CORE_BT_351e", atk: 1);
 
 		// 游荡贤者 CORE_TSC_217 — 流放：使最左/最右手牌费用减少 (1)
-		// TODO: 最左/最右手牌减费
-		b.Card("CORE_TSC_217");
+		b.Card("CORE_TSC_217",
+			outcast: Acts(
+				new Enchant(S.LEFTMOST_HAND, "GBL_003e"),
+				new Enchant(S.RIGHTMOST_HAND, "GBL_003e")));
 
 		// 邪能响尾蛇 CORE_WC_701 — 突袭，亡语：对所有敌方随从造成 1 点伤害
 		b.Card("CORE_WC_701",
@@ -51,12 +54,18 @@ public class CoreDemonHunter : CardPack
 		b.Card("CORE_BT_187");
 
 		// 暴怒邪吼者 CORE_BT_416 — 战吼：下一张恶魔费用减少 (2)
-		// TODO: 下一张恶魔减费
-		b.Card("CORE_BT_416");
+		b.Card("CORE_BT_416",
+			battlecry: new Enchant(S.CONTROLLER, "CORE_BT_416e"));
+		b.Card("CORE_BT_416e",
+			update: new[] { new Refresh(S.FRIENDLY_HAND + S.DEMON, new() { { GameTag.Cost, -2 } }) },
+			on: When<CardPlayedEvent>(OWN, AFTER, new Destroy(S.SELF),
+				when: PlayedRace(Race.Demon)));
 
 		// 扎伊 CORE_DMF_231 — 战吼：复制最左和最右手牌
-		// TODO: 复制最左/最右手牌
-		b.Card("CORE_DMF_231");
+		b.Card("CORE_DMF_231",
+			battlecry: Acts(
+				new CopyToHand(S.CONTROLLER, S.LEFTMOST_HAND, keepBuffs: true, handIndex: 0),
+				new CopyToHand(S.CONTROLLER, S.RIGHTMOST_HAND, keepBuffs: true, handIndex: -1)));
 
 		// 愤怒的女祭司 CORE_BT_493 — 回合结束时造成 6 点伤害随机分配给敌人
 		b.Card("CORE_BT_493",
@@ -85,17 +94,28 @@ public class CoreDemonHunter : CardPack
 		// 幽灵视觉 CORE_BT_491 — 抽一张牌，流放：再抽一张
 		b.Card("CORE_BT_491",
 			play: new DrawCard(S.CONTROLLER),
-			outcast: new DrawCard(S.CONTROLLER) * 2);
+			outcast: new DrawCard(S.CONTROLLER));
 
 		// 献祭光环 CORE_BT_514 — 对所有随从造成 1 点伤害两次
 		b.Card("CORE_BT_514",
 			play: new DealDamage(S.ALL_MINIONS, 1) * 2);
 
-		// 眼棱 CORE_BT_801 — 吸血，造成 3 点伤害
-		// 吸血由卡牌属性处理，流放减费 TODO
+		// 眼棱 CORE_BT_801 — 吸血，造成 3 点伤害，流放：费用变为 (0)
+		// 吸血由卡牌属性处理
 		b.Card("CORE_BT_801",
 			play: new DealDamage(S.TARGET, 3),
-			target: Target.Required().Minion());
+			target: Target.Required().Minion(),
+			costModFunc: (self, cost) =>
+			{
+				// 流放减费：在最左或最右手牌位置时费用为 0
+				if (self is BuffableEntity be && be.Zone == Zone.Hand && be.Controller != null)
+				{
+					var hand = be.Controller.Hand;
+					if (hand.Count > 0 && (hand[0] == be || hand[^1] == be))
+						return 0;
+				}
+				return cost;
+			});
 
 		// ── 武器 ──
 

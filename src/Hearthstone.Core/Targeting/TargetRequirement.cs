@@ -17,6 +17,9 @@ public sealed class TargetRequirement
 	/// <summary>连击时才需要选择目标。</summary>
 	public bool TargetForCombo { get; init; }
 
+	/// <summary>需要选择的目标数量（默认 1）。大于 1 时启用多目标战吼流程。</summary>
+	public int TargetCount { get; init; } = 1;
+
 	// ── 目标类型过滤 ──
 
 	/// <summary>只能选择随从。</summary>
@@ -233,6 +236,7 @@ public class TargetBuilder
 	private bool _enemyNotImmune;
 	private bool _friendlyLackey;
 	private bool _attackLessOrEqualMana;
+	private int _targetCount = 1;
 
 	// 打出条件
 	private int _minEnemyMinions;
@@ -288,6 +292,9 @@ public class TargetBuilder
 	public TargetBuilder Lackey() { _friendlyLackey = true; return this; }
 	public TargetBuilder AttackLessOrEqualMana() { _attackLessOrEqualMana = true; return this; }
 
+	/// <summary>设置需要选择的目标数量（多目标战吼）。</summary>
+	public TargetBuilder Count(int n) { _targetCount = n; return this; }
+
 	// ── 打出条件 ──
 	public TargetBuilder NeedsWeapon() { _needsWeapon = true; return this; }
 	public TargetBuilder NeedsEnemyMinions(int n) { _minEnemyMinions = n; return this; }
@@ -319,6 +326,7 @@ public class TargetBuilder
 		MustTarget = _mustTarget,
 		TargetIfAvailable = _ifAvailable,
 		TargetForCombo = _forCombo,
+		TargetCount = _targetCount,
 		MinionOnly = _minionOnly,
 		HeroOnly = _heroOnly,
 		LocationOnly = _locationOnly,

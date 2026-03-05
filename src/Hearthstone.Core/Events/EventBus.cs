@@ -64,6 +64,12 @@ public class EventBus
 	// (event type, phase enum value) → list of subscriptions
 	private readonly Dictionary<(Type, object), List<Subscription>> _subscriptions = new();
 
+	/// <summary>
+	/// When true, subscriber exceptions are re-thrown instead of swallowed.
+	/// Enable in test environments to catch bugs early.
+	/// </summary>
+	public bool StrictMode { get; set; }
+
 	public EventBus(Game game)
 	{
 		_game = game;
@@ -143,6 +149,7 @@ public class EventBus
 				_log.Error(ex, "EventBus 订阅者执行失败: {Entity} @ {Event}",
 					sub.Subscriber?.CardId ?? sub.Subscriber?.EntityId.ToString() ?? "(global)",
 					typeof(TEvent).Name);
+				if (StrictMode) throw;
 			}
 			finally
 			{

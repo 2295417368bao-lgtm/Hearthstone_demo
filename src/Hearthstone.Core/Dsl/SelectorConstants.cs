@@ -151,6 +151,7 @@ public static class S
 	public static readonly Selector PIRATE = new EnumSelector(Race.Pirate);
 	public static readonly Selector TOTEM = new EnumSelector(Race.Totem);
 	public static readonly Selector ELEMENTAL = new EnumSelector(Race.Elemental);
+	public static readonly Selector UNDEAD = new EnumSelector(Race.Undead);
 
 	// ── Rarity selectors ──
 
@@ -347,4 +348,24 @@ public static class S
 	/// <summary>获取 source entity 的 Controller Player。</summary>
 	private static Player? PlayerOf(BaseEntity src) =>
 		(src as BuffableEntity)?.Controller ?? (src as Player);
+
+	// ── Hand position selectors ──
+
+	/// <summary>手牌最左边的牌。</summary>
+	public static readonly Selector LEFTMOST_HAND = new FuncSelector(
+		(_, src) =>
+		{
+			var hand = PlayerOf(src)?.Hand;
+			if (hand == null || hand.Count == 0) return new();
+			return new List<BaseEntity> { hand[0] };
+		});
+
+	/// <summary>手牌最右边的牌。</summary>
+	public static readonly Selector RIGHTMOST_HAND = new FuncSelector(
+		(_, src) =>
+		{
+			var hand = PlayerOf(src)?.Hand;
+			if (hand == null || hand.Count == 0) return new();
+			return new List<BaseEntity> { hand[^1] };
+		});
 }

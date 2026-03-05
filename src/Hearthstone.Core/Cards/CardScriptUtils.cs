@@ -76,6 +76,16 @@ public static class CardScriptUtils
 			return candidates.Where(e => e is BuffableEntity be && be.GetIntProperty("Atk") == maxAtk).ToList();
 		});
 
+	/// <summary>LOWEST_HEALTH(selector) — 选择器中生命值最低的实体。</summary>
+	public static Selector LOWEST_HEALTH(Selector sel) => new FuncSelector(
+		(entities, source) =>
+		{
+			var candidates = sel.Eval(entities, source);
+			if (candidates.Count == 0) return new List<BaseEntity>();
+			var minHp = candidates.Min(e => e is BuffableEntity be ? be.GetIntProperty("Health") : int.MaxValue);
+			return candidates.Where(e => e is BuffableEntity be && be.GetIntProperty("Health") == minHp).ToList();
+		});
+
 	// ═══════════════════════════════════════
 	// 常用条件
 	// ═══════════════════════════════════════

@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.SignalR;
 using HearthstoneServer;
+using HearthstoneServer.Dsl;
 using HearthstoneServer.Entities;
 using HearthstoneServer.PowerHistory;
 using HearthstoneServer.Dto;
@@ -229,6 +230,42 @@ public class GameHub : Hub
 		{
 			var history = ctrl.UseHeroPower(player, targetEntityId);
 			await BroadcastActions(session, history);
+			await SendStateToBoth(session);
+		}
+		catch (InvalidActionException ex)
+		{
+			await Clients.Caller.SendAsync("Error", ex.Message);
+		}
+	}
+
+	/// <summary>Choose a target for multi-target battlecry.</summary>
+	public async Task ChooseBattlecryTarget(int entityId)
+	{
+		if (!TryGetSession(out var session)) return;
+		var ctrl = session!.Controller;
+		if (ctrl == null) return;
+
+		var player = GetCallerPlayer(session);
+		if (player == null) return;
+
+		try
+		{
+			if (player.Choice is not BattlecryTargetChoice btc)
+			{
+				await Clients.Caller.SendAsync("Error", "没有待处理的战吼目标选择");
+				return;
+			}
+
+			var target = ctrl.Game.Entities
+				.OfType<BaseEntity>()
+				.FirstOrDefault(e => e.EntityId == entityId);
+			if (target == null)
+			{
+				await Clients.Caller.SendAsync("Error", "目标不存在");
+				return;
+			}
+
+			btc.Choose(target);
 			await SendStateToBoth(session);
 		}
 		catch (InvalidActionException ex)

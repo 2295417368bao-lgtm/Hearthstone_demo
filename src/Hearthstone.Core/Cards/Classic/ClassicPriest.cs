@@ -115,10 +115,6 @@ public class ClassicPriest : CardPack
 			play: new TakeControl(S.TARGET),
 			target: Target.Required().Minion().Enemy());
 
-		// 复活：召唤一个已死亡的随机友方随从
-		b.Card("BRM_017",
-			play: new Summon(S.CONTROLLER, new Copy(S.Random(S.FRIENDLY_GRAVEYARD + S.MINION))));
-
 		// 暗影形态：替换英雄技能
 		b.Card("EX1_625", play: new Summon(S.CONTROLLER, "EX1_625t"));
 	}

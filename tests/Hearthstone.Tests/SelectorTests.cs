@@ -143,4 +143,50 @@ public class SelectorTests
 		Assert.Equal(2, result.Count); // source (Minion) + m1 (Minion), both friendly
 		Assert.Contains(m1, result);
 	}
+
+	[Fact]
+	public void LeftmostHand_SelectsFirstCard()
+	{
+		var e1 = new MockEntity(1, _player1);
+		var e2 = new MockEntity(2, _player1);
+		var e3 = new MockEntity(3, _player1);
+		_player1.Hand.Clear();
+		_player1.Hand.AddRange(new[] { e1, e2, e3 });
+
+		var result = S.LEFTMOST_HAND.Eval(new List<BaseEntity>(), e1);
+
+		Assert.Single(result);
+		Assert.Equal(e1, result[0]);
+	}
+
+	[Fact]
+	public void RightmostHand_SelectsLastCard()
+	{
+		var e1 = new MockEntity(1, _player1);
+		var e2 = new MockEntity(2, _player1);
+		var e3 = new MockEntity(3, _player1);
+		_player1.Hand.Clear();
+		_player1.Hand.AddRange(new[] { e1, e2, e3 });
+
+		var result = S.RIGHTMOST_HAND.Eval(new List<BaseEntity>(), e1);
+
+		Assert.Single(result);
+		Assert.Equal(e3, result[0]);
+	}
+
+	[Fact]
+	public void SingleCardHand_BothSelectSame()
+	{
+		var e1 = new MockEntity(1, _player1);
+		_player1.Hand.Clear();
+		_player1.Hand.Add(e1);
+
+		var leftResult = S.LEFTMOST_HAND.Eval(new List<BaseEntity>(), e1);
+		var rightResult = S.RIGHTMOST_HAND.Eval(new List<BaseEntity>(), e1);
+
+		Assert.Single(leftResult);
+		Assert.Single(rightResult);
+		Assert.Equal(e1, leftResult[0]);
+		Assert.Equal(e1, rightResult[0]);
+	}
 }

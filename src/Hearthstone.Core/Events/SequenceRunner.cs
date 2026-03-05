@@ -192,8 +192,33 @@ public class SequenceRunner
 
 			if (actions.Length > 0)
 			{
-				// ★ ActionBlock(Power) — 产生 POWER Block
-				_game.ActionBlock(minion, actions.ToList(), BlockType.Power, target: target);
+				var targetReq = script?.TargetReq;
+				int targetCount = targetReq?.TargetCount ?? 1;
+
+				if (targetCount > 1 && targetReq != null)
+				{
+					// ★ 多目标战吼：创建 BattlecryTargetChoice 逐一收集目标
+					var battlecryChoice = new BattlecryTargetChoice(
+						minion, targetReq, actions.ToList(), firstTarget: target);
+					battlecryChoice.Begin();
+
+					// 双倍战吼：如果 Player 有 ExtraBattlecries，需要在前端解决
+					// 第一轮后创建第二个 BattlecryTargetChoice（由 BattlecryTargetChoice.ExecuteBattlecry 后续处理）
+					// 注意：双倍战吼的重新选择由前端在解决完第一轮后再次调用 PlayCard/ResolveBattlecry 实现
+				}
+				else
+				{
+					// ★ 单目标战吼（原有路径）
+					_game.ActionBlock(minion, actions.ToList(), BlockType.Power, target: target);
+
+					// 双倍战吼（布莱恩·铜须等）
+					if (player.ExtraBattlecries && minion.HasBattlecry
+						|| player.MinionExtraBattlecries && minion.HasBattlecry
+						|| player.MinionExtraCombos && minion.HasCombo && player.Combo)
+					{
+						_game.ActionBlock(minion, actions.ToList(), BlockType.Power, target: target);
+					}
+				}
 			}
 			_game.RefreshAuras();
 			_game.ProcessDeaths();
