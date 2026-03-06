@@ -61,9 +61,9 @@ public class CoreDeathKnight : CardPack
 			deathrattle: new DrawCard(S.CONTROLLER));
 
 		// 法瑞克 CORE_EDR_003 — 残骸加倍（光环），战吼：抽一张消耗残骸的牌
-		// TODO: 残骸加倍光环
 		b.Card("CORE_EDR_003",
-			battlecry: new DrawCard(S.CONTROLLER));
+			update: new Refresh(S.CONTROLLER, GameTag.ExtraCorpses, 1),
+			battlecry: new DrawCard(S.CONTROLLER, DrawFilter.All().HasTag(GameTag.CorpseSpender)));
 
 		// 死亡侍僧 CORE_RLK_121 — 友方亡灵死亡后抽牌
 		b.Card("CORE_RLK_121",
@@ -185,7 +185,10 @@ public class CoreDeathKnight : CardPack
 				when: And(AttackerIsHero(), DefenderDied())));
 
 		// 霜之哀伤 CORE_RLK_086 — 亡语：召唤被该武器消灭的所有随从
-		// TODO: 记录消灭的随从
-		b.Card("CORE_RLK_086");
+		b.Card("CORE_RLK_086",
+			on: When<AfterAttackEvent>(OWN, AFTER,
+				new RecordWeaponKill(S.EVT_TARGET),
+				when: And(AttackerIsHero(), DefenderDied())),
+			deathrattle: new SummonFromWeaponKills(S.CONTROLLER));
 	}
 }

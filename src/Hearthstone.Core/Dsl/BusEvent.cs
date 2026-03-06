@@ -364,6 +364,9 @@ public class BusEvent
 		if (t == typeof(TurnEndEvent))
 			return TurnPhase.End;
 
+		if (t == typeof(StartOfGameEvent))
+			return timing == TriggerTiming.After ? StartOfGamePhase.After : StartOfGamePhase.On;
+
 		if (t == typeof(DamageEvent) || t == typeof(HealEvent)
 		|| t == typeof(PreDamageEvent)
 		|| t == typeof(DeathEvent) || t == typeof(OverloadEvent)
@@ -419,6 +422,7 @@ public class BusEvent
 		AfterAttackEvent e => e.Attacker.Controller,
 		TurnStartEvent e => e.Player,
 		TurnEndEvent e => e.Player,
+		StartOfGameEvent e => e.Player,
 		DrawCardEvent e => e.Player,
 		HeroPowerUsedEvent e => e.Player,
 		DamageEvent e => (e.Source as BuffableEntity)?.Controller,

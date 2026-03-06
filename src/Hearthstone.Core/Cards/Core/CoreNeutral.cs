@@ -351,8 +351,10 @@ public class CoreNeutral : CardPack
 		b.Card("CORE_EX1_028");
 
 		// 蒸汽清洁器 CORE_REV_946 — 战吼：摧毁双方牌库中非套牌原始的牌
-		// TODO: 复杂效果
-		b.Card("CORE_REV_946");
+		b.Card("CORE_REV_946",
+			battlecry: Acts(
+				new RemoveNonOriginalFromDeck(S.CONTROLLER),
+				new RemoveNonOriginalFromDeck(S.OPPONENT)));
 
 		// ═══ 6 费 ═══
 
@@ -396,12 +398,29 @@ public class CoreNeutral : CardPack
 		});
 
 		// 希亚玛特 CORE_ULD_178 — 战吼：获得两种效果
-		// TODO: 选择效果
-		b.Card("CORE_ULD_178");
+		b.Card("CORE_ULD_178",
+			battlecry: new BeginSiamatChoice());
+		b.Card("ULD_178a", play: new SetTag(S.SELF, GameTag.Windfury, 1));
+		b.Card("ULD_178a2", play: new SetTag(S.SELF, GameTag.DivineShield, 1));
+		b.Card("ULD_178a3", play: new SetTag(S.SELF, GameTag.Taunt, 1));
+		b.Card("ULD_178a4", play: new SetTag(S.SELF, GameTag.Rush, 1));
 
 		// 永恒者诺兹多姆 CS3_035 — 如果双方都有这张牌，每回合 15 秒
-		// TODO: START_OF_GAME
-		b.Card("CS3_035");
+		b.Card("CS3_035",
+			on: WhenDo<StartOfGameEvent>(OWN, ON, (evt, self) =>
+			{
+				var game = self.Game;
+				if (game == null)
+					return;
+
+				bool p1Has = game.Player1.Deck.Any(c => (c as BuffableEntity)?.CardId == "CS3_035");
+				bool p2Has = game.Player2.Deck.Any(c => (c as BuffableEntity)?.CardId == "CS3_035");
+				if (!p1Has || !p2Has)
+					return;
+
+				game.Player1.Timeout = 15;
+				game.Player2.Timeout = 15;
+			}).InDeck());
 
 		// ═══ 8 费 ═══
 

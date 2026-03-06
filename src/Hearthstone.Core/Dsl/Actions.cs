@@ -324,6 +324,127 @@ public class DrawCard : TargetedAction
 	public override string ToString() => $"Draw({Args[0]})";
 }
 
+/// <summary>
+/// 从牌库中移除所有不属于起始套牌的牌。
+/// 按起始套牌中的出现次数进行计数匹配，正确处理重复牌。
+/// </summary>
+public class RemoveNonOriginalFromDeck : TargetedAction
+{
+	public RemoveNonOriginalFromDeck(object target) : base(target) { }
+
+	public override object? Do(BaseEntity source, BaseEntity target, params object[] args)
+	{
+		var player = target as Player ?? (target as BuffableEntity)?.Controller;
+		if (player?.StartingDeck == null)
+			return 0;
+
+		var remaining = new Dictionary<string, int>(StringComparer.Ordinal);
+		foreach (var cardId in player.StartingDeck)
+		{
+			if (remaining.TryGetValue(cardId, out var count))
+				remaining[cardId] = count + 1;
+			else
+				remaining[cardId] = 1;
+		}
+
+		var toRemove = new List<BaseEntity>();
+		foreach (var card in player.Deck)
+		{
+			var cardId = (card as BuffableEntity)?.CardId;
+			if (cardId == null || !remaining.TryGetValue(cardId, out var count) || count <= 0)
+			{
+				toRemove.Add(card);
+				continue;
+			}
+
+			remaining[cardId] = count - 1;
+		}
+
+		foreach (var card in toRemove)
+		{
+			player.Deck.Remove(card);
+			if (card is BuffableEntity be)
+				be.SetZone(Zone.SetAside, player);
+		}
+
+		return toRemove.Count;
+	}
+}
+
+/// <summary>
+/// 启动希亚玛特的两次选项流程。
+/// </summary>
+public class BeginSiamatChoice : GameAction
+{
+	public override void Do(BaseEntity source, params object[] args)
+	{
+		if (source is not BuffableEntity card || card.Controller == null)
+			return;
+
+		var choice = new MultiStepChoice(card.Controller)
+		{
+			Source = card,
+			SourcePlayer = card.Controller,
+			ChooseTimes = 2,
+			MinCount = 1,
+			MaxCount = 1,
+		};
+
+		List<BaseEntity> BuildOptions()
+		{
+			var chosenIds = new HashSet<string>(
+				choice.ChosenCards.OfType<BuffableEntity>().Select(c => c.CardId ?? string.Empty),
+				StringComparer.Ordinal);
+
+			var options = new List<BaseEntity>();
+			foreach (var cardId in new[] { "ULD_178a", "ULD_178a2", "ULD_178a3", "ULD_178a4" })
+			{
+				if (chosenIds.Contains(cardId))
+					continue;
+
+				var option = card.Controller.CreateCard(cardId, Zone.SetAside);
+				if (option == null)
+				{
+					option = new Spell
+					{
+						Controller = card.Controller,
+						CardData = new LoadCardIntoDbf.Card
+						{
+							CardId = cardId,
+							CardType = CardType.Spell,
+							Cost = 0,
+						},
+					};
+					card.Game?.RegisterEntity(option);
+					option.SetZone(Zone.SetAside, card.Controller);
+				}
+				if (option != null)
+					options.Add(option);
+			}
+
+			return options;
+		}
+
+		choice.StepProvider = _ => BuildOptions();
+		choice.CompleteHandler = multiStep =>
+		{
+			if (card.Game == null)
+				return;
+
+			foreach (var chosen in multiStep.ChosenCards.OfType<BuffableEntity>())
+			{
+				var script = CardScriptRegistry.Instance.GetScript(chosen.CardId ?? string.Empty);
+				var actions = script?.Play.ToList();
+				if (actions != null && actions.Count > 0)
+					card.Game.ActionBlock(card, actions, BlockType.Power);
+			}
+		};
+		choice.Cards = BuildOptions();
+
+		card.Controller.Choice = choice;
+	}
+}
+
 // ═══════════════════════════════════════════════════
 // DrawFilter — 流式抽牌过滤器
 // ═══════════════════════════════════════════════════
@@ -343,6 +464,7 @@ public class DrawFilter
 	private CardType? _type;
 	private int? _cost;
 	private Race? _race;
+	private GameTag? _tag;
 	private SpellSchool? _school;
 	private Mechanic? _mechanic;
 
@@ -374,6 +496,9 @@ public class DrawFilter
 	/// <summary>按机制过滤。</summary>
 	public DrawFilter HasMechanic(Mechanic m) { _mechanic = m; return this; }
 
+	/// <summary>按 GameTag 过滤（标签存在且非零）。</summary>
+	public DrawFilter HasTag(GameTag tag) { _tag = tag; return this; }
+
 	// ── 转换 ──
 
 	/// <summary>生成 Func&lt;BaseEntity, bool&gt; 用于 DrawCard 过滤。</summary>
@@ -385,6 +510,7 @@ public class DrawFilter
 		var race = _race;
 		var school = _school;
 		var mechanic = _mechanic;
+		var tag = _tag;
 
 		return e =>
 		{
@@ -397,6 +523,7 @@ public class DrawFilter
 			if (race.HasValue && !data.Races.Contains(race.Value)) return false;
 			if (school.HasValue && data.SpellSchool != school.Value) return false;
 			if (mechanic.HasValue && !data.Has(mechanic.Value)) return false;
+			if (tag.HasValue && !data.HasTag(tag.Value)) return false;
 
 			return true;
 		};

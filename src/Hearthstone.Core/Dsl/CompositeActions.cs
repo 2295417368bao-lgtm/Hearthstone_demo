@@ -669,3 +669,51 @@ public class SpendUpToCorpses : TargetedAction
 		return toSpend;
 	}
 }
+
+// ─── Weapon Kill Tracking ──────────
+
+/// <summary>
+/// 英雄攻击消灭随从时，将防御者 cardId 记录到英雄武器的 KilledMinions 列表。
+/// <code>
+/// When&lt;AfterAttackEvent&gt;(OWN, AFTER, new RecordWeaponKill(S.DEFENDER),
+///     when: And(AttackerIsHero(), DefenderDied()))
+/// </code>
+/// </summary>
+public class RecordWeaponKill : TargetedAction
+{
+	public RecordWeaponKill(object defender) : base(defender) { }
+
+	public override object? Do(BaseEntity source, BaseEntity target, params object[] args)
+	{
+		var weapon = (source as BuffableEntity)?.Controller?.Hero?.EquippedWeapon;
+		if (weapon == null || target is not BuffableEntity be || be.CardId == null) return null;
+		weapon.KilledMinions.Add(be.CardId);
+		Log.Information("Weapon {Weapon} records kill: {CardId}", weapon.CardId, be.CardId);
+		return null;
+	}
+}
+
+/// <summary>
+/// 召唤武器记录的所有被消灭的随从（霜之哀伤亡语）。
+/// <code>deathrattle: new SummonFromWeaponKills(S.CONTROLLER)</code>
+/// </summary>
+public class SummonFromWeaponKills : TargetedAction
+{
+	public SummonFromWeaponKills(object target) : base(target) { }
+
+	public override object? Do(BaseEntity source, BaseEntity target, params object[] args)
+	{
+		if (source is not Weapon weapon) return null;
+		var player = target is Player p ? p : (target as BuffableEntity)?.Controller;
+		if (player == null) return null;
+
+		foreach (var cardId in weapon.KilledMinions)
+		{
+			var summoned = player.CreateCard(cardId, Zone.Invalid);
+			if (summoned != null) player.Summon(summoned);
+		}
+		Log.Information("Weapon {Weapon} deathrattle: summoned {Count} minion(s)",
+			weapon.CardId, weapon.KilledMinions.Count);
+		return null;
+	}
+}

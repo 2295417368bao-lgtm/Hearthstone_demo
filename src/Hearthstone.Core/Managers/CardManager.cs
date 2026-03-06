@@ -130,6 +130,7 @@ public class CardManager : Manager
 		[GameTag.DamagedThisTurn] = "damaged_this_turn",
 		[GameTag.ActivationsThisTurn] = "activations_this_turn",
 		[GameTag.CostBlood] = "cost_blood",
+		[GameTag.ExtraCorpses] = "extra_corpses",
 
 		// ── CardText Entity 映射 ──
 		[GameTag.CardtextEntity0] = "cardtext_entity_0",

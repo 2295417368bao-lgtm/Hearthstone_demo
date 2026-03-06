@@ -19,6 +19,9 @@ public class Weapon : BuffableEntity, IDestroyable
 		Type = CardType.Weapon;
 	}
 
+	/// <summary>被该武器消灭的随从 cardId 列表（霜之哀伤用）。</summary>
+	public List<string> KilledMinions { get; } = new();
+
 	/// <summary>Weapon attack power (added to hero's attack).</summary>
 	public int Atk
 	{

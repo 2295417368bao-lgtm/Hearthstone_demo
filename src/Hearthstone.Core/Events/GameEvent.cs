@@ -2,105 +2,87 @@ using HearthstoneServer.Entities;
 
 namespace HearthstoneServer.Events;
 
-// ═══════════════════════════════════════════════════
-// GameEvent — 不可变事件数据包
-// 描述"发生了什么"，由 EventBus 分发
-// ═══════════════════════════════════════════════════
-
 /// <summary>
-/// Base class for all game events. Immutable data describing what happened.
+/// 所有游戏事件的基类。
+/// 事件对象只描述“发生了什么”，由 EventBus 负责分发。
 /// </summary>
 public abstract record GameEvent(BaseEntity Source);
 
-// ── 卡牌打出 ──
-
-/// <summary>Fires whenever any card is played from hand.</summary>
+/// <summary>任意卡牌从手牌打出时触发。</summary>
 public record CardPlayedEvent(BaseEntity Source, BuffableEntity Card, Character? Target) : GameEvent(Source);
 
-/// <summary>Fires whenever a spell is cast.</summary>
+/// <summary>法术施放时触发。</summary>
 public record SpellCastEvent(BaseEntity Source, BuffableEntity Spell, Character? Target) : GameEvent(Source);
 
-/// <summary>Fires whenever a minion is played from hand.</summary>
+/// <summary>随从从手牌打出时触发。</summary>
 public record MinionPlayedEvent(BaseEntity Source, Minion Minion, Character? Target) : GameEvent(Source);
 
-// ── 召唤 ──
-
-/// <summary>Fires whenever a minion enters the battlefield (played or summoned).</summary>
+/// <summary>随从进入战场时触发（包括打出和召唤）。</summary>
 public record MinionSummonedEvent(BaseEntity Source, Minion Minion) : GameEvent(Source);
 
-// ── 战斗 ──
-
-/// <summary>Fires when an attack is proposed (can redirect defender).</summary>
+/// <summary>宣告攻击时触发，可用于重定向目标。</summary>
 public record ProposedAttackEvent(BaseEntity Source, Character Attacker, Character Defender) : GameEvent(Source);
 
-/// <summary>Fires when an attack begins (after redirects).</summary>
+/// <summary>攻击正式开始时触发。</summary>
 public record AttackEvent(BaseEntity Source, Character Attacker, Character Defender) : GameEvent(Source);
 
-/// <summary>Fires after attack damage is dealt.</summary>
+/// <summary>攻击伤害结算后触发。</summary>
 public record AfterAttackEvent(BaseEntity Source, Character Attacker, Character Defender) : GameEvent(Source);
 
-// ── 伤害/治疗 ──
-
 /// <summary>
-/// Fires BEFORE damage is applied to a character. Mutable — handlers can set
-/// <see cref="Redirected"/> to prevent the damage from being applied.
-/// Used for damage redirection effects (e.g. Bulwark of Azzinoth).
+/// 伤害应用前触发。
+/// 处理器可以设置 Redirected 来阻止本次伤害命中原目标。
 /// </summary>
 public record PreDamageEvent(BaseEntity Source, Character Target, int Amount) : GameEvent(Source)
 {
-	/// <summary>If set to true by a handler, the damage is NOT applied to the original target.</summary>
+	/// <summary>若为 true，则原始目标不会承受这次伤害。</summary>
 	public bool Redirected { get; set; }
 }
 
-/// <summary>Fires when damage is dealt to a character.</summary>
+/// <summary>角色受到伤害时触发。</summary>
 public record DamageEvent(BaseEntity Source, Character Target, int Amount) : GameEvent(Source);
 
-/// <summary>Fires when a character is healed.</summary>
+/// <summary>角色受到治疗时触发。</summary>
 public record HealEvent(BaseEntity Source, Character Target, int Amount) : GameEvent(Source);
 
-// ── 死亡 ──
-
-/// <summary>Fires when an entity dies.</summary>
+/// <summary>实体死亡时触发。</summary>
 public record DeathEvent(BaseEntity Source, BaseEntity Dead) : GameEvent(Source);
 
-// ── 回合 ──
-
-/// <summary>Fires at the start of a player's turn.</summary>
+/// <summary>玩家回合开始时触发。</summary>
 public record TurnStartEvent(BaseEntity Source, Player Player) : GameEvent(Source);
 
-/// <summary>Fires at the end of a player's turn.</summary>
+/// <summary>玩家回合结束时触发。</summary>
 public record TurnEndEvent(BaseEntity Source, Player Player) : GameEvent(Source);
 
-// ── 其他 ──
+/// <summary>对战开始流程中，针对某个玩家发布的开局事件。</summary>
+public record StartOfGameEvent(BaseEntity Source, Player Player) : GameEvent(Source);
 
-/// <summary>Fires when a secret is played.</summary>
+/// <summary>奥秘被打出时触发。</summary>
 public record SecretPlayedEvent(BaseEntity Source, BuffableEntity Secret) : GameEvent(Source);
 
-/// <summary>Fires when a card is drawn.</summary>
+/// <summary>抽牌时触发。</summary>
 public record DrawCardEvent(BaseEntity Source, Player Player, BaseEntity? Card) : GameEvent(Source);
 
-/// <summary>Fires when a hero power is used.</summary>
+/// <summary>英雄技能使用时触发。</summary>
 public record HeroPowerUsedEvent(BaseEntity Source, Player Player) : GameEvent(Source);
 
-/// <summary>Fires when overload is applied.</summary>
+/// <summary>应用过载时触发。</summary>
 public record OverloadEvent(BaseEntity Source, Player Player, int Amount) : GameEvent(Source);
 
-/// <summary>Fires when a secret is revealed.</summary>
+/// <summary>奥秘揭示时触发。</summary>
 public record RevealSecretEvent(BaseEntity Source, BuffableEntity Secret) : GameEvent(Source);
 
-/// <summary>Fires when a hero gains armor.</summary>
+/// <summary>英雄获得护甲时触发。</summary>
 public record GainArmorEvent(BaseEntity Source, Player Player, int Amount) : GameEvent(Source);
 
 /// <summary>
-/// Fires when a drawn card is burned because the hand is full.
-/// The card goes to the graveyard without entering the hand.
+/// 手牌已满导致抽到的牌被烧毁时触发。
+/// 这张牌不会进入手牌，而是直接进入墓地。
 /// </summary>
 public record MillEvent(BaseEntity Source, Player Player, BaseEntity Card) : GameEvent(Source);
 
 /// <summary>
-/// Fires when a card is discarded from hand (NOT from deck).
-/// Mill from deck = destruction, not discard.
-/// Death on battlefield = death, not discard.
-/// Discarded cards are tracked for discard-synergy effects.
+/// 手牌中的牌被弃掉时触发。
+/// 牌库被烧牌不算弃牌，战场实体死亡也不算弃牌。
 /// </summary>
 public record DiscardEvent(BaseEntity Source, Player Player, BuffableEntity Card) : GameEvent(Source);

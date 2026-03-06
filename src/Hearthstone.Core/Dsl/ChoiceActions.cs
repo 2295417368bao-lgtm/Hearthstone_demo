@@ -529,6 +529,9 @@ public class MultiStepChoice : Choice
 	/// <summary>Callback to populate cards for each step.</summary>
 	public Func<int, List<BaseEntity>>? StepProvider { get; set; }
 
+	/// <summary>全部选择完成后的回调。</summary>
+	public System.Action<MultiStepChoice>? CompleteHandler { get; set; }
+
 	public MultiStepChoice(object target) : base(target) { }
 
 	public override object? Do(BaseEntity source, BaseEntity target, params object[] args)
@@ -581,6 +584,7 @@ public class MultiStepChoice : Choice
 	/// <summary>Called when all steps are complete. Override for custom behavior.</summary>
 	protected virtual void OnComplete()
 	{
+		CompleteHandler?.Invoke(this);
 		_log.Information("MultipleChoice complete: {Count} cards chosen", ChosenCards.Count);
 	}
 }
@@ -594,6 +598,10 @@ public class MultiStepChoice : Choice
 /// <para>流程：SequenceRunner 创建此实例 → 设置 Player.Choice →
 /// 前端逐个 Choose(target) → 全部选完后自动执行战吼。</para>
 /// <para>双倍战吼时，SequenceRunner 创建新的实例重新选择目标。</para>
+/// </summary>
+/// <summary>
+/// 希亚玛特专用的两次选择流程。
+/// 每次从剩余选项中选择 1 个效果，最终将两个效果应用到原始随从上。
 /// </summary>
 public class BattlecryTargetChoice : Choice
 {

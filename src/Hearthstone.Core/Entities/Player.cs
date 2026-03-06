@@ -218,6 +218,9 @@ public class Player : BuffableEntity
 	/// <summary>整局游戏消耗的残骸总数。</summary>
 	public int CorpsesSpentThisGame { get; set; }
 
+	/// <summary>残骸获取加倍（法瑞克光环）。</summary>
+	public bool ExtraCorpses { get; set; }
+
 	/// <summary>
 	/// 消耗指定数量的残骸。返回实际消耗数量（不足时返回 0，不消耗）。
 	/// </summary>
@@ -232,6 +235,7 @@ public class Player : BuffableEntity
 	/// <summary>获得指定数量的残骸。</summary>
 	public void GainCorpses(int count)
 	{
+		if (ExtraCorpses) count *= 2;
 		Corpses += count;
 	}
 

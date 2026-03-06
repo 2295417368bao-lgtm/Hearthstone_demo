@@ -1196,6 +1196,7 @@ public enum GameTag : int
 	CastOnFriendlyCharacters = 10021,
 	CustomCardtext = 10022,
 	ActivationsThisTurn = 10023,
+	ExtraCorpses = 10024,
 }
 
 public enum BlockType : int

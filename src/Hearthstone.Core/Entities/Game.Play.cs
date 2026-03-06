@@ -337,8 +337,24 @@ public partial class Game
 	public void Initialize()
 	{
 		Setup();
+		RunStartOfGameEffects();
 		InitialDraw();
 		GiveCoin(Player2);
+	}
+
+	private void RunStartOfGameEffects()
+	{
+		EventBus.Publish(new StartOfGameEvent(this, Player1), StartOfGamePhase.On);
+		EventBus.Publish(new StartOfGameEvent(this, Player2), StartOfGamePhase.On);
+
+		RefreshAuras();
+		ProcessDeaths();
+
+		EventBus.Publish(new StartOfGameEvent(this, Player1), StartOfGamePhase.After);
+		EventBus.Publish(new StartOfGameEvent(this, Player2), StartOfGamePhase.After);
+
+		RefreshAuras();
+		ProcessDeaths();
 	}
 
 	/// <summary>
