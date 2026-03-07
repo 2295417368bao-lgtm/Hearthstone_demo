@@ -1,6 +1,8 @@
 using HearthstoneServer.Auras;
 using HearthstoneServer.Events;
 using static HearthstoneServer.Dsl.BusEvent;
+using static HearthstoneServer.Dsl.EventFilters;
+using static HearthstoneServer.Dsl.LazyNum;
 
 using static HearthstoneServer.Cards.CardScriptUtils;
 using HearthstoneServer.Targeting;
@@ -242,5 +244,102 @@ public class ClassicNeutral : CardPack
 		// 攻城车：回合开始时对一个随机敌方角色造成 2 点伤害
 		b.Card("EX1_102",
 			on: When<TurnStartEvent>(OWN, ON, new DealDamage(S.RANDOM_ENEMY_CHARACTER, 2)));
+		// 数据库补齐：当前仅依赖卡牌数据或后续脚本实现。
+		b.Card("CS1_069"); // 沼泽爬行者
+		b.Card("CS2_117"); // 大地之环先知
+		b.Card("CS2_146"); // 南海船工
+		b.Card("CS2_151"); // 白银之手骑士
+		b.Card("CS2_161"); // 拉文霍德刺客
+		b.Card("CS2_169"); // 幼龙鹰
+		b.Card("CS2_203"); // 铁喙猫头鹰
+		b.Card("CS2_221"); // 恶毒铁匠
+		b.Card("CS2_227"); // 风险投资公司雇佣兵
+		b.Card("CS2_231"); // 小精灵
+		b.Card("EX1_001"); // 圣光护卫者
+		b.Card("EX1_004"); // 年轻的女祭司
+		b.Card("EX1_006"); // 报警机器人
+		b.Card("EX1_008"); // 银色侍从
+		b.Card("EX1_009"); // 愤怒的小鸡
+		b.Card("EX1_010"); // 狼人渗透者
+		b.Card("EX1_014",
+			battlecry: new AddToHand(S.OPPONENT, "EX1_014t") * 2);
+		b.Card("EX1_017"); // 丛林猎豹
+		b.Card("EX1_020"); // 血色十字军战士
+		b.Card("EX1_021"); // 萨尔玛先知
+		b.Card("EX1_023"); // 银月城卫兵
+		b.Card("EX1_028"); // 荆棘谷猛虎
+		b.Card("EX1_032"); // 烈日行者
+		b.Card("EX1_033"); // 风怒鹰身人
+		b.Card("EX1_043",
+			battlecry: new Enchant(S.SELF, "EX1_043e"));
+		b.Buff("EX1_043e", health: HAND_COUNT);
+		b.Card("EX1_045"); // 上古看守者
+		b.Card("EX1_046"); // 黑铁矮人
+		b.Card("EX1_049",
+			battlecry: new ReturnToHand(S.TARGET),
+			target: Target.IfAvailable().Minion().Friendly());
+		b.Card("EX1_055"); // 魔瘾者
+		b.Card("EX1_057"); // 年迈的酒仙
+		b.Card("EX1_067"); // 银色指挥官
+		b.Card("EX1_076"); // 小个子召唤师
+		b.Card("EX1_080"); // 奥秘守护者
+		b.Card("EX1_082",
+			battlecry: new DealDamage(S.RANDOM_OTHER_CHARACTER, 1) * 3);
+		b.Card("EX1_083"); // 工匠大师欧沃斯巴克
+		b.Card("EX1_085"); // 精神控制技师
+		b.Card("EX1_089"); // 奥术傀儡
+		b.Card("EX1_100",
+			on: new[]
+			{
+				When<SpellCastEvent>(OWN, AFTER, new AddToHand(S.OPPONENT, S.EVT_SOURCE)),
+				When<SpellCastEvent>(ENEMY, AFTER, new AddToHand(S.CONTROLLER, S.EVT_SOURCE))
+			});
+		b.Card("EX1_103",
+			battlecry: new Enchant(S.FRIENDLY_MINIONS + S.MURLOC - S.SELF, "EX1_103e"));
+		b.Buff("EX1_103e", health: 2);
+		b.Card("EX1_105"); // 山岭巨人
+		b.Card("EX1_116"); // 火车王里诺艾
+		b.Card("EX1_170"); // 帝王眼镜蛇
+		b.Card("EX1_283"); // 冰霜元素
+		b.Card("EX1_390"); // 牛头人战士
+		b.Card("EX1_396"); // 魔古山守望者
+		b.Card("EX1_405"); // 持盾卫士
+		b.Card("EX1_412"); // 暴怒的狼人
+		b.Card("EX1_509",
+			on: When<MinionSummonedEvent>(OWN, ON, new Enchant(S.SELF, "EX1_509e"),
+				when: SummonedRace(Race.Murloc)));
+		b.Buff("EX1_509e", atk: 1);
+		b.Card("EX1_557"); // 纳特·帕格
+		b.Card("EX1_560"); // 诺兹多姆
+		b.Card("EX1_562"); // 奥妮克希亚
+		b.Card("EX1_563"); // 玛里苟斯
+		b.Card("EX1_577"); // 比斯巨兽
+		b.Card("EX1_583"); // 艾露恩的女祭司
+		b.Card("EX1_584"); // 年迈的法师
+		b.Card("EX1_586"); // 海巨人
+		b.Card("EX1_590"); // 血骑士
+		b.Card("EX1_595"); // 诅咒教派领袖
+		b.Card("EX1_597"); // 小鬼召唤师
+		b.Card("EX1_614"); // 萨维斯
+		b.Card("EX1_616"); // 法力怨魂
+		b.Card("EX1_620"); // 熔核巨人
+		b.Card("GIFT_01"); // 哈斯·石酒
+		b.Card("NEW1_017"); // 鱼人杀手蟹
+		b.Card("NEW1_018",
+			battlecry: new Enchant(S.SELF, "NEW1_018e"));
+		b.Buff("NEW1_018e", atk: WEAPON_ATK);
+		b.Card("NEW1_021",
+			on: When<TurnStartEvent>(OWN, ON, new Destroy(S.ALL_MINIONS)));
+		b.Card("NEW1_022",
+			costMod: WEAPON_ATK);
+		b.Card("NEW1_023"); // 精灵龙
+		b.Card("NEW1_024"); // 绿皮船长
+		b.Card("NEW1_025"); // 血帆海盗
+		b.Card("NEW1_026"); // 紫罗兰教师
+		b.Card("NEW1_029"); // 米尔豪斯·法力风暴
+		b.Card("NEW1_037"); // 铸剑师
+		b.Card("NEW1_038"); // 格鲁尔
+		b.Card("NEW1_040"); // 霍格
+		b.Card("tt_004"); // 腐肉食尸鬼
 	}
 }

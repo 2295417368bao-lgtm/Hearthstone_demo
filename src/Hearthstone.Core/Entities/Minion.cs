@@ -299,8 +299,11 @@ public class Minion : Character, IDestroyable
 		// 残骸系统
 		Controller?.GainCorpses(1);
 
-		// Publish DeathEvent
-		game.EventBus.Publish(new Events.DeathEvent(this, this), Events.MiscPhase.On);
+		// Publish DeathEvent：Source 表示真正 cause，Dead 表示死亡实体本身
+		var deathCause = PendingDeathCause ?? LastDamageSource ?? this;
+		game.EventBus.Publish(new Events.DeathEvent(deathCause, this), Events.MiscPhase.On);
+		PendingDeathCause = null;
+		LastDamageSource = null;
 
 		// 触发亡语脚本
 		var script = game.ScriptRegistry.GetScript(CardId ?? "");

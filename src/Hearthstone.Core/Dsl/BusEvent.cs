@@ -3,44 +3,33 @@ using HearthstoneServer.Events;
 
 namespace HearthstoneServer.Dsl;
 
-// ═══════════════════════════════════════════════════
-// BusEvent — 声明式 EventBus 触发器描述符
-// ═══════════════════════════════════════════════════
-//
-// 用法：using static HearthstoneServer.Dsl.BusEvent;
-//
-//   b.Card("NEW1_012", on: When<SpellCastEvent>(OWN, AFTER, new Enchant(S.SELF, "o")));
-//   b.Card("EX1_287", on: When<SpellCastEvent>(ENEMY, ON, handler).Once());
-//
-
-// ── 枚举 ──
-
 /// <summary>触发器所有权过滤。</summary>
 public enum TriggerOwner
 {
-	/// <summary>己方（事件发起者 == 我的控制者）</summary>
+	/// <summary>己方。</summary>
 	Own,
-	/// <summary>对手（事件发起者 != 我的控制者）</summary>
+	/// <summary>敌方。</summary>
 	Enemy,
-	/// <summary>自身（我是事件的主体/目标）</summary>
+	/// <summary>自身作为事件主体。</summary>
 	Self,
-	/// <summary>任意（不过滤）</summary>
+	/// <summary>不限制所有权。</summary>
 	Any,
 }
 
 /// <summary>触发时机。</summary>
 public enum TriggerTiming
 {
-	/// <summary>事件发生时（On Play Phase 等）</summary>
+	/// <summary>事件前，可用于拦截。</summary>
+	Before,
+	/// <summary>事件进行中。</summary>
 	On,
-	/// <summary>事件发生后（After Spell Phase 等）</summary>
+	/// <summary>事件完成后。</summary>
 	After,
 }
 
-// ── 描述符 ──
-
 /// <summary>
-/// 声明式 EventBus 触发器。由 CardBuilder 转化为 OnActivate 回调。
+/// 声明式 EventBus 触发器描述符。
+/// 由 CardBuilder 在 OnActivate 时注册到 EventBus。
 /// </summary>
 public class BusEvent
 {
@@ -55,13 +44,12 @@ public class BusEvent
 		_zones = zones;
 	}
 
-
-	/// <summary>标记为一次性（奥秘用）。</summary>
+	/// <summary>仅触发一次，常用于奥秘。</summary>
 	public BusEvent Once() => new(_register, true, _zones);
 
 	/// <summary>
-	/// 包装为奥秘触发：动作执行前自动 RevealSecret + 自动 Once()。
-	/// 在 Activate 时设置 "__secret__" 标志，BindAndRun 检查此标志自动注入 RevealSecret。
+	/// 包装为奥秘触发。
+	/// 激活时会先打上 secret 标记，真正触发时由 BindAndRun 自动 Reveal。
 	/// </summary>
 	public BusEvent WrapSecret()
 	{
@@ -73,53 +61,35 @@ public class BusEvent
 		}, true, _zones);
 	}
 
-	// ── 区域声明 ──
-
 	/// <summary>仅在手牌中触发。</summary>
 	public BusEvent InHand() => new(_register, _once, new[] { Zone.Hand });
-
 	/// <summary>仅在牌库中触发。</summary>
 	public BusEvent InDeck() => new(_register, _once, new[] { Zone.Deck });
-
-	/// <summary>仅在场上触发（默认行为的显式版本）。</summary>
+	/// <summary>仅在场上触发。</summary>
 	public BusEvent InPlay() => new(_register, _once, new[] { Zone.Play });
-
 	/// <summary>在手牌或场上触发。</summary>
 	public BusEvent InHandOrPlay() => new(_register, _once, new[] { Zone.Hand, Zone.Play });
-
 	/// <summary>在手牌或牌库中触发。</summary>
 	public BusEvent InHandOrDeck() => new(_register, _once, new[] { Zone.Hand, Zone.Deck });
-
-	/// <summary>自定义区域列表。</summary>
+	/// <summary>自定义可触发区域。</summary>
 	public BusEvent InZone(params Zone[] zones) => new(_register, _once, zones);
 
-	/// <summary>在卡牌入场时注册订阅。</summary>
+	/// <summary>在实体激活时完成事件订阅注册。</summary>
 	internal void Activate(BuffableEntity entity, Game game)
 		=> _register(entity, game.EventBus, _once, _zones);
 
-	/// <summary>隐式转换：单个 BusEvent → BusEvent[]。</summary>
 	public static implicit operator BusEvent[](BusEvent single) => new[] { single };
-
-	// ═══════════════════════════════════════════════
-	// 常量 — using static HearthstoneServer.Dsl.BusEvent;
-	// ═══════════════════════════════════════════════
 
 	public const TriggerOwner OWN = TriggerOwner.Own;
 	public const TriggerOwner ENEMY = TriggerOwner.Enemy;
 	public const TriggerOwner SELF_TRIGGER = TriggerOwner.Self;
 	public const TriggerOwner ANY = TriggerOwner.Any;
 
+	public const TriggerTiming BEFORE = TriggerTiming.Before;
 	public const TriggerTiming ON = TriggerTiming.On;
 	public const TriggerTiming AFTER = TriggerTiming.After;
 
-	// ═══════════════════════════════════════════════
-	// When<T> — 3 种重载
-	// ═══════════════════════════════════════════════
-
-	/// <summary>
-	/// 模式 1：简单动作列表。
-	/// <code>When&lt;SpellCastEvent&gt;(OWN, AFTER, new Enchant(S.SELF, "o"))</code>
-	/// </summary>
+	/// <summary>简单动作列表版本。</summary>
 	public static BusEvent When<TEvent>(
 		TriggerOwner owner, TriggerTiming timing, params TargetedAction[] actions)
 		where TEvent : GameEvent
@@ -130,16 +100,17 @@ public class BusEvent
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner),
-				evt => BindAndRun(evt, self, () => { foreach (var a in actions) a.Trigger(self); }),
+				evt => BindAndRun(evt, self, phase, () =>
+				{
+					foreach (var action in actions)
+						action.Trigger(self);
+				}),
 				once,
 				zones);
 		});
 	}
 
-	/// <summary>
-	/// 模式 1b：单个 GameAction（无需 target selector 的动作）。
-	/// <code>When&lt;TurnStartEvent&gt;(OWN, ON, new MimironTransform())</code>
-	/// </summary>
+	/// <summary>单个 GameAction 版本。</summary>
 	public static BusEvent When<TEvent>(
 		TriggerOwner owner, TriggerTiming timing, GameAction action)
 		where TEvent : GameEvent
@@ -150,16 +121,13 @@ public class BusEvent
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner),
-				evt => BindAndRun(evt, self, () => action.Trigger(self)),
+				evt => BindAndRun(evt, self, phase, () => action.Trigger(self)),
 				once,
 				zones);
 		});
 	}
 
-	/// <summary>
-	/// 模式 1c：单个 GameAction + Func 额外条件。
-	/// <code>When&lt;AfterAttackEvent&gt;(OWN, AFTER, new ForceAttack(...), when: AttackerIsHero())</code>
-	/// </summary>
+	/// <summary>单个 GameAction + 额外条件。</summary>
 	public static BusEvent When<TEvent>(
 		TriggerOwner owner, TriggerTiming timing, GameAction action,
 		Func<TEvent, BuffableEntity, bool> when)
@@ -171,16 +139,39 @@ public class BusEvent
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner) && when(evt, self),
-				evt => BindAndRun(evt, self, () => action.Trigger(self)),
+				evt => BindAndRun(evt, self, phase, () => action.Trigger(self)),
 				once,
 				zones);
 		});
 	}
 
-	/// <summary>
-	/// 模式 2：自定义 handler 回调（复杂逻辑）。
-	/// <code>When&lt;SpellCastEvent&gt;(ENEMY, ON, (evt, self) =&gt; { ... })</code>
-	/// </summary>
+	/// <summary>支持 Action[] 的声明式版本。</summary>
+	public static BusEvent When<TEvent>(
+		TriggerOwner owner, TriggerTiming timing,
+		Dsl.Action[] actions,
+		Func<TEvent, BuffableEntity, bool>? when = null)
+		where TEvent : GameEvent
+	{
+		var phase = ResolvePhase<TEvent>(timing);
+		return new BusEvent((self, bus, once, zones) =>
+		{
+			bus.Subscribe<TEvent>(
+				self, phase,
+				evt => OwnerMatches(evt, self, owner) && (when?.Invoke(evt, self) ?? true),
+				evt => BindAndRun(evt, self, phase, () =>
+				{
+					foreach (var action in actions)
+					{
+						if (action is TargetedAction targeted) targeted.Trigger(self);
+						else if (action is GameAction gameAction) gameAction.Trigger(self);
+					}
+				}),
+				once,
+				zones);
+		});
+	}
+
+	/// <summary>复杂逻辑回调版本。</summary>
 	public static BusEvent WhenDo<TEvent>(
 		TriggerOwner owner, TriggerTiming timing,
 		System.Action<TEvent, BuffableEntity> handler)
@@ -192,16 +183,13 @@ public class BusEvent
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner),
-				evt => BindAndRun(evt, self, () => handler(evt, self)),
+				evt => BindAndRun(evt, self, phase, () => handler(evt, self)),
 				once,
 				zones);
 		});
 	}
 
-	/// <summary>
-	/// 模式 3：动作列表 + 额外条件（Func）。
-	/// <code>When&lt;TurnEndEvent&gt;(OWN, ON, actions, when: (evt, self) =&gt; hasSecret)</code>
-	/// </summary>
+	/// <summary>TargetedAction[] + Func 条件。</summary>
 	public static BusEvent When<TEvent>(
 		TriggerOwner owner, TriggerTiming timing,
 		TargetedAction[] actions,
@@ -214,16 +202,17 @@ public class BusEvent
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner) && when(evt, self),
-				evt => BindAndRun(evt, self, () => { foreach (var a in actions) a.Trigger(self); }),
+				evt => BindAndRun(evt, self, phase, () =>
+				{
+					foreach (var action in actions)
+						action.Trigger(self);
+				}),
 				once,
 				zones);
 		});
 	}
 
-	/// <summary>
-	/// 模式 4a：动作列表 + Evaluator 条件。
-	/// <code>When&lt;TurnEndEvent&gt;(OWN, ON, actions, when: new Find(S.FRIENDLY_SECRETS))</code>
-	/// </summary>
+	/// <summary>TargetedAction[] + Evaluator 条件。</summary>
 	public static BusEvent When<TEvent>(
 		TriggerOwner owner, TriggerTiming timing,
 		TargetedAction[] actions,
@@ -236,16 +225,17 @@ public class BusEvent
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner) && when.Check(self),
-				evt => BindAndRun(evt, self, () => { foreach (var a in actions) a.Trigger(self); }),
+				evt => BindAndRun(evt, self, phase, () =>
+				{
+					foreach (var action in actions)
+						action.Trigger(self);
+				}),
 				once,
 				zones);
 		});
 	}
 
-	/// <summary>
-	/// 模式 4b：单动作 + Evaluator 条件。
-	/// <code>When&lt;TurnEndEvent&gt;(OWN, ON, new Destroy(S.SELF), when: Not(new Find(...)))</code>
-	/// </summary>
+	/// <summary>单个 TargetedAction + Evaluator 条件。</summary>
 	public static BusEvent When<TEvent>(
 		TriggerOwner owner, TriggerTiming timing,
 		TargetedAction action,
@@ -258,16 +248,13 @@ public class BusEvent
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner) && when.Check(self),
-				evt => BindAndRun(evt, self, () => action.Trigger(self)),
+				evt => BindAndRun(evt, self, phase, () => action.Trigger(self)),
 				once,
 				zones);
 		});
 	}
 
-	/// <summary>
-	/// 模式 3b：单动作 + Func 额外条件。
-	/// <code>When&lt;DamageEvent&gt;(OWN, ON, new GainArmor(...), when: (evt, self) =&gt; evt.Target is Minion)</code>
-	/// </summary>
+	/// <summary>单个 TargetedAction + Func 条件。</summary>
 	public static BusEvent When<TEvent>(
 		TriggerOwner owner, TriggerTiming timing,
 		TargetedAction action,
@@ -280,28 +267,34 @@ public class BusEvent
 			bus.Subscribe<TEvent>(
 				self, phase,
 				evt => OwnerMatches(evt, self, owner) && when(evt, self),
-				evt => BindAndRun(evt, self, () => action.Trigger(self)),
+				evt => BindAndRun(evt, self, phase, () => action.Trigger(self)),
 				once,
 				zones);
 		});
 	}
 
-	// ═══════════════════════════════════════════════
-	// 事件上下文绑定
-	// ═══════════════════════════════════════════════
-
 	/// <summary>
-	/// 在调用 action 前绑定事件上下文，调用后清除。
-	/// 使 S.EVT_SOURCE / S.EVT_TARGET 在 action 内可用。
-	/// 若实体标记了 "__secret__"，则自动先调用 RevealSecret。
+	/// 绑定事件上下文，供 S.EVT_SOURCE / S.EVT_TARGET / EVT_AMOUNT 等 DSL 读取。
+	/// 触发完成后会清理绑定状态。
 	/// </summary>
-	private static void BindAndRun<TEvent>(TEvent evt, BuffableEntity self, System.Action run)
+	private static void BindAndRun<TEvent>(TEvent evt, BuffableEntity self, object phase, System.Action run)
 		where TEvent : GameEvent
 	{
 		self.EventSource = GetEventSource(evt);
 		self.EventTarget = GetSubject(evt);
-		if (evt is PreDamageEvent pde)
-			self.ActivePreDamageEvent = pde;
+		self.EventAmount = GetEventAmount(evt);
+		if (evt is PreDamageEvent preDamageEvent)
+			self.ActivePreDamageEvent = preDamageEvent;
+		if (evt is WeaponEquipEvent weaponEquipEvent)
+		{
+			self.ActiveWeaponEquipEvent = weaponEquipEvent;
+			self.ActiveWeaponPhase = phase is WeaponPhase weaponPhase ? weaponPhase : null;
+		}
+		if (evt is WeaponDurabilityLossEvent durabilityLossEvent)
+		{
+			self.ActiveWeaponDurabilityLossEvent = durabilityLossEvent;
+			self.ActiveWeaponDurabilityLossPhase = phase is WeaponDurabilityLossPhase durabilityLossPhase ? durabilityLossPhase : null;
+		}
 		try
 		{
 			if (self.GetBoolProperty("__secret__"))
@@ -312,11 +305,16 @@ public class BusEvent
 		{
 			self.EventSource = null;
 			self.EventTarget = null;
+			self.EventAmount = null;
 			self.ActivePreDamageEvent = null;
+			self.ActiveWeaponEquipEvent = null;
+			self.ActiveWeaponPhase = null;
+			self.ActiveWeaponDurabilityLossEvent = null;
+			self.ActiveWeaponDurabilityLossPhase = null;
 		}
 	}
 
-	/// <summary>事件的发起实体（攻击者、法术、打出的随从等）。</summary>
+	/// <summary>事件来源实体。</summary>
 	private static BaseEntity? GetEventSource(GameEvent evt) => evt switch
 	{
 		SpellCastEvent e => e.Spell,
@@ -326,82 +324,113 @@ public class BusEvent
 		AttackEvent e => e.Attacker,
 		ProposedAttackEvent e => e.Attacker,
 		AfterAttackEvent e => e.Attacker,
-		DamageEvent e => e.Source,
-		PreDamageEvent e => e.Source,
-		HealEvent e => e.Source,
-		DeathEvent e => e.Dead,
-		DrawCardEvent e => e.Card,
 		RevealSecretEvent e => e.Secret,
 		_ => evt.Source,
 	};
 
-	// ═══════════════════════════════════════════════
-	// 阶段自动推断
-	// ═══════════════════════════════════════════════
+	/// <summary>事件主数值。</summary>
+	private static int? GetEventAmount(GameEvent evt) => evt switch
+	{
+		DamageEvent e => e.Amount,
+		PreDamageEvent e => e.Amount,
+		HealEvent e => e.Amount,
+		OverhealEvent e => e.Amount,
+		GainArmorEvent e => e.Amount,
+		OverloadEvent e => e.Amount,
+		WeaponDurabilityLossEvent e => e.Amount,
+		_ => null,
+	};
 
+	/// <summary>根据事件类型和触发时机推导默认 phase。</summary>
 	private static object ResolvePhase<TEvent>(TriggerTiming timing) where TEvent : GameEvent
 	{
-		var t = typeof(TEvent);
+		var eventType = typeof(TEvent);
 
-		if (t == typeof(SpellCastEvent) || t == typeof(CardPlayedEvent))
+		if (eventType == typeof(WeaponEquipEvent))
+		{
+			return timing switch
+			{
+				TriggerTiming.Before => WeaponPhase.BeforeEquip,
+				TriggerTiming.On => WeaponPhase.OnEquip,
+				TriggerTiming.After => WeaponPhase.AfterEquip,
+				_ => throw new ArgumentOutOfRangeException(nameof(timing)),
+			};
+		}
+
+		if (eventType == typeof(WeaponDurabilityLossEvent))
+		{
+			return timing switch
+			{
+				TriggerTiming.Before => WeaponDurabilityLossPhase.BeforeLoseDurability,
+				TriggerTiming.After => WeaponDurabilityLossPhase.AfterLoseDurability,
+				_ => throw new ArgumentOutOfRangeException(nameof(timing)),
+			};
+		}
+
+		if (timing == TriggerTiming.Before)
+			throw new ArgumentException($"{eventType.Name} does not support BEFORE timing");
+
+		if (eventType == typeof(SpellCastEvent) || eventType == typeof(CardPlayedEvent))
 			return timing == TriggerTiming.After ? SpellPhase.AfterSpell : SpellPhase.OnPlay;
 
-		if (t == typeof(MinionPlayedEvent))
+		if (eventType == typeof(MinionPlayedEvent))
 			return timing == TriggerTiming.After ? MinionPhase.AfterPlay : MinionPhase.OnPlay;
 
-		if (t == typeof(MinionSummonedEvent))
+		if (eventType == typeof(MinionSummonedEvent))
 			return timing == TriggerTiming.After ? MinionPhase.AfterSummon : MinionPhase.OnSummon;
 
-		if (t == typeof(AttackEvent) || t == typeof(ProposedAttackEvent))
+		if (eventType == typeof(AttackEvent) || eventType == typeof(ProposedAttackEvent))
 			return CombatPhase.Preparation;
 
-		if (t == typeof(AfterAttackEvent))
+		if (eventType == typeof(AfterAttackEvent))
 			return CombatPhase.Combat;
 
-		if (t == typeof(TurnStartEvent))
+		if (eventType == typeof(TurnStartEvent))
 			return TurnPhase.Start;
 
-		if (t == typeof(TurnEndEvent))
+		if (eventType == typeof(TurnEndEvent))
 			return TurnPhase.End;
 
-		if (t == typeof(StartOfGameEvent))
+		if (eventType == typeof(StartOfGameEvent))
 			return timing == TriggerTiming.After ? StartOfGamePhase.After : StartOfGamePhase.On;
 
-		if (t == typeof(DamageEvent) || t == typeof(HealEvent)
-		|| t == typeof(PreDamageEvent)
-		|| t == typeof(DeathEvent) || t == typeof(OverloadEvent)
-		|| t == typeof(RevealSecretEvent) || t == typeof(GainArmorEvent)
-		|| t == typeof(DrawCardEvent) || t == typeof(SecretPlayedEvent))
+		if (eventType == typeof(DamageEvent)
+			|| eventType == typeof(HealEvent)
+			|| eventType == typeof(OverhealEvent)
+			|| eventType == typeof(PreDamageEvent)
+			|| eventType == typeof(DeathEvent)
+			|| eventType == typeof(OverloadEvent)
+			|| eventType == typeof(RevealSecretEvent)
+			|| eventType == typeof(GainArmorEvent)
+			|| eventType == typeof(DrawCardEvent)
+			|| eventType == typeof(DiscardEvent)
+			|| eventType == typeof(SecretPlayedEvent)
+			|| eventType == typeof(MillEvent))
 			return timing == TriggerTiming.After ? MiscPhase.After : MiscPhase.On;
 
-		if (t == typeof(HeroPowerUsedEvent))
+		if (eventType == typeof(HeroPowerUsedEvent))
 			return timing == TriggerTiming.After ? HeroPowerPhase.AfterPlay : HeroPowerPhase.OnPlay;
 
-		throw new ArgumentException($"No default phase mapping for {t.Name}");
+		throw new ArgumentException($"No default phase mapping for {eventType.Name}");
 	}
 
-	// ═══════════════════════════════════════════════
-	// 所有权匹配
-	// ═══════════════════════════════════════════════
-
+	/// <summary>判断事件是否满足 OWN / ENEMY / SELF / ANY 条件。</summary>
 	private static bool OwnerMatches<TEvent>(TEvent evt, BuffableEntity self, TriggerOwner owner)
 		where TEvent : GameEvent
 	{
 		if (owner == TriggerOwner.Any) return true;
+		if (owner == TriggerOwner.Self) return GetSubject(evt) == self;
 
-		if (owner == TriggerOwner.Self)
-			return GetSubject(evt) == self;
-
-		// For Damage/Heal/Death events, check the *affected* entity's controller
-		// so OWN means "friendly took damage/heal/died"
 		var controller = evt switch
 		{
-			DamageEvent d => d.Target.Controller,
-			PreDamageEvent d => d.Target.Controller,
-			HealEvent h => h.Target.Controller,
-			DeathEvent d => (d.Dead as BuffableEntity)?.Controller,
+			DamageEvent damageEvent => damageEvent.Target.Controller,
+			PreDamageEvent preDamageEvent => preDamageEvent.Target.Controller,
+			HealEvent healEvent => healEvent.Target.Controller,
+			OverhealEvent overhealEvent => overhealEvent.Target.Controller,
+			DeathEvent deathEvent => (deathEvent.Dead as BuffableEntity)?.Controller,
 			_ => GetController(evt),
 		};
+
 		return owner switch
 		{
 			TriggerOwner.Own => controller == self.Controller,
@@ -410,7 +439,7 @@ public class BusEvent
 		};
 	}
 
-	/// <summary>事件的控制者（谁发起了这个动作）。</summary>
+	/// <summary>推导事件所属控制者。</summary>
 	private static Player? GetController(GameEvent evt) => evt switch
 	{
 		SpellCastEvent e => e.Spell.Controller,
@@ -424,26 +453,36 @@ public class BusEvent
 		TurnEndEvent e => e.Player,
 		StartOfGameEvent e => e.Player,
 		DrawCardEvent e => e.Player,
+		DiscardEvent e => e.Player,
 		HeroPowerUsedEvent e => e.Player,
-		DamageEvent e => (e.Source as BuffableEntity)?.Controller,
-		PreDamageEvent e => (e.Source as BuffableEntity)?.Controller,
-		HealEvent e => (e.Source as BuffableEntity)?.Controller,
-		DeathEvent e => (e.Dead as BuffableEntity)?.Controller,
 		OverloadEvent e => e.Player,
+		GainArmorEvent e => e.Player,
+		WeaponEquipEvent e => e.Player,
+		WeaponDurabilityLossEvent e => e.Hero.Controller,
+		DamageEvent e => e.Target.Controller,
+		PreDamageEvent e => e.Target.Controller,
+		HealEvent e => e.Target.Controller,
+		OverhealEvent e => e.Target.Controller,
+		DeathEvent e => (e.Dead as BuffableEntity)?.Controller,
 		RevealSecretEvent e => e.Secret.Controller,
 		_ => (evt.Source as BuffableEntity)?.Controller,
 	};
 
-	/// <summary>事件的主体（谁是目标/受影响者）。</summary>
+	/// <summary>推导事件主体或受影响实体。</summary>
 	private static BaseEntity? GetSubject(GameEvent evt) => evt switch
 	{
 		DamageEvent e => e.Target,
 		PreDamageEvent e => e.Target,
 		HealEvent e => e.Target,
+		OverhealEvent e => e.Target,
 		DeathEvent e => e.Dead,
+		DrawCardEvent e => e.Card,
+		DiscardEvent e => e.Card,
 		AfterAttackEvent e => e.Defender,
 		AttackEvent e => e.Defender,
 		ProposedAttackEvent e => e.Defender,
+		WeaponEquipEvent e => e.Weapon,
+		WeaponDurabilityLossEvent e => e.Weapon,
 		_ => evt.Source,
 	};
 }

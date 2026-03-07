@@ -117,5 +117,27 @@ public class ClassicPriest : CardPack
 
 		// 暗影形态：替换英雄技能
 		b.Card("EX1_625", play: new Summon(S.CONTROLLER, "EX1_625t"));
+		// 心灵之火：使一个随从的攻击力等同于其当前生命值
+		b.Card("CS1_129",
+			play: new SetAttackFromHealth(S.TARGET),
+			target: Target.Required().Minion());
+		// 沉默：移除一个随从的文字和附加效果
+		b.Card("EX1_332",
+			play: new Silence(S.TARGET),
+			target: Target.Required().Minion());
+		// 思维窃取：复制敌方牌库中的两张随机牌到你的手牌
+		b.Card("EX1_339",
+			play: new CopyToHand(S.CONTROLLER, new RandomSelector(S.ENEMY_DECK, 2)));
+		// 控心术：夺取一个敌方随从的控制权
+		b.Card("EX1_345",
+			play: new TakeControl(S.TARGET),
+			target: Target.Required().Minion().Enemy());
+		// 神圣之火：造成 5 点伤害，并为你的英雄恢复 5 点生命值
+		b.Card("EX1_624",
+			play: Acts(
+				new DealDamage(S.TARGET, 5),
+				new RestoreHealth(S.FRIENDLY_HERO, 5)),
+			target: Target.Required());
+		b.Card("GIFT_12"); // 安度因的礼物
 	}
 }

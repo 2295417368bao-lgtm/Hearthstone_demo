@@ -199,6 +199,17 @@ public class CardBuilder
 	}
 
 	/// <summary>
+	/// 单个事件版本的 Buff 注册重载，便于脚本层直接写 on: When(...)
+	/// </summary>
+	public void Buff(string cardId, BusEvent on,
+		params (GameTag tag, object value)[] extraTags)
+	{
+		Buff(cardId,
+			on: new[] { on },
+			extraTags: extraTags);
+	}
+
+	/// <summary>
 	/// Merge explicit onActivate callback with declarative BusEvent[] triggers.
 	/// </summary>
 	private static System.Action<BuffableEntity, Game>? MergeActivate(

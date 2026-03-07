@@ -78,7 +78,7 @@ public class BlackrockCollectible : CardPack
 
 		// BRM_031 — 克洛玛古斯：每当你抽牌时，将该牌的副本置入你的手牌
 		b.Card("BRM_031",
-			on: When<DrawCardEvent>(OWN, AFTER, new CopyToHand(S.CONTROLLER, S.TARGET)));
+			on: When<DrawCardEvent>(OWN, AFTER, new CopyToHand(S.CONTROLLER, S.EVT_TARGET)));
 
 		// ═══════════════════════════════════════
 		// 随从 — 战吼

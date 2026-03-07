@@ -122,6 +122,9 @@ public class Player : BuffableEntity
 	/// <summary>Starting hero card ID (for PrepareForGame).</summary>
 	public string? StartingHero { get; set; }
 
+	/// <summary>Minion entities that entered play for this player this game.</summary>
+	public List<BuffableEntity> SummonedMinionsThisGame { get; } = new();
+
 	/// <summary>
 	/// Choose a card from the current pending choice.
 	/// Convenience method — delegates to Choice.Choose(card).
@@ -490,7 +493,7 @@ public class Player : BuffableEntity
 	/// <summary>
 	/// Draw one card from the deck. Returns the drawn entity, or null on fatigue.
 	/// </summary>
-	public BaseEntity? DrawCard()
+	public BaseEntity? DrawCard(BaseEntity? source = null)
 	{
 		if (CantDraw)
 		{
@@ -550,7 +553,7 @@ public class Player : BuffableEntity
 					CardsDrawnThisTurn++;
 					CardsDrawnThisTurnEntities.Add(card);
 					Game?.EventBus.Publish(
-						new DrawCardEvent(drawBe, this, card), MiscPhase.On);
+						new DrawCardEvent(source ?? this, this, card), MiscPhase.On);
 					return card;
 				}
 			}
@@ -575,7 +578,7 @@ public class Player : BuffableEntity
 
 		// 发布抽牌事件
 		Game?.EventBus.Publish(
-			new DrawCardEvent(card is BuffableEntity be ? be : Hero!, this, card),
+			new DrawCardEvent(source ?? this, this, card),
 			MiscPhase.On);
 
 		return card;
@@ -586,7 +589,7 @@ public class Player : BuffableEntity
 	/// Searches the deck for the first match, moves it to the top, then draws normally.
 	/// Returns null if no matching card is found (does NOT trigger fatigue).
 	/// </summary>
-	public BaseEntity? DrawCard(Func<BaseEntity, bool> filter)
+	public BaseEntity? DrawCard(Func<BaseEntity, bool> filter, BaseEntity? source = null)
 	{
 		var index = -1;
 		for (int i = 0; i < Deck.Count; i++)
@@ -606,7 +609,7 @@ public class Player : BuffableEntity
 			Deck.RemoveAt(index);
 			Deck.Insert(0, card);
 		}
-		return DrawCard();
+		return DrawCard(source);
 	}
 
 	// ── Summon ──
@@ -621,16 +624,37 @@ public class Player : BuffableEntity
 			_log.Debug("{Player} board is full, can't summon", Name);
 			return false;
 		}
-		if (index >= 0 && index <= Field.Count)
-			Field.Insert(index, entity);
-		else
-			Field.Add(entity);
 		if (entity is Character c)
 			c.Controller = this;
 
-		// Set the entity's Zone property (used by CanAttack, selectors, etc.)
 		if (entity is BuffableEntity be)
-			be.Zone = Zone.Play;
+		{
+			be.Controller = this;
+			if (be.Zone != Zone.Play)
+			{
+				be.SetZone(Zone.Play, this);
+			}
+			else if (!Field.Contains(entity))
+			{
+				if (index >= 0 && index <= Field.Count)
+					Field.Insert(index, entity);
+				else
+					Field.Add(entity);
+			}
+
+			if (index >= 0 && index < Field.Count)
+			{
+				Field.Remove(entity);
+				Field.Insert(index, entity);
+			}
+		}
+		else
+		{
+			if (index >= 0 && index <= Field.Count)
+				Field.Insert(index, entity);
+			else
+				Field.Add(entity);
+		}
 
 		// Recalculate ZonePosition for all minions on the field
 		for (int i = 0; i < Field.Count; i++)
@@ -642,6 +666,13 @@ public class Player : BuffableEntity
 		_log.Debug("{Player} summons entity {EntityId} at index {Index}",
 			Name, entity.EntityId, index);
 		return true;
+	}
+
+	public void TrackSummonedMinion(BuffableEntity entity)
+	{
+		if (entity is not Minion) return;
+		if (SummonedMinionsThisGame.Contains(entity)) return;
+		SummonedMinionsThisGame.Add(entity);
 	}
 
 	// ── Concede ──

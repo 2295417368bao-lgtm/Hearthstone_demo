@@ -52,6 +52,51 @@ public class SequenceRunner
 		}
 	}
 
+	/// <summary>
+	/// 战斗中的伤害结算入口。
+	/// 与法术伤害一致，先发布 PreDamageEvent，再按改写后的伤害值结算。
+	/// </summary>
+	private int ApplyCombatDamage(Character source, Character target, int amount)
+	{
+		if (amount <= 0) return 0;
+
+		var preEvt = new PreDamageEvent(source, target, amount);
+		_bus.Publish(preEvt, MiscPhase.On);
+		if (preEvt.Redirected || preEvt.Amount <= 0) return 0;
+
+		int dealt = target.Hit(preEvt.Amount);
+		if (dealt > 0)
+		{
+			target.LastDamageSource = source;
+			_bus.Publish(new DamageEvent(source, target, dealt), MiscPhase.On);
+		}
+		return dealt;
+	}
+
+	/// <summary>
+	/// 处理英雄持武器攻击后的默认耐久损失，允许脚本替换为其他代价。
+	/// </summary>
+	private void ResolveWeaponDurabilityLoss(Hero hero, Character defender, int amount = 1)
+	{
+		var weapon = hero.EquippedWeapon;
+		if (weapon == null) return;
+
+		var evt = new WeaponDurabilityLossEvent(weapon, hero, weapon, defender, amount);
+		_bus.Publish(evt, WeaponDurabilityLossPhase.BeforeLoseDurability);
+
+		if (!evt.Replaced)
+			weapon.LoseDurability(amount);
+
+		_bus.Publish(evt, WeaponDurabilityLossPhase.AfterLoseDurability);
+
+		if (weapon.Dead)
+		{
+			_log.Information("Weapon {Weapon} destroyed (0 durability)", weapon.CardId);
+			weapon.SetZone(Zone.Graveyard);
+			hero.EquippedWeapon = null;
+		}
+	}
+
 	// ═══════════════════════════════════════════════
 	// PlaySpell — 打出法术
 	// ═══════════════════════════════════════════════
@@ -529,12 +574,12 @@ public class SequenceRunner
 			int defHealthBefore = actualDefender.Health;
 
 			// 使用 Character.Hit() 造成伤害
-			if (atkDamage > 0) actualDefender.Hit(atkDamage);
-			if (defDamage > 0) actualAttacker.Hit(defDamage);
+			if (atkDamage > 0) ApplyCombatDamage(actualAttacker, actualDefender, atkDamage);
+			if (defDamage > 0) ApplyCombatDamage(actualDefender, actualAttacker, defDamage);
 
 			// 武器耐久度损失
 			if (actualAttacker is Hero h && h.EquippedWeapon != null)
-				h.EquippedWeapon.LoseDurability();
+				ResolveWeaponDurabilityLoss(h, actualDefender);
 
 			attacker.NumAttacks++;
 
@@ -606,6 +651,18 @@ public class SequenceRunner
 		_bus.Publish(new HeroPowerUsedEvent(power, player), HeroPowerPhase.AfterPlay);
 		_game.RefreshAuras();
 		_game.ProcessDeaths();
+
+		// Inspire：英雄技能结算后，依次触发己方场上随从的激励效果。
+		foreach (var minion in player.Field.OfType<Minion>().ToList())
+		{
+			if (minion.Dead) continue;
+			var minionScript = _game.ScriptRegistry.GetScript(minion.CardId ?? "");
+			if (minionScript == null || minionScript.Inspire.Length == 0) continue;
+
+			_game.ActionBlock(minion, minionScript.Inspire.ToList(), BlockType.Power);
+			_game.RefreshAuras();
+			_game.ProcessDeaths();
+		}
 
 		_game.ActionEnd(BlockType.Play, power);
 		_game.CheckForEndGame();

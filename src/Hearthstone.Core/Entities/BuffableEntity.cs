@@ -72,6 +72,17 @@ public class BuffableEntity : BaseEntity
 				}
 			}
 		}
+		// 光环 buff 也需要复制函数型修饰器，否则减费/设值类效果不会生效
+		if (buffScript?.CostModFunc != null)
+			newBuff.CostModFunc = buffScript.CostModFunc;
+		if (buffScript?.AtkMod != null)
+			newBuff.AtkMod = buffScript.AtkMod;
+		if (buffScript?.MaxHealthMod != null)
+			newBuff.MaxHealthMod = buffScript.MaxHealthMod;
+		if (buffScript?.DurabilityMod != null)
+			newBuff.DurabilityMod = buffScript.DurabilityMod;
+		if (buffScript?.ArmorMod != null)
+			newBuff.ArmorMod = buffScript.ArmorMod;
 
 		Buffs.Add(newBuff);
 		source.Game?.ActiveAuraBuffs.Add(new Auras.AuraBuff(source, this)
@@ -298,6 +309,9 @@ public class BuffableEntity : BaseEntity
 		{
 			AddToZone(ctrl, newZone);
 		}
+
+		if (ctrl != null && this is Minion && newZone == Zone.Play && OldZone != Zone.Play)
+			ctrl.TrackSummonedMinion(this);
 
 		// Play/Secret 区域分配 PlayCounter
 		if (newZone == Zone.Play || newZone == Zone.Secret)

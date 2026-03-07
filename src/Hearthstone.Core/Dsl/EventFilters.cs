@@ -77,11 +77,17 @@ public static class EventFilters
 	public static Func<DamageEvent, BuffableEntity, bool> DamagedIsFriendlyHero()
 		=> (evt, self) => evt.Target is Hero h && h.Controller == self.Controller;
 
+	public static Func<DamageEvent, BuffableEntity, bool> SelfTookDamage()
+		=> (evt, self) => evt.Target == self;
+
 	// ─── DrawCardEvent 过滤 ───
 
 	/// <summary>抽牌的是对手。</summary>
 	public static Func<DrawCardEvent, BuffableEntity, bool> DrawIsOpponent()
 		=> (evt, self) => evt.Player != self.Controller;
+
+	public static Func<DrawCardEvent, BuffableEntity, bool> DrawSourceIsHeroPower()
+		=> (evt, self) => evt.Source is HeroPower;
 
 	// ─── 通用过滤 ───
 
@@ -189,11 +195,24 @@ public static class EventFilters
 	public static Func<AfterAttackEvent, BuffableEntity, bool> AttackerIsFriendlyMinion()
 		=> (evt, self) => evt.Attacker is Minion && evt.Attacker.Controller == self.Controller;
 
+	public static Func<AfterAttackEvent, BuffableEntity, bool> SelfAttacksMinion()
+		=> (evt, self) => evt.Attacker == self && evt.Defender is Minion;
+
+	public static Func<WeaponEquipEvent, BuffableEntity, bool> WeaponEquipSourceIsHeroPower()
+		=> (evt, self) => evt.Source is HeroPower;
+
+	public static Func<WeaponDurabilityLossEvent, BuffableEntity, bool> WeaponDurabilityDefenderIsMinion()
+		=> (evt, self) => evt.Defender is Minion;
+
 	// ─── 声明式事件过滤器 ───
 
 	/// <summary>攻击者是随从。</summary>
 	public static Func<AttackEvent, BuffableEntity, bool> AttackerIsMinion()
 		=> (evt, self) => evt.Attacker is Minion;
+
+	/// <summary>攻击宣言中的防御者是己方英雄。</summary>
+	public static Func<ProposedAttackEvent, BuffableEntity, bool> ProposedDefenderIsHero()
+		=> (evt, self) => evt.Defender == self.Controller?.Hero;
 
 	/// <summary>防御者是己方英雄。</summary>
 	public static Func<AttackEvent, BuffableEntity, bool> DefenderIsHero()
@@ -203,6 +222,10 @@ public static class EventFilters
 	public static Func<AttackEvent, BuffableEntity, bool> DefenderIsMinion()
 		=> (evt, self) => evt.Defender is Minion;
 
+	/// <summary>防御者是己方随从。</summary>
+	public static Func<AttackEvent, BuffableEntity, bool> DefenderIsFriendlyMinion()
+		=> (evt, self) => evt.Defender is Minion minion && minion.Controller == self.Controller;
+
 	/// <summary>受伤目标是英雄。</summary>
 	public static Func<DamageEvent, BuffableEntity, bool> TargetIsHero()
 		=> (evt, self) => evt.Target is Hero;
@@ -210,6 +233,13 @@ public static class EventFilters
 	/// <summary>PreDamage 目标是己方英雄。</summary>
 	public static Func<PreDamageEvent, BuffableEntity, bool> PreDamageTargetIsFriendlyHero()
 		=> (evt, self) => evt.Target is Hero && evt.Target.Controller == self.Controller;
+
+	public static Func<PreDamageEvent, BuffableEntity, bool> PreDamageTargetIsFriendlyMinion()
+		=> (evt, self) => evt.Target is Minion minion && minion.Controller == self.Controller;
+
+	/// <summary>本次即将受到伤害的是己方英雄，且重定向目标不是自身。</summary>
+	public static Func<PreDamageEvent, BuffableEntity, bool> FriendlyHeroWouldTakeDamage()
+		=> (evt, self) => evt.Target is Hero && evt.Target.Controller == self.Controller && evt.Target != self;
 
 	/// <summary>受伤目标是随从。</summary>
 	public static Func<DamageEvent, BuffableEntity, bool> TargetIsMinion()

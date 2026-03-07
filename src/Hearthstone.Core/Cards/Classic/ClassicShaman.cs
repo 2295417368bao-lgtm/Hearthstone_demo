@@ -118,5 +118,17 @@ public class ClassicShaman : CardPack
 		// 风暴锻锤：2/3，过载 (1)（仅属性）
 
 		// 毁灭之锤：2/8 风怒，过载 (2)（仅属性）
+		b.Card("EX1_243"); // 尘魔
+		// 大地震击：先沉默目标，再造成 1 点伤害
+		b.Card("EX1_245",
+			play: Acts(
+				new Silence(S.TARGET),
+				new DealDamage(S.TARGET, 1)),
+			target: Target.Required().Minion());
+		b.Card("EX1_247"); // 雷铸战斧
+		b.Card("EX1_250"); // 土元素
+		b.Card("EX1_567"); // 毁灭之锤
+		b.Card("GIFT_06"); // 萨尔的礼物
+		b.Card("NEW1_010"); // 风领主奥拉基尔
 	}
 }

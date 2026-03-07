@@ -571,6 +571,42 @@ public class Attack : GameAction
 	}
 }
 
+/// <summary>
+/// 将当前待结算的攻击随机改向到另一个合法角色。
+/// 用于实现“误导”这类在攻击前重写 ProposedDefender 的效果。
+/// </summary>
+public class RedirectAttackToRandomOtherCharacter : GameAction
+{
+	public override void Do(BaseEntity source, params object[] args)
+	{
+		var game = source.Game;
+		if (game?.ProposedAttacker is not Character attacker)
+			return;
+
+		var originalDefender = game.ProposedDefender;
+		if (originalDefender == null)
+			return;
+
+		var candidates = new List<Character>();
+		foreach (var player in new[] { attacker.Controller, attacker.Controller?.Opponent })
+		{
+			if (player == null) continue;
+			foreach (var entity in player.Characters)
+			{
+				if (entity is not Character character) continue;
+				if (character == attacker || character == originalDefender) continue;
+				if (character.Immune || character.Stealth) continue;
+				candidates.Add(character);
+			}
+		}
+
+		if (candidates.Count == 0)
+			return;
+
+		game.ProposedDefender = candidates[game.Random.Next(candidates.Count)];
+	}
+}
+
 
 
 /// <summary>Game start setup.</summary>

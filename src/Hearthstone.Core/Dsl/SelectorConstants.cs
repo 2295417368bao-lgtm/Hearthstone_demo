@@ -99,6 +99,10 @@ public static class S
 	public static Selector MinCost(int min) => new FilterSelector(
 		(e, _) => e is BuffableEntity be && be.Cost >= min);
 
+	/// <summary>匹配指定 cardId 的实体。</summary>
+	public static Selector CardId(string cardId) => new FilterSelector(
+		(e, _) => (e as BuffableEntity)?.CardId == cardId);
+
 	// ── Type selectors (EnumSelector on CardType) ──
 
 	public static readonly Selector GAME = new EnumSelector(CardType.Game);

@@ -63,8 +63,8 @@ public class DiscoverFilter
 	/// <summary>按卡牌类型过滤。</summary>
 	public DiscoverFilter Type(CardType t) { _filters["type"] = t; return this; }
 
-	/// <summary>按费用过滤。</summary>
-	public DiscoverFilter Cost(int c) { _filters["cost"] = c; return this; }
+	/// <summary>按费用过滤。支持 int 或 LazyNum。</summary>
+	public DiscoverFilter Cost(object c) { _filters["cost"] = c; return this; }
 
 	/// <summary>按种族过滤。</summary>
 	public DiscoverFilter Race(Race r) { _filters["race"] = r; return this; }

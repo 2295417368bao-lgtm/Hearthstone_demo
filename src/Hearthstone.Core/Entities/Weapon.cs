@@ -149,7 +149,10 @@ public class Weapon : BuffableEntity, IDestroyable
 			Controller.Hero.EquippedWeapon = null;
 		_log.Debug("Weapon {EntityId} breaks", EntityId);
 
-		game.EventBus.Publish(new Events.DeathEvent(this, this), Events.MiscPhase.On);
+		var deathCause = PendingDeathCause ?? LastDamageSource ?? this;
+		game.EventBus.Publish(new Events.DeathEvent(deathCause, this), Events.MiscPhase.On);
+		PendingDeathCause = null;
+		LastDamageSource = null;
 
 		var script = game.ScriptRegistry.GetScript(CardId ?? "");
 		if (script?.Deathrattle.Length > 0)

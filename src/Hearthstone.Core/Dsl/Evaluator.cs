@@ -464,3 +464,39 @@ public class HeroHealed : Evaluator
 	public override bool Check(BaseEntity source)
 		=> (source as BuffableEntity)?.Controller?.HeroHealedThisTurn == true;
 }
+
+/// <summary>
+/// 当前 PreDamageEvent 是否会造成致命伤害。
+/// 仅在 PreDamageEvent 触发上下文中使用。
+/// </summary>
+public class PreDamageIsFatalEvaluator : Evaluator
+{
+	public override bool Check(BaseEntity source)
+	{
+		var evt = source.ActivePreDamageEvent;
+		if (evt?.Target is not Character target) return false;
+		int health = target is Hero hero ? hero.EffectiveHealth : target.Health;
+		return evt.Amount >= health;
+	}
+}
+
+/// <summary>
+/// 当前 PreDamageEvent 是否会让目标生命值低于指定阈值。
+/// 仅在 PreDamageEvent 触发上下文中使用。
+/// </summary>
+public class PreDamageWouldReduceTargetBelowEvaluator : Evaluator
+{
+	private readonly int _floor;
+
+	public PreDamageWouldReduceTargetBelowEvaluator(int floor)
+	{
+		_floor = floor;
+	}
+
+	public override bool Check(BaseEntity source)
+	{
+		var evt = source.ActivePreDamageEvent;
+		if (evt?.Target is not Character target) return false;
+		return target.Health - evt.Amount < _floor;
+	}
+}

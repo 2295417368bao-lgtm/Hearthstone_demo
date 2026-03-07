@@ -59,5 +59,6 @@ public class ClassicDemonhunter : CardPack
 		b.Card("BT_740",
 			play: new DealDamage(new RandomSelector(S.ENEMY_MINIONS, 2), 2),
 			target: Target.Condition().NeedsEnemyMinions(1));
+		b.Card("GIFT_08"); // 伊利丹的礼物
 	}
 }

@@ -76,8 +76,29 @@ public abstract class BaseEntity
 	/// <summary>事件上下文：事件目标/主体（防御者、死亡实体等）。由 BusEvent.When 在触发 action 前设置。</summary>
 	public BaseEntity? EventTarget { get; set; }
 
+	/// <summary>事件上下文：当前事件的主数值（伤害、治疗、护甲等）。由 BusEvent.When 在触发 action 前设置。</summary>
+	public int? EventAmount { get; set; }
+
 	/// <summary>事件上下文：当前 PreDamageEvent（仅在 PreDamageEvent 处理期间设置）。</summary>
 	public PreDamageEvent? ActivePreDamageEvent { get; set; }
+
+	/// <summary>事件上下文：当前 WeaponEquipEvent（仅在 WeaponEquipEvent 处理期间设置）。</summary>
+	public WeaponEquipEvent? ActiveWeaponEquipEvent { get; set; }
+
+	/// <summary>事件上下文：当前 WeaponEquipEvent 所处阶段。</summary>
+	public WeaponPhase? ActiveWeaponPhase { get; set; }
+
+	/// <summary>事件上下文：当前 WeaponDurabilityLossEvent（仅在武器耐久损失处理期间设置）。</summary>
+	public WeaponDurabilityLossEvent? ActiveWeaponDurabilityLossEvent { get; set; }
+
+	/// <summary>事件上下文：当前 WeaponDurabilityLossEvent 所处阶段。</summary>
+	public WeaponDurabilityLossPhase? ActiveWeaponDurabilityLossPhase { get; set; }
+
+	/// <summary>最近一次对该实体造成伤害的来源。用于死亡事件还原真正 cause。</summary>
+	public BaseEntity? LastDamageSource { get; set; }
+
+	/// <summary>显式摧毁等效果预先写入的死亡原因。死亡事件发布后清空。</summary>
+	public BaseEntity? PendingDeathCause { get; set; }
 
 	/// <summary>关联的数据层卡牌定义（可为 null，如 Game / Player 实体）</summary>
 	public virtual LoadCardIntoDbf.Card? Data { get; set; }

@@ -284,7 +284,9 @@ public abstract class TargetedAction : Action
 			foreach (var target in targets)
 			{
 				var targetArgs = GetTargetArgs(source, target);
-				ret.Add(Do(source, target, targetArgs));
+				var result = Do(source, target, targetArgs);
+				ret.Add(result);
+				TriggerCallback(source, result);
 			}
 		}
 		return ret;
@@ -311,5 +313,42 @@ public abstract class TargetedAction : Action
 		if (result is BaseEntity e) return new List<BaseEntity> { e };
 		if (result is List<BaseEntity> list) return list;
 		return new List<BaseEntity>();
+	}
+
+	private void TriggerCallback(BaseEntity source, object? result)
+	{
+		if (Callback.Length == 0) return;
+
+		if (result is BaseEntity entity)
+		{
+			TriggerCallbackForEntity(source, entity);
+			return;
+		}
+
+		if (result is IEnumerable<BaseEntity> entities)
+		{
+			foreach (var item in entities)
+				TriggerCallbackForEntity(source, item);
+		}
+	}
+
+	private void TriggerCallbackForEntity(BaseEntity source, BaseEntity entity)
+	{
+		source.CurrentTarget = entity;
+		try
+		{
+			if (CallbackCondition != null && !CallbackCondition.Check(source))
+				return;
+
+			foreach (var cb in Callback)
+			{
+				if (cb is TargetedAction ta) ta.Trigger(source);
+				else if (cb is GameAction ga) ga.Trigger(source);
+			}
+		}
+		finally
+		{
+			source.CurrentTarget = null;
+		}
 	}
 }

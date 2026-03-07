@@ -183,6 +183,7 @@ public class CopyToHand : TargetedAction
 			_ => new List<BaseEntity>()
 		};
 
+		var created = new List<BaseEntity>();
 		foreach (var entity in entities)
 		{
 			if (entity is BuffableEntity be && be.CardId != null)
@@ -211,11 +212,18 @@ public class CopyToHand : TargetedAction
 					copyBe.SetIntProperty("health", be.GetIntProperty("health"));
 					copyBe.SetIntProperty("cost", be.GetIntProperty("cost"));
 				}
+				if (copy != null)
+					created.Add(copy);
 				Log.Information("{Player} copies {Card} to hand (keepBuffs={Keep}, index={Index})",
 					player.Name, copy, _keepBuffs, _handIndex);
 			}
 		}
-		return null;
+		return created.Count switch
+		{
+			0 => null,
+			1 => created[0],
+			_ => created,
+		};
 	}
 }
 

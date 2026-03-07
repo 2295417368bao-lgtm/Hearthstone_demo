@@ -1,5 +1,6 @@
 using Serilog;
 using HearthstoneServer.Entities;
+using HearthstoneServer.Events;
 
 namespace HearthstoneServer.Dsl;
 
@@ -677,12 +678,13 @@ public class ConditionalAction : TargetedAction
 		{
 			if (action is TargetedAction ta)
 			{
-				var targets = ta.GetTargets(source);
-				foreach (var t in targets)
-				{
-					var tArgs = ta.GetTargetArgs(source, t);
-					result = ta.Do(source, t, tArgs);
-				}
+				var results = ta.Trigger(source);
+				if (results.Count > 0)
+					result = results[^1];
+			}
+			else if (action is GameAction ga)
+			{
+				ga.Trigger(source);
 			}
 		}
 		return result;
@@ -802,8 +804,17 @@ public class EquipWeapon : TargetedAction
 		var entity = player.CreateCard(cardId, Zone.Invalid);
 		if (entity is not Weapon weapon) return null;
 
+		var equipEvent = new WeaponEquipEvent(source, player, weapon);
+		player.Game?.EventBus.Publish(equipEvent, WeaponPhase.BeforeEquip);
+		if (equipEvent.Cancelled)
+			return weapon;
+
+		player.Game?.EventBus.Publish(equipEvent, WeaponPhase.OnEquip);
+
 		_log.Information("{Player} equips weapon {Weapon}", player.Name, cardId);
 		weapon.Equip();
+
+		player.Game?.EventBus.Publish(equipEvent, WeaponPhase.AfterEquip);
 
 		// Register OnActivate for weapon script
 		var script = CardScriptRegistry.Instance.GetScript(cardId);

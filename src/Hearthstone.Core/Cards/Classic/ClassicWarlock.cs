@@ -1,53 +1,83 @@
 using HearthstoneServer.Auras;
-
-using static HearthstoneServer.Cards.CardScriptUtils;
+using HearthstoneServer.Events;
 using HearthstoneServer.Targeting;
+using static HearthstoneServer.Cards.CardScriptUtils;
+using static HearthstoneServer.Dsl.BusEvent;
 
 namespace HearthstoneServer.Dsl.Cards;
 
-// ═════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 // 经典术士卡牌脚本
-// ═════════════════════════════════════════
+// ═══════════════════════════════════════════════════
 
 public class ClassicWarlock : CardPack
 {
 	public override void Register(CardBuilder b)
 	{
 		// ── 附魔 ──
-		b.Buff("EX1_596e", atk: 3, health: 3);   // 恶魔之火
-		b.Buff("CS2_064e", atk: 4, health: 4);   // 恶魔之心（增益）
-		b.Buff("EX1_309e", atk: 2, health: 2);   // 灵魂虹吸（简化版）
+		b.Buff("EX1_596e", atk: 3, health: 3); // 恶魔之火
+		b.Buff("CS2_064e", atk: 4, health: 4); // 恶魔之心
+		b.Buff("EX1_309e", atk: 2, health: 2); // 灵魂虹吸（简化版）
+		b.Buff("EX1_316e", atk: 4, health: 4); // 力量的代价
+		b.Buff("CS2_059e", health: 1); // 鲜血小鬼
+		b.Buff("EX1_315e", costModFunc: ReduceByButNotBelow(2, 1)); // 召唤传送门
 
 		// ── 随从 ──
 
-		// 烈焰小鬼：对你的英雄造成 3 点伤害
+		// 烈焰小鬼：战吼，对你的英雄造成 3 点伤害
 		b.Card("EX1_319", battlecry: new DealDamage(S.FRIENDLY_HERO, 3));
 
-		// 深渊领主：对你的英雄造成 5 点伤害
+		// 深渊领主：战吼，对你的英雄造成 5 点伤害
 		b.Card("EX1_313", battlecry: new DealDamage(S.FRIENDLY_HERO, 5));
 
-		// 末日守卫：弃两张牌
+		// 末日守卫：战吼，弃两张牌
 		b.Card("EX1_310", battlecry: new Discard(S.CONTROLLER) * 2);
 
-		// 魅魔：弃一张牌
+		// 魅魔：战吼，弃一张牌
 		b.Card("EX1_306", battlecry: new Discard(S.CONTROLLER));
 
-		// 虚空恐魔：消灭相邻随从，获得其属性
+		// 恐惧地狱火：战吼，对所有其他角色造成 1 点伤害
+		b.Card("CS2_064", play: new DealDamage(S.ALL_CHARACTERS - S.SELF, 1));
+
+		// 虚空恐魔：消灭相邻随从，获得它们的攻击力和生命值
 		b.Card("AT_021",
 			battlecry: Acts(new Destroy(S.SELF_ADJACENT), new Enchant(S.SELF, "AT_021e")));
-		b.Buff("AT_021e", atk: 0); // 运行时获得属性
+		b.Buff("AT_021e", atk: 0); // 运行时按相邻随从属性结算
 
-		// 恶魔卫士：失去一个法力水晶
+		// 恶魔卫士：战吼，失去一个法力水晶
 		b.Card("EX1_301", battlecry: new GainMana(S.CONTROLLER, -1));
+
+		// 鲜血小鬼：在你的回合结束时，使另一个随机友方随从获得 +1 生命值
+		b.Card("CS2_059",
+			on: When<TurnEndEvent>(OWN, ON,
+				new Enchant(S.RANDOM_OTHER_FRIENDLY_MINION, "CS2_059e")));
+
+		// 虚空恐魔：先结算相邻随从的属性，再销毁它们
+		b.Card("EX1_304",
+			battlecry: Acts(
+				new Enchant(S.SELF,
+					atk: new Attr(S.SELF_ADJACENT, GameTag.Atk),
+					health: new Attr(S.SELF_ADJACENT, GameTag.Health)),
+				new Destroy(S.SELF_ADJACENT)));
+
+		// 召唤传送门：你的随从牌法力值消耗减少 2 点，但不会低于 1 点
+		b.Card("EX1_315", update: new[]
+		{
+			new Refresh(S.FRIENDLY_HAND + S.MINION, buff: "EX1_315e")
+		});
+
+		// 加拉克苏斯大王：战吼，装备 3/8 血吼
+		b.Card("EX1_323",
+			battlecry: new EquipWeapon(S.CONTROLLER, "EX1_323w"));
 
 		// ── 法术 ──
 
-		// 灵魂之火：造成 4 点伤害，弃一张牌
+		// 灵魂之火：造成 4 点伤害，然后弃一张牌
 		b.Card("EX1_308",
 			play: Acts(new DealDamage(S.TARGET, 4), new Discard(S.CONTROLLER)),
 			target: Target.Required());
 
-		// 死亡缠绕：造成 1 点伤害，若目标死亡则抽一张牌
+		// 死亡缠绕：造成 1 点伤害；若目标死亡则抽一张牌
 		b.Card("EX1_302",
 			play: new DealDamage(S.TARGET, 1),
 			target: Target.Required());
@@ -57,7 +87,7 @@ public class ClassicWarlock : CardPack
 			play: new DealDamage(S.TARGET, 4),
 			target: Target.Required().Minion());
 
-		// 吸取生命：造成 2 点伤害，恢复英雄 2 点生命值
+		// 吸取生命：造成 2 点伤害，并为你的英雄恢复 2 点生命值
 		b.Card("CS2_061",
 			play: Acts(new DealDamage(S.TARGET, 2), new RestoreHealth(S.FRIENDLY_HERO, 2)),
 			target: Target.Required());
@@ -75,7 +105,7 @@ public class ClassicWarlock : CardPack
 			play: Acts(new DealDamage(S.TARGET, 2), new Enchant(S.TARGET, "EX1_596e")),
 			target: Target.Required().Minion());
 
-		// 灵魂虹吸：消灭一个随从，恢复英雄 3 点生命值
+		// 灵魂虹吸：消灭一个随从，并为你的英雄恢复 3 点生命值
 		b.Card("EX1_309",
 			play: Acts(new Destroy(S.TARGET), new RestoreHealth(S.FRIENDLY_HERO, 3)),
 			target: Target.Required().Minion());
@@ -88,21 +118,19 @@ public class ClassicWarlock : CardPack
 			play: new DealDamage(S.TARGET, 2),
 			target: Target.Required());
 
-		// 暗影烈焰：消灭一个友方随从，对所有敌方随从造成等同于其攻击力的伤害
+		// 暗影烈焰：消灭一个友方随从，对所有敌方随从造成等同其攻击力的伤害
 		b.Card("EX1_303",
 			play: Acts(new Destroy(S.TARGET), new DealDamage(S.ENEMY_MINIONS, ATK(S.TARGET))),
 			target: Target.Required().Minion().Friendly());
 
-		// 力量压倒：+4/+4，回合结束时死亡
+		// 力量的代价：使一个友方随从获得 +4/+4，本回合结束时死亡
 		b.Card("EX1_316",
 			play: new Enchant(S.TARGET, "EX1_316e"),
 			target: Target.Required().Minion().Friendly());
-		b.Buff("EX1_316e", atk: 4, health: 4);
 
-		// 感知恶魔：从牌库中抽两个恶魔
+		// 感知恶魔：从牌库中抽两张恶魔
 		b.Card("EX1_317", play: new DrawCard(S.CONTROLLER) * 2);
 
-		// 恐惧地狱火：对所有其他角色造成 1 点伤害
-		b.Card("CS2_064", play: new DealDamage(S.ALL_CHARACTERS - S.SELF, 1));
+		b.Card("GIFT_11"); // 古尔丹的礼物
 	}
 }

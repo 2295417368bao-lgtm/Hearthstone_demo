@@ -179,5 +179,7 @@ public class NaxxramasCollectible : CardPack
 				new Refresh(S.ENEMY_HAND + S.SPELL, GameTag.Cost, 5)
 			},
 			on: When<TurnEndEvent>(ENEMY, ON, new Destroy(S.SELF)));
+		b.Card("FP1_008"); // 鬼灵骑士
+		b.Card("FP1_010"); // 迈克斯纳
 	}
 }

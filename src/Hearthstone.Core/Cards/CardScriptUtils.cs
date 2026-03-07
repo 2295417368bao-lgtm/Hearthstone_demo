@@ -325,6 +325,25 @@ public static class CardScriptUtils
 		=> new ConditionalAction(cond, new[] { ifTrue }, new[] { ifFalse });
 
 	/// <summary>
+	/// 当前 PreDamageEvent 是否会造成致命伤害。
+	/// 用于寒冰屏障这类“先判断再改写伤害”的脚本。
+	/// </summary>
+	public static Evaluator PreDamageIsFatal() => new PreDamageIsFatalEvaluator();
+
+	/// <summary>
+	/// 当前 PreDamageEvent 是否会让目标生命值降到指定阈值以下。
+	/// 用于冲锋呐喊这类“保留最低生命值”的脚本。
+	/// </summary>
+	public static Evaluator PreDamageWouldReduceTargetBelow(int floor)
+		=> new PreDamageWouldReduceTargetBelowEvaluator(floor);
+
+	/// <summary>
+	/// 生成一个 LazyNum：将当前事件目标保留在指定生命值时，应该造成的伤害量。
+	/// </summary>
+	public static LazyNum DamageToLeaveTargetAtHealth(int health)
+		=> new DamageToLeaveTargetAtHealthValue(health);
+
+	/// <summary>
 	/// 取反 Evaluator：Not(new Find(S.FRIENDLY_MINIONS - S.SELF))。
 	/// </summary>
 	public static Evaluator Not(Evaluator eval) => new NotEvaluator(eval);
@@ -341,6 +360,10 @@ public static class CardScriptUtils
 
 	/// <summary>减半（向上取整）：costModFunc: HalveUp()</summary>
 	public static Func<BaseEntity, int, int> HalveUp() => (_, v) => (v + 1) / 2;
+
+	/// <summary>费用减少指定值，但不会低于下限。</summary>
+	public static Func<BaseEntity, int, int> ReduceByButNotBelow(int amount, int floor)
+		=> (_, value) => Math.Max(floor, value - amount);
 
 	// ═══════════════════════════════════════
 	// REMOVED_IN_PLAY — 附魔在卡牌打出时自毁

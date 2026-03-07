@@ -198,5 +198,6 @@ public class ClassicDruid : CardPack
 
 		// 野性赐福 — 给所有友方随从 +2/+2 和嘲讽
 		b.Card("EX1_183", play: new Enchant(S.FRIENDLY_MINIONS, "EX1_183e"));
+		b.Card("GIFT_10"); // 玛法里奥的礼物
 	}
 }

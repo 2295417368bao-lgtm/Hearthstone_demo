@@ -334,8 +334,8 @@ public class RandomCardFilter : LazyValue
 	/// <summary>传说品质。</summary>
 	public RandomCardFilter Legendary() { _filters["rarity"] = HearthstoneServer.Rarity.Legendary; return this; }
 
-	/// <summary>按费用过滤。</summary>
-	public RandomCardFilter Cost(int c) { _filters["cost"] = c; return this; }
+	/// <summary>按费用过滤。支持 int 或 LazyNum。</summary>
+	public RandomCardFilter Cost(object c) { _filters["cost"] = c; return this; }
 
 	/// <summary>按法术派系过滤。</summary>
 	public RandomCardFilter School(SpellSchool s) { _filters["spell_school"] = s; return this; }

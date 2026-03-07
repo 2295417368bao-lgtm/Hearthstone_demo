@@ -111,7 +111,10 @@ public class Location : BuffableEntity, IDestroyable
 		Zone = Zone.Graveyard;
 		_log.Debug("Location {EntityId} destroyed", EntityId);
 
-		game.EventBus.Publish(new Events.DeathEvent(this, this), Events.MiscPhase.On);
+		var deathCause = PendingDeathCause ?? LastDamageSource ?? this;
+		game.EventBus.Publish(new Events.DeathEvent(deathCause, this), Events.MiscPhase.On);
+		PendingDeathCause = null;
+		LastDamageSource = null;
 		game.EventBus.UnsubscribeAll(this);
 	}
 

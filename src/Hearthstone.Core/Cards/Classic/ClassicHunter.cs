@@ -163,5 +163,17 @@ public class ClassicHunter : CardPack
 		// 鹰角长弓 — 每当一个友方奥秘被揭示，获得 +1 耐久
 		b.Card("EX1_536",
 			on: When<RevealSecretEvent>(OWN, ON, new Enchant(S.SELF, "EX1_536e")));
+		// 误导：当敌方角色攻击你的英雄时，随机改为攻击另一个合法角色
+		b.Card("EX1_533",
+			secret: When<ProposedAttackEvent>(ENEMY, ON,
+				new RedirectAttackToRandomOtherCharacter(),
+				when: ProposedDefenderIsHero()));
+		b.Card("EX1_543"); // 暴龙王克鲁什
+		// 毒蛇陷阱：当你的一个随从被攻击时，召唤三条 1/1 的蛇
+		b.Card("EX1_554",
+			secret: When<AttackEvent>(ENEMY, ON,
+				new Summon(S.CONTROLLER, "EX1_554t") * 3,
+				when: DefenderIsFriendlyMinion()));
+		b.Card("GIFT_03"); // 雷克萨的礼物
 	}
 }

@@ -357,9 +357,9 @@ public class BlackrockAdventure : CardPack
 
 		// BRMA12_6/6H — 黑色：对手抽牌时复制该牌到你的手牌
 		b.Card("BRMA12_6",
-			on: When<DrawCardEvent>(ENEMY, AFTER, new CopyToHand(S.CONTROLLER, S.TARGET)));
+			on: When<DrawCardEvent>(ENEMY, AFTER, new CopyToHand(S.CONTROLLER, S.EVT_TARGET)));
 		b.Card("BRMA12_6H",
-			on: When<DrawCardEvent>(ENEMY, AFTER, new CopyToHand(S.CONTROLLER, S.TARGET)));
+			on: When<DrawCardEvent>(ENEMY, AFTER, new CopyToHand(S.CONTROLLER, S.EVT_TARGET)));
 
 		// BRMA12_7/7H — 青铜色：光环 — 敌方随从费用降低
 		b.Card("BRMA12_7", handUpdate: new[]

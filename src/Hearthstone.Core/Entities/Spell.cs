@@ -36,7 +36,27 @@ public class Spell : BuffableEntity
 	/// <summary>Mana cost.</summary>
 	public override int Cost
 	{
-		get => GetIntProperty("cost");
+		get
+		{
+			int cost = GetField("cost");
+			foreach (var buff in Buffs)
+			{
+				cost = buff.AggregateAttr("cost", cost);
+				if (buff is Enchantment ench && ench.CostModFunc != null)
+					cost = ench.CostModFunc(this, cost);
+			}
+			foreach (var slot in Slots)
+				cost = slot.AggregateAttr("cost", cost);
+
+			if (Zone == Zone.Hand)
+			{
+				var script = Dsl.CardScriptRegistry.Instance.GetScript(CardId ?? "");
+				if (script?.CostMod != null)
+					cost += script.CostMod.Value(this);
+			}
+
+			return Math.Max(0, cost);
+		}
 		set => SetIntProperty("cost", value);
 	}
 

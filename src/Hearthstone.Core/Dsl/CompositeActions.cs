@@ -356,6 +356,89 @@ public class RedirectDamageToWeapon : TargetedAction
 	public override string ToString() => $"RedirectDamageToWeapon({_durabilityLoss})";
 }
 
+/// <summary>
+/// 在 PreDamageEvent 中把即将受到的伤害转移给另一个角色。
+/// 仅修改当前待结算伤害，不改变原始事件来源与伤害值。
+/// </summary>
+public class RedirectPreDamageToCharacter : TargetedAction
+{
+	public RedirectPreDamageToCharacter(object redirectTarget) : base(redirectTarget) { }
+
+	public override object? Do(BaseEntity source, BaseEntity target, params object[] args)
+	{
+		var preEvt = source.ActivePreDamageEvent;
+		if (preEvt == null)
+			return null;
+
+		if (target is not Character redirectTarget || redirectTarget.Dead || preEvt.Target == redirectTarget)
+			return null;
+
+		preEvt.Redirected = true;
+		return redirectTarget.Hit(preEvt.Amount);
+	}
+
+	public override string ToString() => $"RedirectPreDamageToCharacter({Args[0]})";
+}
+
+/// <summary>
+/// 改写当前 PreDamageEvent 的伤害值。
+/// 用于寒冰屏障、冲锋呐喊等“先判断再改写本次伤害”的效果。
+/// </summary>
+public class SetCurrentPreDamageAmount : GameAction
+{
+	public SetCurrentPreDamageAmount(object amount) : base(amount) { }
+
+	public override void Do(BaseEntity source, params object[] args)
+	{
+		var preEvt = source.ActivePreDamageEvent;
+		if (preEvt == null) return;
+		preEvt.Amount = Math.Max(0, ActionHelper.ResolveInt(args, 0, source));
+	}
+}
+
+/// <summary>武器耐久损失的替代方式。</summary>
+public enum WeaponDurabilityLossReplacement
+{
+	/// <summary>改为失去攻击力。</summary>
+	LoseAttackInstead,
+	/// <summary>直接忽略本次耐久损失。</summary>
+	IgnoreLoss,
+}
+
+/// <summary>
+/// 用其他代价替换武器默认的耐久损失。
+/// 用于血吼这类“攻击随从后掉攻击而不是掉耐久”的效果。
+/// </summary>
+public class ReplaceWeaponDurabilityLoss : GameAction
+{
+	private readonly WeaponDurabilityLossReplacement _mode;
+	private readonly int _amount;
+
+	public ReplaceWeaponDurabilityLoss(WeaponDurabilityLossReplacement mode, int amount = 1)
+	{
+		_mode = mode;
+		_amount = amount;
+	}
+
+	public override void Do(BaseEntity source, params object[] args)
+	{
+		var evt = source.ActiveWeaponDurabilityLossEvent;
+		if (evt == null) return;
+		if (source.ActiveWeaponDurabilityLossPhase != WeaponDurabilityLossPhase.BeforeLoseDurability)
+			return;
+
+		evt.Replaced = true;
+		switch (_mode)
+		{
+			case WeaponDurabilityLossReplacement.LoseAttackInstead:
+				evt.Weapon.SetIntProperty("atk", Math.Max(0, evt.Weapon.Atk - _amount));
+				break;
+			case WeaponDurabilityLossReplacement.IgnoreLoss:
+				break;
+		}
+	}
+}
+
 // ─────────────────────────────────────────────
 // SwapCards — 交换两张牌的控制者和区域
 // ─────────────────────────────────────────────

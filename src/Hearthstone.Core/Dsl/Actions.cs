@@ -38,11 +38,14 @@ public class DealDamage : TargetedAction
 				var preEvt = new PreDamageEvent(source, ch, amount);
 				game.EventBus.Publish(preEvt, MiscPhase.On);
 				if (preEvt.Redirected) return 0;
+				amount = preEvt.Amount;
+				if (amount <= 0) return 0;
 			}
 
 			int dealt = ch.Hit(amount);
 			if (dealt > 0)
 			{
+				ch.LastDamageSource = source;
 				game?.EventBus.Publish(new DamageEvent(source, ch, dealt), MiscPhase.On);
 
 				// Lifesteal: 恢复实际造成的伤害给友方英雄
@@ -102,6 +105,45 @@ public class DealDamage : TargetedAction
 	public override string ToString() => $"Hit({Args[0]}, {Args[1]})";
 }
 
+public class DealDamageRandomOnce : TargetedAction
+{
+	public DealDamageRandomOnce(object target, int min, int max) : base(target, min, max) { }
+
+	public override List<object?> Trigger(BaseEntity source)
+	{
+		var targets = GetTargets(source);
+		if (targets.Count == 0) return new List<object?>();
+
+		var min = Convert.ToInt32(Args[1]);
+		var max = Convert.ToInt32(Args[2]);
+		var rng = source.Game?.Random ?? new Random();
+		var amount = rng.Next(min, max + 1);
+
+		var results = new List<object?> { amount };
+		foreach (var target in targets)
+		{
+			results.AddRange(new DealDamage(target, amount).Trigger(source));
+		}
+		return results;
+	}
+
+	public override object? Do(BaseEntity source, BaseEntity target, params object[] args)
+		=> throw new InvalidOperationException("DealDamageRandomOnce.Trigger should be used directly.");
+}
+
+public class CancelWeaponEquip : GameAction
+{
+	public override void Do(BaseEntity source, params object[] args)
+	{
+		if (source.ActiveWeaponEquipEvent == null || source.ActiveWeaponPhase == null)
+			throw new InvalidOperationException("No active weapon equip event to cancel.");
+		if (source.ActiveWeaponPhase != WeaponPhase.BeforeEquip)
+			throw new InvalidOperationException("Weapon equip can only be cancelled during BeforeEquip.");
+
+		source.ActiveWeaponEquipEvent.Cancelled = true;
+	}
+}
+
 /// <summary>
 /// Heal character targets by amount.
 /// </summary>
@@ -117,13 +159,19 @@ public class RestoreHealth : TargetedAction
 		if (target is Character ch)
 		{
 			int heal = Math.Min(amount, ch.DamageTaken);
-			if (heal <= 0) return 0;
-			ch.DamageTaken -= heal;
-			ch.HealedThisTurn += heal;
-			Log.Information("{Source} heals {Target} for {Amount}", source, target, heal);
+			int excess = Math.Max(0, amount - heal);
 			var game = (source as BuffableEntity)?.Controller?.Game
 				?? ch.Controller?.Game;
-			game?.EventBus.Publish(new HealEvent(source, ch, heal), MiscPhase.On);
+
+			if (heal > 0)
+			{
+				ch.DamageTaken -= heal;
+				ch.HealedThisTurn += heal;
+				Log.Information("{Source} heals {Target} for {Amount}", source, target, heal);
+				game?.EventBus.Publish(new HealEvent(source, ch, heal), MiscPhase.On);
+			}
+			if (excess > 0)
+				game?.EventBus.Publish(new OverhealEvent(source, ch, excess), MiscPhase.On);
 			return heal;
 		}
 		return 0;
@@ -182,7 +230,8 @@ public class Enchant : TargetedAction
 			{
 				Source = source as BuffableEntity,
 				Owner = beTarget,
-				BuffId = $"dynamic_{source.EntityId}_{target.EntityId}"
+				BuffId = $"dynamic_{source.EntityId}_{target.EntityId}",
+				Controller = beTarget.Controller
 			};
 
 			if (_atkValue != null)
@@ -209,7 +258,8 @@ public class Enchant : TargetedAction
 		{
 			Source = source as BuffableEntity,
 			Owner = beTarget,
-			BuffId = buffId
+			BuffId = buffId,
+			Controller = beTarget.Controller
 		};
 
 		// Apply tag-based attribute modifications from the enchant script
@@ -303,20 +353,26 @@ public class DrawCard : TargetedAction
 		if (target is not Player player) return null;
 
 		Log.Information("{Player} draws a card", player.Name);
-		var card = _filter != null ? player.DrawCard(_filter) : player.DrawCard();
+		var card = _filter != null ? player.DrawCard(_filter, source) : player.DrawCard(source);
 
 		// If this Draw has a callback, execute it with the drawn card as context
 		if (card != null && Callback.Length > 0)
 		{
+			var oldTargets = new List<BaseEntity>(source.CurrentTargets);
 			source.CurrentTarget = card;
+			source.CurrentTargets.AddRange(oldTargets);
 			try
 			{
+				if (CallbackCondition != null && !CallbackCondition.Check(source))
+					return card;
+
 				foreach (var cb in Callback)
 				{
 					if (cb is TargetedAction ta) ta.Trigger(source);
+					else if (cb is GameAction ga) ga.Trigger(source);
 				}
 			}
-			finally { source.CurrentTarget = null; }
+			finally { source.CurrentTargets = oldTargets; }
 		}
 		return card;
 	}
@@ -739,8 +795,17 @@ public class Destroy : TargetedAction
 	public override object? Do(BaseEntity source, BaseEntity target, params object[] args)
 	{
 		Log.Information("{Source} destroys {Target}", source, target);
+		if (target is Enchantment ench)
+		{
+			// 附魔的“销毁”应等价于移除附魔本身，而不是走随从死亡流程
+			ench.Remove();
+			return null;
+		}
 		if (target is Character ch)
+		{
+			ch.PendingDeathCause = source;
 			ch.ToBeDestroyed = true;
+		}
 		return null;
 	}
 

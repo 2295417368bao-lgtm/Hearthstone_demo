@@ -1,6 +1,7 @@
 using Serilog;
 using HearthstoneServer.Entities;
 using HearthstoneServer.Targeting;
+using System.Linq;
 
 namespace HearthstoneServer.Dsl;
 
@@ -733,4 +734,67 @@ public class BattlecryTargetChoice : Choice
 
 	public override string ToString() =>
 		$"<BattlecryTargetChoice: {_chosenTargets.Count}/{_totalTargets} targets for {_card.CardId}>";
+}
+
+public class ChooseOneAndSummon : TargetedAction
+{
+	/// <summary>
+	/// 为玩家创建一个“选一并召唤”的选择。
+	/// 适合英雄技能或卡牌直接从固定候选中选一项落地到战场。
+	/// </summary>
+	public ChooseOneAndSummon(object targetPlayer, IReadOnlyList<string> cardIds) : base(targetPlayer, cardIds) { }
+
+	public override object? Do(BaseEntity source, BaseEntity target, params object[] args)
+	{
+		var player = target as Player ?? (target as BuffableEntity)?.Controller;
+		if (player == null) return null;
+
+		var ids = args.FirstOrDefault() as IReadOnlyList<string>;
+		if (ids == null || ids.Count == 0) return null;
+
+		var choice = new SummonChoice(player, ids.ToList());
+		choice.Source = source;
+		choice.SourcePlayer = player;
+		choice.Begin();
+		return null;
+	}
+}
+
+public class SummonChoice : Choice
+{
+	private readonly List<string> _cardIds;
+
+	/// <summary>固定 cardId 列表的召唤选择。</summary>
+	public SummonChoice(Player player, List<string> cardIds) : base(player)
+	{
+		_cardIds = cardIds;
+		SourcePlayer = player;
+	}
+
+	/// <summary>创建候选卡并挂到玩家当前 Choice 上。</summary>
+	public void Begin()
+	{
+		if (SourcePlayer == null) return;
+
+		Cards = new List<BaseEntity>();
+		foreach (var cardId in _cardIds)
+		{
+			var card = SourcePlayer.CreateCard(cardId, Zone.SetAside);
+			if (card != null)
+				Cards.Add(card);
+		}
+
+		if (Cards.Count == 0) return;
+		SourcePlayer.Choice = this;
+	}
+
+	/// <summary>选择后直接为玩家召唤被选中的卡牌。</summary>
+	public override void Choose(BaseEntity card)
+	{
+		base.Choose(card);
+		if (SourcePlayer == null || card is not BuffableEntity be || string.IsNullOrEmpty(be.CardId))
+			return;
+
+		new Summon(SourcePlayer, be.CardId).Trigger(Source ?? card);
+	}
 }

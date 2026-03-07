@@ -81,6 +81,9 @@ public abstract class LazyNum : LazyValue
 	/// <summary>事件源的生命值（配合 When 触发器使用，如随从打出时取随从生命值）。</summary>
 	public static readonly LazyNum EVT_HEALTH = Of(s => s.EventSource is Character ch ? ch.Health : 0);
 
+	/// <summary>当前事件的主数值（如伤害、治疗、护甲或过载值）。</summary>
+	public static readonly LazyNum EVT_AMOUNT = Of(s => s.EventAmount ?? 0);
+
 	// ── Factory ──
 
 	/// <summary>从 lambda 创建 LazyNum。</summary>
@@ -153,6 +156,46 @@ public class Count : LazyNum
 	{
 		var entities = _selector.Eval(source.GetGame()?.Entities ?? new List<BaseEntity>(), source);
 		return ApplyBase(entities.Count);
+	}
+}
+
+public class SummonedThisGameCount : LazyNum
+{
+	private readonly Race? _race;
+
+	public SummonedThisGameCount(Race? race = null)
+	{
+		_race = race;
+	}
+
+	public override int Value(BaseEntity source)
+	{
+		var controller = (source as BuffableEntity)?.Controller;
+		if (controller == null) return 0;
+
+		var count = controller.SummonedMinionsThisGame.Count(entity =>
+			_race == null || entity.CardData?.Races.Contains(_race.Value) == true);
+		return ApplyBase(count);
+	}
+}
+
+/// <summary>
+/// 计算“为了让当前事件目标保留指定生命值，还应造成多少伤害”。
+/// 仅用于 PreDamageEvent 处理中改写当前伤害量。
+/// </summary>
+public class DamageToLeaveTargetAtHealthValue : LazyNum
+{
+	private readonly int _health;
+
+	public DamageToLeaveTargetAtHealthValue(int health)
+	{
+		_health = health;
+	}
+
+	public override int Value(BaseEntity source)
+	{
+		if (source.EventTarget is not Character target) return 0;
+		return ApplyBase(Math.Max(0, target.Health - _health));
 	}
 }
 

@@ -281,6 +281,24 @@ public class UnsetTags : TargetedAction
 }
 
 /// <summary>
+/// 将目标的攻击力直接设为其当前生命值。
+/// 这是“设值”，不是在现有攻击力基础上增加。
+/// </summary>
+public class SetAttackFromHealth : TargetedAction
+{
+	public SetAttackFromHealth(object target) : base(target) { }
+
+	public override object? Do(BaseEntity source, BaseEntity target, params object[] args)
+	{
+		if (target is not Character character)
+			return null;
+
+		character.Atk = character.Health;
+		return target;
+	}
+}
+
+/// <summary>
 /// 获取标签值。
 /// </summary>
 public class GetTag : TargetedAction

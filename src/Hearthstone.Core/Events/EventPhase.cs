@@ -1,53 +1,41 @@
 namespace HearthstoneServer.Events;
 
-/// <summary>
-/// 法术打出阶段。
-/// 顺序：OnPlay -> SpellText -> AfterSpell
-/// </summary>
+/// <summary>法术打出阶段。</summary>
 public enum SpellPhase
 {
-	/// <summary>打出/施放时触发。</summary>
+	/// <summary>打出时。</summary>
 	OnPlay,
-	/// <summary>法术正文执行阶段。</summary>
+	/// <summary>法术正文结算。</summary>
 	SpellText,
-	/// <summary>法术结算后的阶段。</summary>
+	/// <summary>法术结算后。</summary>
 	AfterSpell,
 }
 
-/// <summary>
-/// 随从打出与召唤阶段。
-/// 顺序：OnPlay -> OnSummon -> Battlecry -> AfterPlay -> AfterSummon
-/// </summary>
+/// <summary>随从打出和召唤阶段。</summary>
 public enum MinionPhase
 {
-	/// <summary>打出随从时触发。</summary>
+	/// <summary>打出时。</summary>
 	OnPlay,
-	/// <summary>随从进入战场时触发。</summary>
+	/// <summary>进入战场时。</summary>
 	OnSummon,
-	/// <summary>战吼/连击/抉择执行阶段。</summary>
+	/// <summary>战吼/连击等结算。</summary>
 	Battlecry,
-	/// <summary>打出后的阶段。</summary>
+	/// <summary>打出后。</summary>
 	AfterPlay,
-	/// <summary>召唤后的阶段。</summary>
+	/// <summary>召唤后。</summary>
 	AfterSummon,
 }
 
-/// <summary>
-/// 战斗阶段。
-/// 顺序：Preparation -> Combat
-/// </summary>
+/// <summary>战斗阶段。</summary>
 public enum CombatPhase
 {
-	/// <summary>宣告攻击与重定向阶段。</summary>
+	/// <summary>宣告攻击与准备阶段。</summary>
 	Preparation,
-	/// <summary>伤害结算与攻击后阶段。</summary>
+	/// <summary>战斗伤害与攻击后阶段。</summary>
 	Combat,
 }
 
-/// <summary>
-/// 英雄技能阶段。
-/// 顺序：OnPlay -> Effect -> AfterPlay
-/// </summary>
+/// <summary>英雄技能阶段。</summary>
 public enum HeroPowerPhase
 {
 	OnPlay,
@@ -55,31 +43,41 @@ public enum HeroPowerPhase
 	AfterPlay,
 }
 
-/// <summary>
-/// 回合开始/结束阶段。
-/// </summary>
+/// <summary>回合起止阶段。</summary>
 public enum TurnPhase
 {
 	Start,
 	End,
 }
 
-/// <summary>
-/// 对战开始时阶段。
-/// 顺序：On -> After
-/// </summary>
+/// <summary>对战开始阶段。</summary>
 public enum StartOfGamePhase
 {
-	/// <summary>开局效果执行阶段。</summary>
 	On,
-	/// <summary>开局效果执行后的阶段。</summary>
 	After,
 }
 
-/// <summary>
-/// 没有专用阶段的通用事件阶段。
-/// 例如伤害、治疗、死亡、过载、揭示奥秘等。
-/// </summary>
+/// <summary>武器装备阶段。</summary>
+public enum WeaponPhase
+{
+	/// <summary>装备前，可取消。</summary>
+	BeforeEquip,
+	/// <summary>装备进行中。</summary>
+	OnEquip,
+	/// <summary>装备完成后。</summary>
+	AfterEquip,
+}
+
+/// <summary>武器失去耐久前后的阶段。</summary>
+public enum WeaponDurabilityLossPhase
+{
+	/// <summary>默认掉耐久前，可改写为其他代价。</summary>
+	BeforeLoseDurability,
+	/// <summary>耐久损失或替代代价结算后。</summary>
+	AfterLoseDurability,
+}
+
+/// <summary>通用杂项事件阶段。</summary>
 public enum MiscPhase
 {
 	On,

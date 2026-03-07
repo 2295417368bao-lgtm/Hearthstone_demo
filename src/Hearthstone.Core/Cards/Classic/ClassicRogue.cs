@@ -21,7 +21,8 @@ public class ClassicRogue : CardPack
 		b.Buff("CS2_073e2", atk: 4);                          // 冷血（连击）
 		b.Buff("CS2_074e", atk: 2);                           // 致命药膏
 		b.Buff("EX1_145o", atk: 3, health: 3);                // 伺机待发（未使用）
-		b.Buff("EX1_128e", atk: 2);                           // 潜行
+		b.Buff("EX1_128e", extraTags: (GameTag.Stealth, true),
+			on: When<TurnStartEvent>(OWN, ON, new Destroy(S.SELF))); // 隐藏
 
 		// ── 随从 ──
 
@@ -128,6 +129,11 @@ public class ClassicRogue : CardPack
 			play: new DealDamage(S.TARGET, 1),
 			combo: new DealDamage(S.TARGET, 2),
 			target: Target.IfAvailable());
+		// 隐藏：使你的所有随从获得潜行，直到你的下个回合开始
+		b.Card("EX1_128",
+			play: new Enchant(S.FRIENDLY_MINIONS, "EX1_128e"));
+		b.Card("EX1_522"); // 耐心的刺客
+		b.Card("GIFT_09"); // 瓦莉拉的礼物
 
 		// 刺客之刃：3/4 武器（仅属性）
 	}

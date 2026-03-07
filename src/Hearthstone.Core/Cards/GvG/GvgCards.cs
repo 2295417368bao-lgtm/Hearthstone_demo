@@ -74,6 +74,10 @@ public class GvgCards : CardPack
 		b.Buff("PART_007e", atk: 1);       // 旋转刀片 +1 攻击力
 
 		// PART_001 — 装甲镀层：使目标随从获得 +1 生命值
+		b.Buff("PART_004e",
+			extraTags: (GameTag.Stealth, true),
+			on: When<TurnStartEvent>(OWN, ON, new Destroy(S.SELF))); // 精密斗篷：在拥有者回合开始时移除潜行
+
 		b.Card("PART_001", play: new Enchant(S.TARGET, "PART_001e"),
 			target: Target.Required().Minion());
 
@@ -86,7 +90,7 @@ public class GvgCards : CardPack
 			target: Target.Required().Minion());
 
 		// PART_004 — 精密斗篷：使随从获得潜行（简化版：永久而非一回合）
-		b.Card("PART_004", play: Stealth(S.TARGET),
+		b.Card("PART_004", play: new Enchant(S.TARGET, "PART_004e"),
 			target: Target.Required().Minion().Friendly());
 
 		// PART_005 — 紧急冷却器：冻结目标随从
@@ -627,5 +631,27 @@ public class GvgCards : CardPack
 		// GVG_120 — 赫美特·奈辛瓦里：战吼 — 消灭目标野兽
 		b.Card("GVG_120", battlecry: new Destroy(S.TARGET),
 			target: Target.IfAvailable().Minion().Race(Race.Beast));
+		b.Card("GVG_018"); // 痛苦女王
+		b.Card("GVG_037"); // 自动漩涡打击装置
+		b.Card("GVG_044"); // 蜘蛛坦克
+		b.Card("GVG_058"); // 护盾机器人
+		b.Card("GVG_064"); // 淤泥践踏者
+		b.Card("GVG_070"); // 熟练的水手
+		b.Card("GVG_071"); // 迷失的陆行鸟
+		b.Card("GVG_079"); // 强袭坦克
+		b.Card("GVG_081"); // 海地精猎手
+		b.Card("GVG_084"); // 飞行器
+		b.Card("GVG_085"); // 吵吵机器人
+		b.Card("GVG_091"); // 施法者克星X-21
+		b.Card("GVG_093"); // 活动假人
+		b.Card("GVG_098"); // 诺莫瑞根步兵
+		b.Card("GVG_109"); // 小个子法师
+		// 煤烟喷吐装置：如果你的手牌中有龙牌，则对一个目标造成 2 点伤害
+		b.Card("GVG_123",
+			battlecry: IfElse(
+				new Find(S.FRIENDLY_HAND + S.DRAGON),
+				new DealDamage(S.TARGET, 2),
+				NOTHING),
+			target: Target.IfAvailable());
 	}
 }
