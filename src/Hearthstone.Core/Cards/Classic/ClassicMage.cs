@@ -16,8 +16,12 @@ public class ClassicMage : CardPack
 		b.Buff("CS2_028e", atk: 1); // 暴风雪（简化版）
 		// 寒冰屏障：触发后在当前回合剩余时间内免疫伤害。
 		b.Buff("EX1_295e",
-			When<TurnEndEvent>(ANY, ON, new Destroy(S.SELF)),
-			(GameTag.CantBeDamaged, (object)true), (GameTag.Immune, (object)true));
+			on: When<TurnEndEvent>(ANY, ON, new Destroy(S.SELF)),
+			extraTags: new[]
+			{
+				(GameTag.CantBeDamaged, (object)true),
+				(GameTag.Immune, (object)true)
+			});
 		b.Buff("NEW1_012o", atk: 1); // 法力浮龙
 		b.Buff("EX1_608e", extraTags: (GameTag.Cost, -1)); // 巫师学徒
 		b.Buff("EX1_274e", atk: 2, health: 2); // 虚灵巫师
@@ -38,7 +42,7 @@ public class ClassicMage : CardPack
 		// 虚灵巫师：在回合结束时若你有奥秘，获得 +2/+2。
 		b.Card("EX1_274",
 			on: When<TurnEndEvent>(OWN, ON,
-				new TargetedAction[] { new Enchant(S.SELF, "EX1_274e") },
+				new Enchant(S.SELF, "EX1_274e"),
 				when: new Find(S.FRIENDLY_SECRETS)));
 
 		// 肯瑞托法师：战吼，你的下一个奥秘消耗为 (0)。

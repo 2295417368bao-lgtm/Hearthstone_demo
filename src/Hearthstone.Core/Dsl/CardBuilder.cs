@@ -50,6 +50,38 @@ public readonly struct BuffValue
 		new(src => src is Character ch ? ch.Health : src.GetIntProperty("health"));
 }
 
+/// <summary>
+/// Buff 的事件包装类型。
+/// 支持单个事件或事件数组两种写法。
+/// </summary>
+public readonly struct BuffOn
+{
+	public BuffOn(BusEvent[] items) => Items = items;
+
+	public BusEvent[] Items { get; }
+
+	public static implicit operator BuffOn(BusEvent single) => new(new[] { single });
+
+	public static implicit operator BuffOn(BusEvent[] many) => new(many);
+}
+
+/// <summary>
+/// Buff 的额外标签包装类型。
+/// 支持单个标签或标签数组两种写法。
+/// </summary>
+public readonly struct BuffExtraTags
+{
+	public BuffExtraTags((GameTag tag, object value)[] items) => Items = items;
+
+	public (GameTag tag, object value)[] Items { get; }
+
+	public static implicit operator BuffExtraTags((GameTag tag, object value) single)
+		=> new(new[] { single });
+
+	public static implicit operator BuffExtraTags((GameTag tag, object value)[] many)
+		=> new(many);
+}
+
 // ═══════════════════════════════════════════════════
 // CardBuilder — 声明式卡牌脚本注册 API
 // ═══════════════════════════════════════════════════
@@ -164,9 +196,9 @@ public class CardBuilder
 		Func<BaseEntity, int, int>? durabilityMod = null,
 		Func<BaseEntity, int, int>? armorMod = null,
 		Refresh[]? update = null,
-		BusEvent[]? on = null,
+		BuffOn? on = null,
 		Action[]? deathrattle = null,
-		params (GameTag tag, object value)[] extraTags)
+		BuffExtraTags? extraTags = null)
 	{
 		// cost 简写：自动生成 costModFunc
 		if (cost != 0 && costModFunc == null)
@@ -181,7 +213,7 @@ public class CardBuilder
 		var tags = new Dictionary<GameTag, object>();
 		if (!atk.IsEmpty) tags[GameTag.Atk] = atk;
 		if (!health.IsEmpty) tags[GameTag.Health] = health;
-		foreach (var (tag, value) in extraTags)
+		foreach (var (tag, value) in extraTags?.Items ?? System.Array.Empty<(GameTag tag, object value)>())
 			tags[tag] = value;
 
 		_registry.Register(cardId, new InlineCardScript
@@ -194,21 +226,13 @@ public class CardBuilder
 			ArmorMod = armorMod,
 			Update = update ?? System.Array.Empty<Refresh>(),
 			Deathrattle = deathrattle ?? System.Array.Empty<Action>(),
-			OnActivate = MergeActivate(null, on),
+			OnActivate = MergeActivate(null, on?.Items),
 		});
 	}
 
 	/// <summary>
 	/// 单个事件版本的 Buff 注册重载，便于脚本层直接写 on: When(...)
 	/// </summary>
-	public void Buff(string cardId, BusEvent on,
-		params (GameTag tag, object value)[] extraTags)
-	{
-		Buff(cardId,
-			on: new[] { on },
-			extraTags: extraTags);
-	}
-
 	/// <summary>
 	/// Merge explicit onActivate callback with declarative BusEvent[] triggers.
 	/// </summary>
