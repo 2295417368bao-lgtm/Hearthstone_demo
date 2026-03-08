@@ -182,13 +182,13 @@ public class CoreDeathKnight : CardPack
 		// 断魂 CORE_RLK_012 — 英雄攻击并消灭随从后，获得 2 份残骸
 		b.Card("CORE_RLK_012",
 			on: When<AfterAttackEvent>(OWN, AFTER, new GainCorpses(S.CONTROLLER, 2),
-				when: And(AttackerIsHero(), DefenderDied())));
+				when: And(EventSourceIn<AfterAttackEvent>(S.FRIENDLY_HERO), DefenderDied())));
 
 		// 霜之哀伤 CORE_RLK_086 — 亡语：召唤被该武器消灭的所有随从
 		b.Card("CORE_RLK_086",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new RecordWeaponKill(S.EVT_TARGET),
-				when: And(AttackerIsHero(), DefenderDied())),
+				when: And(EventSourceIn<AfterAttackEvent>(S.FRIENDLY_HERO), DefenderDied())),
 			deathrattle: new SummonFromWeaponKills(S.CONTROLLER));
 	}
 }

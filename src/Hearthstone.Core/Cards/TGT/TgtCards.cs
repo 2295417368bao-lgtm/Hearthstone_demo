@@ -150,7 +150,7 @@ public class TgtCards : CardPack
 		b.Card("AT_060",
 			secret: When<AfterAttackEvent>(ENEMY, AFTER,
 				new Summon(S.CONTROLLER, "CS2_125"),
-				when: (evt, self) => evt.Defender == self.Controller?.Hero));
+				when: EventTargetIn<AfterAttackEvent>(S.FRIENDLY_HERO)));
 		// AT_061 子弹上膛：本回合中，每当你施放一个法术，随机获得一张猎人牌。
 		b.Card("AT_061",
 			play: new Enchant(S.CONTROLLER, "AT_061e"));
@@ -160,7 +160,7 @@ public class TgtCards : CardPack
 		b.Card("AT_063",
 			on: When<DamageEvent>(ANY, AFTER,
 				new Destroy(S.EVT_TARGET),
-				when: (evt, self) => evt.Target is Minion minion && minion.Controller != self.Controller));
+				when: EventTargetIn<DamageEvent>(S.ENEMY_MINIONS)));
 		b.Card("AT_063t");
 
 		// 法师
@@ -172,7 +172,7 @@ public class TgtCards : CardPack
 		b.Card("AT_002",
 			secret: When<DeathEvent>(OWN, AFTER,
 				new Summon(S.CONTROLLER, RandomCard().Minion().Cost(new Attr(S.EVT_TARGET, GameTag.Cost))),
-				when: DeadIsMinion()));
+				when: EventTargetIn<DeathEvent>(S.MINION)));
 		// AT_003 英雄之魂：你的英雄技能额外造成 1 点伤害。
 		b.Card("AT_003");
 		// AT_004 奥术冲击：造成 2 点伤害，受法术伤害加成时翻倍计算。
@@ -238,7 +238,7 @@ public class TgtCards : CardPack
 		b.Card("AT_011",
 			on: When<OverhealEvent>(ANY, ON,
 				new Enchant(S.SELF, "AT_011e"),
-				when: (evt, self) => evt.Target == self));
+				when: EventTargetIn<OverhealEvent>(S.SELF)));
 		// AT_012 暗影子嗣：战吼与激励，均对每个英雄造成 4 点伤害。
 		b.Card("AT_012",
 			battlecry: Acts(new DealDamage(S.FRIENDLY_HERO, 4), new DealDamage(S.ENEMY_HERO, 4)),
@@ -251,7 +251,7 @@ public class TgtCards : CardPack
 		b.Card("AT_013e",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new RestoreHealth(S.FRIENDLY_HERO, 4),
-				when: SelfIsAttacker()));
+				when: EventSourceIn<AfterAttackEvent>(S.SELF)));
 		// AT_014 暗影魔：每当你抽一张牌时，使其法力值消耗减少（1）。
 		b.Card("AT_014",
 			on: When<DrawCardEvent>(OWN, ON, new Enchant(S.EVT_TARGET, "AT_014e")));
@@ -281,7 +281,7 @@ public class TgtCards : CardPack
 		b.Card("AT_029",
 			on: When<CardPlayedEvent>(OWN, AFTER,
 				new Enchant(S.FRIENDLY_WEAPON, "AT_029e"),
-				when: (evt, self) => evt.Card.CardData?.CardType == CardType.Weapon));
+				when: PlayedType(CardType.Weapon)));
 		// AT_030 幽暗城勇士：连击，造成 1 点伤害。
 		b.Card("AT_030",
 			combo: new DealDamage(S.TARGET, 1),
@@ -290,7 +290,9 @@ public class TgtCards : CardPack
 		b.Card("AT_031",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new AddToHand(S.CONTROLLER, THE_COIN),
-				when: (evt, self) => evt.Attacker == self && evt.Defender is Hero));
+				when: And(
+					EventSourceIn<AfterAttackEvent>(S.SELF),
+					EventTargetIn<AfterAttackEvent>(S.ALL_HEROES))));
 		// AT_032 走私商贩：战吼，如果你控制海盗，则获得 +1/+1。
 		b.Card("AT_032",
 			battlecry: IfElse(HasFriendlyPirate(), new Enchant(S.SELF, "AT_032e"), NOTHING));
@@ -303,7 +305,7 @@ public class TgtCards : CardPack
 				Acts(
 					new CancelWeaponEquip(),
 					new Enchant(S.SELF, "AT_034e")),
-				when: WeaponEquipSourceIsHeroPower()));
+				when: EventSourceIn<WeaponEquipEvent>(S.FRIENDLY_HERO_POWER)));
 		// AT_035 危机四伏：将三张伏击牌洗入对手牌库，对手抽到时为你召唤 4/4 蛛魔。
 		b.Card("AT_035",
 			play: new ShuffleIntoDeck(S.OPPONENT, "AT_035t") * 3);
@@ -381,12 +383,12 @@ public class TgtCards : CardPack
 		b.Card("AT_026",
 			on: When<DamageEvent>(ANY, ON,
 				new DealDamage(S.FRIENDLY_HERO, EVT_AMOUNT),
-				when: (evt, self) => evt.Target == self));
+				when: EventTargetIn<DamageEvent>(S.SELF)));
 		// AT_027 威尔弗雷德·菲兹班：通过英雄技能抽到的牌，其法力值消耗变为（0）。
 		b.Card("AT_027",
 			on: When<DrawCardEvent>(OWN, ON,
 				new Enchant(S.EVT_TARGET, "GBL_009e"),
-				when: DrawSourceIsHeroPower()));
+				when: EventSourceIn<DrawCardEvent>(S.FRIENDLY_HERO_POWER)));
 
 		// 战士
 		// AT_064 怒袭：造成 3 点伤害，并获得 3 点护甲。
@@ -404,7 +406,9 @@ public class TgtCards : CardPack
 		b.Card("AT_067",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new DealDamage(S.Adjacent(S.EVT_TARGET), ATK(S.SELF)),
-				when: SelfAttacksMinion()));
+				when: And(
+					EventSourceIn<AfterAttackEvent>(S.SELF),
+					EventTargetIn<AfterAttackEvent>(S.ALL_MINIONS))));
 		// AT_068 加固：使你具有嘲讽的随从获得 +2/+2。
 		b.Card("AT_068",
 			play: new Enchant(S.FRIENDLY_MINIONS + S.TAUNT, "AT_068e"));
@@ -521,7 +525,7 @@ public class TgtCards : CardPack
 		b.Card("AT_124",
 			on: When<PreDamageEvent>(OWN, ON,
 				new RedirectPreDamageToCharacter(S.SELF),
-				when: FriendlyHeroWouldTakeDamage()));
+				when: EventTargetIn<PreDamageEvent>(S.FRIENDLY_HERO)));
 		// AT_127 虚灵勇士萨兰德：激励，随机将一张法术牌置入你的手牌。
 		b.Card("AT_127", inspire: new AddToHand(S.CONTROLLER, RandomSpell()));
 		// AT_128 骑乘战狼骑士：亡语，比武获胜则将其移回你的手牌。
@@ -531,12 +535,12 @@ public class TgtCards : CardPack
 		b.Card("AT_129",
 			on: When<SpellCastEvent>(OWN, AFTER,
 				GiveDivineShield(S.SELF),
-				when: SpellTargetsSelf()));
+				when: SpellTargets(S.SELF)));
 		// AT_131 黑暗邪使艾蒂丝：每当你以本随从为目标施放法术时，随机对一个敌人造成 3 点伤害。
 		b.Card("AT_131",
 			on: When<SpellCastEvent>(OWN, AFTER,
 				new DealDamage(S.RANDOM_ENEMY_CHARACTER, 3),
-				when: SpellTargetsSelf()));
+				when: SpellTargets(S.SELF)));
 		// AT_132 裁决者图哈特：以更强的英雄技能替换你的初始英雄技能。
 		b.Card("AT_132",
 			battlecry: new UpgradeStartingHeroPower(S.CONTROLLER));

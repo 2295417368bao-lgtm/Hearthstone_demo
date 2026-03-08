@@ -202,7 +202,7 @@ public class CoreNeutral : CardPack
 		// 苦痛侍僧 CORE_EX1_007 — 每当受到伤害，抽一张牌
 		b.Card("CORE_EX1_007",
 			on: When<DamageEvent>(ANY, ON, new DrawCard(S.CONTROLLER),
-				when: (Func<DamageEvent, BuffableEntity, bool>)((evt, self) => evt.Target == self)));
+				when: EventTargetIn<DamageEvent>(S.SELF)));
 
 		// 焦油爬行者 CORE_UNG_928 — 嘲讽，对手回合 +2 攻击力
 		b.Card("CORE_UNG_928", update: new[]
@@ -246,7 +246,7 @@ public class CoreNeutral : CardPack
 		b.Card("CORE_GIL_534",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new Enchant(S.SELF, "CORE_GIL_534e"),
-				when: AttackerIsHero()));
+				when: EventSourceIn<AfterAttackEvent>(S.FRIENDLY_HERO)));
 		b.Buff("CORE_GIL_534e", atk: 1, health: 1);
 
 		// 南海船长 CORE_NEW1_027 — 其他海盗 +1/+1
@@ -331,13 +331,13 @@ public class CoreNeutral : CardPack
 					new Summon(S.CONTROLLER, S.Random(S.FRIENDLY_DECK + S.MURLOC)),
 					new Summon(S.CONTROLLER, S.Random(S.FRIENDLY_DECK + S.MURLOC))
 				},
-				when: And(SelfIsAttacker(), DefenderDied())));
+				when: And(EventSourceIn<AfterAttackEvent>(S.SELF), DefenderDied())));
 
 		// 伦萨克大王 CS3_025 — 突袭，攻击时手牌中所有随从 +1/+1
 		b.Card("CS3_025",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new Enchant(S.FRIENDLY_HAND + S.MINION, "CS3_025e"),
-				when: SelfIsAttacker()));
+				when: EventSourceIn<AfterAttackEvent>(S.SELF)));
 		b.Buff("CS3_025e", atk: 1, health: 1);
 
 		// 馆长 CORE_KAR_061 — 嘲讽，战吼：从牌库抽野兽/龙/鱼人各一张

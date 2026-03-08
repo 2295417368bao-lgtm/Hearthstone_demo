@@ -107,7 +107,7 @@ public class CorePaladin : CardPack
 		b.Buff("TTN_908e",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new Enchant(S.EVT_SOURCE, "TTN_908e2"),
-				when: AttackerIsFriendlyMinion()));
+				when: EventSourceIn<AfterAttackEvent>(S.FRIENDLY_MINIONS)));
 		b.Buff("TTN_908e2", atk: 2, health: 1);
 
 		// 剑龙骑术 CORE_UNG_952 — 使一个随从获得 +2/+6 和嘲讽，亡语召唤剑龙
@@ -128,6 +128,6 @@ public class CorePaladin : CardPack
 		b.Card("CORE_BT_018",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new AddToHand(S.CONTROLLER, RandomMurloc()),
-				when: AttackerIsHero()));
+				when: EventSourceIn<AfterAttackEvent>(S.FRIENDLY_HERO)));
 	}
 }

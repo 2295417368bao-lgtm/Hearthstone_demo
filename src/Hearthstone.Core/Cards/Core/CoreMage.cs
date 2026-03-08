@@ -88,7 +88,7 @@ public class CoreMage : CardPack
 		b.Card("CORE_BAR_812",
 			secret: When<AttackEvent>(ENEMY, ON,
 				new Summon(S.CONTROLLER, "CS2_033"),
-				when: DefenderIsMinion()));
+				when: EventTargetIn<AttackEvent>(S.ALL_MINIONS)));
 
 		// 法术反制 CORE_EX1_287 — 反制敌方下一个法术
 		b.Card("CORE_EX1_287",
@@ -99,7 +99,7 @@ public class CoreMage : CardPack
 		b.Card("CORE_EX1_289",
 			secret: When<AttackEvent>(ENEMY, ON,
 				new GainArmor(S.FRIENDLY_HERO, 8),
-				when: DefenderIsHero()));
+				when: EventTargetIn<AttackEvent>(S.FRIENDLY_HERO)));
 
 		// 爆炸符文 CORE_LOOT_101 — 对手打出随从后，对其造成 6 点伤害，溢出伤害由英雄承受
 		b.Card("CORE_LOOT_101",

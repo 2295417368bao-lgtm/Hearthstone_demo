@@ -32,7 +32,7 @@ public class CoreDemonHunter : CardPack
 		b.Card("CORE_BT_351",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new Enchant(S.SELF, "CORE_BT_351e"),
-				when: AttackerIsHero()));
+				when: EventSourceIn<AfterAttackEvent>(S.FRIENDLY_HERO)));
 		b.Buff("CORE_BT_351e", atk: 1);
 
 		// 游荡贤者 CORE_TSC_217 — 流放：使最左/最右手牌费用减少 (1)
@@ -59,7 +59,7 @@ public class CoreDemonHunter : CardPack
 		b.Card("CORE_BT_416e",
 			update: new[] { new Refresh(S.FRIENDLY_HAND + S.DEMON, new() { { GameTag.Cost, -2 } }) },
 			on: When<CardPlayedEvent>(OWN, AFTER, new Destroy(S.SELF),
-				when: PlayedRace(Race.Demon)));
+				when: EventCardIn<CardPlayedEvent>(S.Race(Race.Demon))));
 
 		// 扎伊 CORE_DMF_231 — 战吼：复制最左和最右手牌
 		b.Card("CORE_DMF_231",
@@ -81,7 +81,7 @@ public class CoreDemonHunter : CardPack
 		b.Card("CS3_020",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new ForceAttack(S.SELF, S.EVT_TARGET),
-				when: AttackerIsHero()));
+				when: EventSourceIn<AfterAttackEvent>(S.FRIENDLY_HERO)));
 
 		// ── 法术 ──
 

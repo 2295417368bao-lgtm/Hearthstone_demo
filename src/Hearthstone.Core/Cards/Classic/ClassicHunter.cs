@@ -57,7 +57,7 @@ public class ClassicHunter : CardPack
 		b.Card("EX1_531", on: new[]
 		{
 			When<DeathEvent>(TriggerOwner.Own, TriggerTiming.On, new Enchant(S.SELF, "EX1_531e"),
-				when: DeadIsRace(Race.Beast))
+				when: EventTargetIn<DeathEvent>(S.MINION + S.Race(Race.Beast)))
 		});
 
 		// 萨凡纳雄�?�?亡语：召唤两�?2/2 鬣狗
@@ -138,7 +138,7 @@ public class ClassicHunter : CardPack
 		b.Card("EX1_610",
 			secret: When<AttackEvent>(ENEMY, ON,
 				new DealDamage(S.ENEMY_CHARACTERS, 2),
-				when: DefenderIsHero()));
+				when: EventTargetIn<AttackEvent>(S.FRIENDLY_HERO)));
 
 		// 冰冻陷阱 — 当敌方随从攻击时，将其移回手牌，法力值消耗增加(2) 点
 		b.Card("EX1_611",
@@ -147,7 +147,7 @@ public class ClassicHunter : CardPack
 					new ReturnToHand(S.EVT_SOURCE),
 					new Enchant(S.EVT_SOURCE, "EX1_611e")
 				},
-				when: AttackerIsMinion()));
+				when: EventSourceIn<AttackEvent>(S.ALL_MINIONS)));
 
 		// ── 武器 ──
 
@@ -167,13 +167,13 @@ public class ClassicHunter : CardPack
 		b.Card("EX1_533",
 			secret: When<ProposedAttackEvent>(ENEMY, ON,
 				new RedirectAttackToRandomOtherCharacter(),
-				when: ProposedDefenderIsHero()));
+				when: EventTargetIn<ProposedAttackEvent>(S.FRIENDLY_HERO)));
 		b.Card("EX1_543"); // 暴龙王克鲁什
 		// 毒蛇陷阱：当你的一个随从被攻击时，召唤三条 1/1 的蛇
 		b.Card("EX1_554",
 			secret: When<AttackEvent>(ENEMY, ON,
 				new Summon(S.CONTROLLER, "EX1_554t") * 3,
-				when: DefenderIsFriendlyMinion()));
+				when: EventTargetIn<AttackEvent>(S.FRIENDLY_MINIONS)));
 		b.Card("GIFT_03"); // 雷克萨的礼物
 	}
 }

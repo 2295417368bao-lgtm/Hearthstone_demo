@@ -204,11 +204,11 @@ public class BlackrockAdventure : CardPack
 		b.Card("BRMA10_4",
 			on: When<DamageEvent>(OWN, AFTER,
 				new TargetedAction[] { new Destroy(S.SELF), new Summon(S.CONTROLLER, "BRMA10_1") },
-				when: SelfHealthAtLeast<DamageEvent>(4)));
+				when: Condition<DamageEvent>(new LazyNumEvaluator(CURRENT_HEALTH(S.SELF), 4, GE()))));
 		b.Card("BRMA10_4H",
 			on: When<DamageEvent>(OWN, AFTER,
 				new TargetedAction[] { new Destroy(S.SELF), new Summon(S.CONTROLLER, "BRMA10_1H") },
-				when: SelfHealthAtLeast<DamageEvent>(5)));
+				when: Condition<DamageEvent>(new LazyNumEvaluator(CURRENT_HEALTH(S.SELF), 5, GE()))));
 
 		// BRMA04_3/3H — 火誓者：亡语 — 对敌方英雄造成等于本回合死亡的火誓者数量的伤害
 		b.Card("BRMA04_3", deathrattle: new DealDamage(S.ENEMY_HERO,
@@ -255,12 +255,12 @@ public class BlackrockAdventure : CardPack
 		// BRMA16_5 — 龙齿（武器）：对手打出卡牌时获得 +1 攻击力
 		b.Card("BRMA16_5",
 			on: When<CardPlayedEvent>(ANY, AFTER, new Enchant(S.SELF, "BRMA16_5e"),
-				when: PlayedByOpponent()));
+				when: EventCardIn<CardPlayedEvent>(S.ENEMY)));
 
 		// BRMA10_6 — 狂龙之爪：蛋死亡时获得 +1 攻击力
 		b.Card("BRMA10_6",
 			on: When<DeathEvent>(ANY, AFTER, new Enchant(S.SELF, "BRMA10_6e"),
-				when: DeadId("BRMA10_4")));
+				when: EventTargetIn<DeathEvent>(S.Id("BRMA10_4"))));
 
 		// ═══════════════════════════════════════
 		// 冒险模式法术

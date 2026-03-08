@@ -20,7 +20,7 @@ public class CoreRogue : CardPack
 		b.Buff("CORE_EX1_145e",
 			update: new Refresh(S.FRIENDLY_HAND + S.SPELL, GameTag.Cost, -2),
 			on: When<CardPlayedEvent>(OWN, AFTER, new Destroy(S.SELF),
-				when: PlayedIsSpell()));
+				when: EventCardIn<CardPlayedEvent>(S.SPELL)));
 		b.Buff("CORE_DAL_720e", cost: -2); // 摇摆矿锄弹回
 		b.Buff("CORE_DMF_511e",
 			update: new Refresh(S.FRIENDLY_HAND + new EnumSelector(GameTag.Combo), GameTag.Cost, -2),
@@ -49,7 +49,7 @@ public class CoreRogue : CardPack
 		b.Card("CORE_CFM_781",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new AddToHand(S.CONTROLLER, RandomCard().ClassOf(S.OPPONENT)),
-				when: SelfIsAttacker()));
+				when: EventSourceIn<AfterAttackEvent>(S.SELF)));
 
 		// 军情七处特工 CORE_EX1_134 — 连击：造成 3 点伤害
 		b.Card("CORE_EX1_134",

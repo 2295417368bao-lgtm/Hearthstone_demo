@@ -53,6 +53,53 @@ public class SequenceRunner
 	}
 
 	/// <summary>
+	/// Resolve a spell's effect layer without running the full play pipeline.
+	/// Includes target validation, Overload, Twinspell, and Play/Combo/Outcast text.
+	/// </summary>
+	public void ResolveSpellEffect(Spell spell, Character? target,
+		bool includeOverload = true, bool includeTwinspell = true,
+		bool useCombo = false, bool isOutcast = false)
+	{
+		var player = spell.Controller;
+		if (player == null) return;
+
+		var script = _game.ScriptRegistry.GetScript(spell.CardId ?? "");
+		var req = spell.TargetReq;
+		if (req != null && req.HasTargeting)
+		{
+			if (target == null || !Targeting.TargetingRules.IsValidTarget(spell, target, req))
+				return;
+		}
+
+		if (includeOverload && spell.Overload > 0)
+		{
+			player.Overloaded += spell.Overload;
+			_bus.Publish(new OverloadEvent(spell, player, spell.Overload), MiscPhase.On);
+		}
+
+		if (includeTwinspell && spell.Twinspell && spell.TwinspellCopyId != null)
+			player.Give(spell.TwinspellCopyId);
+
+		var actions = useCombo && script != null && script.Combo.Length > 0
+			? script.Combo
+			: script?.Play ?? Array.Empty<Dsl.Action>();
+
+		if (actions.Length > 0)
+		{
+			_game.ActionBlock(spell, actions.ToList(), BlockType.Power, target: target);
+			_game.RefreshAuras();
+			_game.ProcessDeaths();
+		}
+
+		if (isOutcast && script != null && script.Outcast.Length > 0)
+		{
+			_game.ActionBlock(spell, script.Outcast.ToList(), BlockType.Power, target: target);
+			_game.RefreshAuras();
+			_game.ProcessDeaths();
+		}
+	}
+
+	/// <summary>
 	/// 战斗中的伤害结算入口。
 	/// 与法术伤害一致，先发布 PreDamageEvent，再按改写后的伤害值结算。
 	/// </summary>
@@ -122,16 +169,7 @@ public class SequenceRunner
 
 		// Step 1: 准备 — 支付费用，处理过载
 		PayCardCost(player, spell);
-		if (spell.Overload > 0)
-		{
-			player.Overloaded += spell.Overload;
-			_bus.Publish(new OverloadEvent(spell, player, spell.Overload), MiscPhase.On);
-		}
 		spell.TurnPlayed = _game.Turn;
-
-		// Twinspell: add copy before effects
-		if (spell is Spell s && s.Twinspell && s.TwinspellCopyId != null)
-			player.Give(s.TwinspellCopyId);
 
 		// 注册 OnActivate（入场后、OnPlay 前）
 		// 先清理手牌/牌库阶段注册的订阅，防止双重注册
@@ -155,28 +193,13 @@ public class SequenceRunner
 		_game.ProcessDeaths();
 
 		// Step 3: Spell Text Phase — 如未被反制
-		if (!countered)
+		if (!countered && spell is Spell concreteSpell)
 		{
-			// 选择 Combo 或 Play 动作
-			var actions = useCombo && script != null && script.Combo.Length > 0
-				? script.Combo
-				: script?.Play ?? Array.Empty<GameAction>();
-
-			if (actions.Length > 0)
-			{
-				// ★ ActionBlock(Power) — 产生标准 POWER Block
-				_game.ActionBlock(spell, actions.ToList(), BlockType.Power, target: target);
-			}
-			_game.RefreshAuras();
-			_game.ProcessDeaths();
-
-			// Outcast: 流放额外效果（法术从最左/右打出时）
-			if (isOutcast && script != null && script.Outcast.Length > 0)
-			{
-				_game.ActionBlock(spell, script.Outcast.ToList(), BlockType.Power, target: target);
-				_game.RefreshAuras();
-				_game.ProcessDeaths();
-			}
+			ResolveSpellEffect(concreteSpell, target,
+				includeOverload: true,
+				includeTwinspell: true,
+				useCombo: useCombo,
+				isOutcast: isOutcast);
 		}
 
 		// Step 4: After Spell Phase — "在打出法术后" 触发

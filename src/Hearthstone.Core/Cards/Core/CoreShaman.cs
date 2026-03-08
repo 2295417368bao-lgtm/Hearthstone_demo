@@ -25,7 +25,7 @@ public class CoreShaman : CardPack
 		// 哀嚎蒸汽 CORE_WC_042 — 使用元素牌后获得 +1 攻击力
 		b.Card("CORE_WC_042",
 			on: When<CardPlayedEvent>(OWN, AFTER, new Enchant(S.SELF, "CORE_WC_042e"),
-				when: PlayedRace(Race.Elemental)));
+				when: EventCardIn<CardPlayedEvent>(S.Race(Race.Elemental))));
 
 		// 电击学徒 CS3_007 — 法术伤害+1，过载：(1)（纯属性）
 		b.Card("CS3_007");

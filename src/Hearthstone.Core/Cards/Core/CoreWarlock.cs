@@ -20,7 +20,7 @@ public class CoreWarlock : CardPack
 		b.Buff("CORE_SCH_158e",
 			update: new Refresh(S.FRIENDLY_HAND + new EnumSelector(Race.Demon), GameTag.Cost, -1),
 			on: When<CardPlayedEvent>(OWN, AFTER, new Destroy(S.SELF),
-				when: PlayedRace(Race.Demon)));
+				when: EventCardIn<CardPlayedEvent>(S.Race(Race.Demon))));
 
 		// ── 随从 / 英雄 ──
 

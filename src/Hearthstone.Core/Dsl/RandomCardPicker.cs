@@ -180,6 +180,9 @@ public class RandomCardPicker : LazyValue
 				case "mechanic":
 					if (!card.Has((Mechanic)value)) return false;
 					break;
+				case "tag":
+					if (!card.HasTag((GameTag)value)) return false;
+					break;
 				default:
 					break;
 			}
@@ -343,6 +346,9 @@ public class RandomCardFilter : LazyValue
 	/// <summary>按机制过滤（战吼、亡语等）。</summary>
 	public RandomCardFilter HasMechanic(Mechanic m) { _filters["mechanic"] = m; return this; }
 
+	/// <summary>按 GameTag 过滤（如 SparePart、Secret 等卡牌标签）。</summary>
+	public RandomCardFilter HasTag(GameTag tag) { _filters["tag"] = tag; return this; }
+
 	/// <summary>按职业过滤（静态）。</summary>
 	public RandomCardFilter Class(CardClass c) { _filters["card_class"] = c; return this; }
 
@@ -425,7 +431,7 @@ public static class RandomCards
 	public static RandomCardFilter RandomMurloc() => RandomCard().Minion().Race(Race.Murloc);
 	public static RandomCardFilter RandomElemental() => RandomCard().Minion().Race(Race.Elemental);
 	public static RandomCardFilter RandomTotem() => RandomCard().AnyCollectibility().Race(Race.Totem);
-	public static RandomCardPicker RandomSparePart() => new(new Dictionary<string, object> { ["spare_part"] = true });
+	public static RandomCardPicker RandomSparePart() => RandomCard().HasTag(GameTag.SparePart);
 }
 
 // ═══════════════════════════════════════════════════

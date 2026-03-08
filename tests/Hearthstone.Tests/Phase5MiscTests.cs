@@ -3,6 +3,7 @@ using HearthstoneServer;
 using HearthstoneServer.Dsl;
 using HearthstoneServer.Entities;
 using HearthstoneServer.Events;
+using HearthstoneServer.Targeting;
 using CardData = HearthstoneServer.LoadCardIntoDbf.Card;
 using static HearthstoneServer.Cards.CardScriptUtils;
 using static HearthstoneServer.Dsl.BusEvent;
@@ -74,8 +75,9 @@ public class Phase5MiscTests
 			Controller = owner,
 			MaxHealth = health,
 			Atk = atk,
-			CardData = cardId != null ? new CardData { CardId = cardId } : null,
+				CardData = cardId != null ? new CardData { CardId = cardId } : null,
 		};
+		minion.Data = minion.CardData;
 		minion.SetIntProperty("cost", 0);
 		game.RegisterEntity(minion);
 		minion.SetZone(Zone.Hand);
@@ -99,6 +101,7 @@ public class Phase5MiscTests
 				Races = races ?? Array.Empty<Race>(),
 			},
 		};
+		minion.Data = minion.CardData;
 		minion.SetIntProperty("cost", cost);
 		game.RegisterEntity(minion);
 		minion.SetZone(Zone.Hand);
@@ -119,6 +122,7 @@ public class Phase5MiscTests
 				Cost = 1,
 			},
 		};
+		weapon.Data = weapon.CardData;
 		weapon.Atk = atk;
 		weapon.MaxDurability = durability;
 		game.RegisterEntity(weapon);
@@ -143,6 +147,7 @@ public class Phase5MiscTests
 			},
 			Cost = cost,
 		};
+		power.Data = power.CardData;
 		game.RegisterEntity(power);
 		power.SetZone(Zone.Play, owner);
 		owner.Hero!.Power = power;
@@ -162,6 +167,7 @@ public class Phase5MiscTests
 			},
 			Cost = cost,
 		};
+		spell.Data = spell.CardData;
 		game.RegisterEntity(spell);
 		spell.SetZone(Zone.Hand, owner);
 		return spell;
@@ -550,6 +556,81 @@ public class Phase5MiscTests
 	}
 
 	[Fact]
+	public void AT_060_TriggersOnlyWhenFriendlyHeroIsAttacked()
+	{
+		var game = CreateTestGame();
+		game.CardDb["CS2_125"] = new CardData { CardId = "CS2_125", CardType = CardType.Minion, Attack = 3, Health = 3, Cost = 3 };
+		game.Setup();
+		CardScriptRegistry.Instance.Initialize();
+
+		game.Player1.CreateCard(new CardData
+		{
+			CardId = "AT_060",
+			CardType = CardType.Spell,
+			TagsInt = new Dictionary<GameTag, int> { [GameTag.Secret] = 1 },
+		}, Zone.Secret);
+
+		var attacker = CreateMinion(game, game.Player2, "TEST_ATTACKER", null, atk: 3, health: 3, cost: 3);
+		attacker.SetZone(Zone.Play, game.Player2);
+		var friendlyMinion = CreateMinion(game, game.Player1, "TEST_FRIENDLY", null, atk: 2, health: 2, cost: 2);
+		friendlyMinion.SetZone(Zone.Play, game.Player1);
+
+		game.EventBus.Publish(new AfterAttackEvent(attacker, attacker, friendlyMinion), CombatPhase.Combat);
+		Assert.DoesNotContain(game.Player1.Field, entity => (entity as BuffableEntity)?.CardId == "CS2_125");
+
+		game.EventBus.Publish(new AfterAttackEvent(attacker, attacker, game.Player1.Hero!), CombatPhase.Combat);
+		Assert.Contains(game.Player1.Field, entity => (entity as BuffableEntity)?.CardId == "CS2_125");
+	}
+
+	[Fact]
+	public void AT_063_DestroysOnlyDamagedEnemyMinions()
+	{
+		var game = CreateTestGame();
+		game.Setup();
+		game.BeginTurn(game.Player1);
+		CardScriptRegistry.Instance.Initialize();
+		game.Player1.MaxMana = 10;
+		game.CurrentPlayer = game.Player1;
+
+		var acidmaw = CreateMinion(game, game.Player1, "AT_063", null, atk: 2, health: 4, cost: 7);
+		var friendly = CreateMinion(game, game.Player1, "TEST_FRIENDLY_TARGET", null, atk: 2, health: 3, cost: 2);
+		var enemy = CreateMinion(game, game.Player2, "TEST_ENEMY_TARGET", null, atk: 2, health: 3, cost: 2);
+		game.PlayCard(acidmaw);
+		friendly.SetZone(Zone.Play, game.Player1);
+		enemy.SetZone(Zone.Play, game.Player2);
+
+		game.EventBus.Publish(new DamageEvent(game.Player2.Hero!, friendly, 1), MiscPhase.After);
+		Assert.Equal(Zone.Play, friendly.Zone);
+
+		game.EventBus.Publish(new DamageEvent(game.Player2.Hero!, enemy, 1), MiscPhase.After);
+		game.ProcessDeaths();
+		Assert.True(enemy.Dead || enemy.Zone != Zone.Play);
+	}
+
+	[Fact]
+	public void AT_031_AddsCoinOnlyAfterAttackingHero()
+	{
+		var game = CreateTestGame();
+		game.CardDb[THE_COIN] = new CardData { CardId = THE_COIN, CardType = CardType.Spell, Cost = 0 };
+		game.Setup();
+		game.BeginTurn(game.Player1);
+		CardScriptRegistry.Instance.Initialize();
+		game.Player1.MaxMana = 10;
+		game.CurrentPlayer = game.Player1;
+
+		var burglar = CreateMinion(game, game.Player1, "AT_031", null, atk: 3, health: 1, cost: 3);
+		var enemyMinion = CreateMinion(game, game.Player2, "TEST_ENEMY_TARGET", null, atk: 2, health: 2, cost: 2);
+		game.PlayCard(burglar);
+		enemyMinion.SetZone(Zone.Play, game.Player2);
+
+		game.EventBus.Publish(new AfterAttackEvent(burglar, burglar, enemyMinion), CombatPhase.Combat);
+		Assert.DoesNotContain(game.Player1.Hand, entity => (entity as BuffableEntity)?.CardId == THE_COIN);
+
+		game.EventBus.Publish(new AfterAttackEvent(burglar, burglar, game.Player2.Hero!), CombatPhase.Combat);
+		Assert.Contains(game.Player1.Hand, entity => (entity as BuffableEntity)?.CardId == THE_COIN);
+	}
+
+	[Fact]
 	public void Tgt_WhenWithEventAmount_ReplacesAt026Correctly()
 	{
 		var game = CreateTestGame();
@@ -565,6 +646,67 @@ public class Phase5MiscTests
 
 		Assert.Equal(1, wrathguard.Health);
 		Assert.Equal(heroHealthBefore - 2, game.Player1.Hero.Health);
+	}
+
+	[Fact]
+	public void AT_129_TriggersOnlyWhenSpellTargetsSelf()
+	{
+		var game = CreateTestGame();
+		var builder = new CardBuilder();
+		game.Setup();
+		game.BeginTurn(game.Player1);
+		CardScriptRegistry.Instance.Initialize();
+
+		builder.Buff("TEST_SELF_TARGET_BUFF", atk: 1);
+		builder.Card("TEST_SELF_TARGET_SPELL",
+			play: new Enchant(S.TARGET, "TEST_SELF_TARGET_BUFF"),
+			target: Target.Required().Friendly().Minion());
+
+		var velen = CreateMinion(game, game.Player1, "AT_129", null, atk: 1, health: 4, cost: 3);
+		var ally = CreateMinion(game, game.Player1, "TEST_ALLY", null, atk: 1, health: 2, cost: 1);
+		ally.SetZone(Zone.Play, game.Player1);
+		game.Player1.MaxMana = 10;
+		game.CurrentPlayer = game.Player1;
+		game.PlayCard(velen);
+
+		var firstSpell = CreateSpell(game, game.Player1, "TEST_SELF_TARGET_SPELL");
+		game.PlayCard(firstSpell, ally);
+		Assert.False(velen.GetBoolProperty(GameTag.DivineShield));
+
+		var secondSpell = CreateSpell(game, game.Player1, "TEST_SELF_TARGET_SPELL");
+		game.PlayCard(secondSpell, velen);
+		Assert.True(velen.GetBoolProperty(GameTag.DivineShield));
+	}
+
+	[Fact]
+	public void AT_131_TriggersOnlyWhenSpellTargetsSelf()
+	{
+		var game = CreateTestGame();
+		var builder = new CardBuilder();
+		game.Setup();
+		game.BeginTurn(game.Player1);
+		CardScriptRegistry.Instance.Initialize();
+
+		builder.Buff("TEST_SELF_DAMAGE_BUFF", atk: 1);
+		builder.Card("TEST_SELF_DAMAGE_SPELL",
+			play: new Enchant(S.TARGET, "TEST_SELF_DAMAGE_BUFF"),
+			target: Target.Required().Friendly().Minion());
+
+		var auchenai = CreateMinion(game, game.Player1, "AT_131", null, atk: 3, health: 5, cost: 4);
+		var ally = CreateMinion(game, game.Player1, "TEST_ALLY_DAMAGE", null, atk: 1, health: 2, cost: 1);
+		ally.SetZone(Zone.Play, game.Player1);
+		game.Player1.MaxMana = 10;
+		game.CurrentPlayer = game.Player1;
+		game.PlayCard(auchenai);
+
+		int healthBefore = game.Player2.Hero!.Health;
+		var firstSpell = CreateSpell(game, game.Player1, "TEST_SELF_DAMAGE_SPELL");
+		game.PlayCard(firstSpell, ally);
+		Assert.Equal(healthBefore, game.Player2.Hero.Health);
+
+		var secondSpell = CreateSpell(game, game.Player1, "TEST_SELF_DAMAGE_SPELL");
+		game.PlayCard(secondSpell, auchenai);
+		Assert.Equal(healthBefore - 3, game.Player2.Hero.Health);
 	}
 
 	[Fact]
@@ -596,6 +738,198 @@ public class Phase5MiscTests
 
 		Assert.Same(killer, observedSource);
 		Assert.Same(victim, observedDead);
+	}
+
+	[Fact]
+	public void DeathEventTargetIn_MatchesOnlyDeathrattleMinions()
+	{
+		CardScriptRegistry.Instance.Initialize();
+		var builder = new CardBuilder(CardScriptRegistry.Instance);
+		builder.Buff("TEST_DEATH_EVENT_BRIDGE_BUFF", atk: 1);
+		builder.Card("TEST_DEATH_EVENT_LISTENER",
+			on: When<DeathEvent>(ANY, AFTER,
+				new Enchant(S.SELF, "TEST_DEATH_EVENT_BRIDGE_BUFF"),
+				when: EventFilters.EventTargetIn<DeathEvent>(S.MINION + S.DEATHRATTLE)));
+
+		var game = CreateTestGame();
+		game.Setup();
+		game.BeginTurn(game.Player1);
+		game.Player1.MaxMana = 10;
+
+		var listener = CreateMinion(game, game.Player1, "TEST_DEATH_EVENT_LISTENER", null, atk: 1, health: 1, cost: 1);
+		game.PlayCard(listener);
+
+		var deathrattleMinion = CreateMinion(game, game.Player2, "TEST_DEATHRATTLE_MINION", null, atk: 2, health: 2, cost: 2);
+		deathrattleMinion.SetBoolProperty("has_deathrattle", true);
+		deathrattleMinion.SetZone(Zone.Graveyard, game.Player2);
+
+		var deathrattleWeapon = CreateWeapon(game, game.Player2, "TEST_DEATHRATTLE_WEAPON");
+		deathrattleWeapon.SetBoolProperty("has_deathrattle", true);
+		deathrattleWeapon.SetZone(Zone.Graveyard, game.Player2);
+
+		game.EventBus.Publish(new DeathEvent(deathrattleMinion, deathrattleMinion), MiscPhase.After);
+		game.EventBus.Publish(new DeathEvent(deathrattleWeapon, deathrattleWeapon), MiscPhase.After);
+
+		Assert.Equal(2, listener.Atk);
+	}
+
+	[Fact]
+	public void MinionSummonedEvent_BindsSourceToSummonerAndTargetToSummonedMinion()
+	{
+		CardScriptRegistry.Instance.Initialize();
+		var builder = new CardBuilder(CardScriptRegistry.Instance);
+		builder.Buff("TEST_SUMMON_TARGET_BUFF", atk: 1);
+		builder.Card("TEST_SUMMON_LISTENER",
+			on: When<MinionSummonedEvent>(OWN, AFTER,
+				new Enchant(S.EVT_TARGET, "TEST_SUMMON_TARGET_BUFF"),
+				when: EventFilters.EventSourceIn<MinionSummonedEvent>(S.SELF)));
+
+		var game = CreateTestGame();
+		game.Setup();
+
+		var listener = CreateMinion(game, game.Player1, "TEST_SUMMON_LISTENER", null, atk: 1, health: 3, cost: 1);
+		listener.SetZone(Zone.Play, game.Player1);
+		ActivateScript(game, listener);
+
+		var summoned = CreateMinion(game, game.Player1, "TEST_SUMMONED_MINION", null, atk: 1, health: 1, cost: 1);
+		summoned.SetZone(Zone.Play, game.Player1);
+
+		game.EventBus.Publish(new MinionSummonedEvent(listener, summoned), MinionPhase.AfterSummon);
+
+		Assert.Equal(1, listener.Atk);
+		Assert.Equal(2, summoned.Atk);
+	}
+
+	[Fact]
+	public void GVG_040_DrawsOnlyWhenFriendlyMurlocDies()
+	{
+		var game = CreateTestGame();
+		game.Setup();
+		game.BeginTurn(game.Player1);
+		CardScriptRegistry.Instance.Initialize();
+		game.Player1.MaxMana = 10;
+		game.CurrentPlayer = game.Player1;
+
+		var oracle = CreateMinion(game, game.Player1, "GVG_040", null, atk: 2, health: 3, cost: 2);
+		game.PlayCard(oracle);
+
+		var murloc = CreateMinion(game, game.Player1, "TEST_MURLOC", new[] { global::HearthstoneServer.Race.Murloc }, atk: 1, health: 1, cost: 1);
+		murloc.SetZone(Zone.Graveyard, game.Player1);
+		var mech = CreateMinion(game, game.Player1, "TEST_MECH", new[] { global::HearthstoneServer.Race.Mechanical }, atk: 1, health: 1, cost: 1);
+		mech.SetZone(Zone.Graveyard, game.Player1);
+
+		int before = game.Player1.Hand.Count;
+		game.EventBus.Publish(new DeathEvent(murloc, murloc), MiscPhase.After);
+		Assert.Equal(before + 1, game.Player1.Hand.Count);
+
+		game.EventBus.Publish(new DeathEvent(mech, mech), MiscPhase.After);
+		Assert.Equal(before + 1, game.Player1.Hand.Count);
+	}
+
+	[Fact]
+	public void EventTargetIn_MinionSummonedEvent_MatchesOnlyFriendlyPirates()
+	{
+		CardScriptRegistry.Instance.Initialize();
+		var builder = new CardBuilder(CardScriptRegistry.Instance);
+		builder.Buff("TEST_PIRATE_SUMMON_BUFF", atk: 1);
+		builder.Card("TEST_PIRATE_SUMMON_LISTENER",
+			on: When<MinionSummonedEvent>(OWN, AFTER,
+				new Enchant(S.SELF, "TEST_PIRATE_SUMMON_BUFF"),
+				when: EventFilters.EventTargetIn<MinionSummonedEvent>(S.MINION + S.PIRATE)));
+
+		var game = CreateTestGame();
+		game.Setup();
+
+		var listener = CreateMinion(game, game.Player1, "TEST_PIRATE_SUMMON_LISTENER", null, atk: 1, health: 3, cost: 1);
+		listener.SetZone(Zone.Play, game.Player1);
+		ActivateScript(game, listener);
+
+		var mech = CreateMinion(game, game.Player1, "TEST_MECH", new[] { global::HearthstoneServer.Race.Mechanical }, atk: 1, health: 1, cost: 1);
+		mech.SetZone(Zone.Play, game.Player1);
+		var pirate = CreateMinion(game, game.Player1, "TEST_PIRATE", new[] { global::HearthstoneServer.Race.Pirate }, atk: 1, health: 1, cost: 1);
+		pirate.SetZone(Zone.Play, game.Player1);
+
+		game.EventBus.Publish(new MinionSummonedEvent(mech, mech), MinionPhase.AfterSummon);
+		Assert.Equal(1, listener.Atk);
+
+		game.EventBus.Publish(new MinionSummonedEvent(pirate, pirate), MinionPhase.AfterSummon);
+		Assert.Equal(2, listener.Atk);
+	}
+
+	[Fact]
+	public void GVG_086_TriggersOnlyWhenFriendlyPlayerGainsArmor()
+	{
+		var game = CreateTestGame();
+		game.Setup();
+		game.BeginTurn(game.Player1);
+		CardScriptRegistry.Instance.Initialize();
+		game.Player1.MaxMana = 10;
+		game.CurrentPlayer = game.Player1;
+
+		var engine = CreateMinion(game, game.Player1, "GVG_086", null, atk: 3, health: 5, cost: 5);
+		game.PlayCard(engine);
+
+		game.EventBus.Publish(new GainArmorEvent(game.Player2.Hero!, game.Player2, 2), MiscPhase.On);
+		Assert.Equal(3, engine.Atk);
+
+		game.EventBus.Publish(new GainArmorEvent(game.Player1.Hero!, game.Player1, 2), MiscPhase.On);
+		Assert.Equal(4, engine.Atk);
+	}
+
+	[Fact]
+	public void GVG_113_TriggersOnlyWhenSelfAttacks()
+	{
+		var game = CreateTestGame();
+		game.Setup();
+		game.BeginTurn(game.Player1);
+		CardScriptRegistry.Instance.Initialize();
+		game.Player1.MaxMana = 10;
+		game.CurrentPlayer = game.Player1;
+
+		var reaper = CreateMinion(game, game.Player1, "GVG_113", null, atk: 3, health: 6, cost: 6);
+		var otherAttacker = CreateMinion(game, game.Player1, "TEST_OTHER_ATTACKER", null, atk: 2, health: 2, cost: 2);
+		var left = CreateMinion(game, game.Player2, "TEST_LEFT", null, atk: 1, health: 5, cost: 1);
+		var defender = CreateMinion(game, game.Player2, "TEST_DEFENDER", null, atk: 1, health: 5, cost: 1);
+		var right = CreateMinion(game, game.Player2, "TEST_RIGHT", null, atk: 1, health: 5, cost: 1);
+		game.PlayCard(reaper);
+		otherAttacker.SetZone(Zone.Play, game.Player1);
+		left.SetZone(Zone.Play, game.Player2);
+		defender.SetZone(Zone.Play, game.Player2);
+		right.SetZone(Zone.Play, game.Player2);
+
+		reaper.CurrentTarget = defender;
+		game.EventBus.Publish(new AfterAttackEvent(otherAttacker, otherAttacker, defender), CombatPhase.Combat);
+		Assert.Equal(5, left.Health);
+		Assert.Equal(5, right.Health);
+
+		reaper.CurrentTarget = defender;
+		game.EventBus.Publish(new AfterAttackEvent(reaper, reaper, defender), CombatPhase.Combat);
+		Assert.Equal(2, left.Health);
+		Assert.Equal(2, right.Health);
+	}
+
+	[Fact]
+	public void GVG_116_TriggersOnlyWhenEnemyMinionDies()
+	{
+		var game = CreateTestGame();
+		game.CardDb["EX1_029"] = new CardData { CardId = "EX1_029", CardType = CardType.Minion, Attack = 1, Health = 1, Cost = 1 };
+		game.Setup();
+		CardScriptRegistry.Instance.Initialize();
+
+		var engineer = CreateMinion(game, game.Player1, "GVG_116", null, atk: 9, health: 7, cost: 9);
+		engineer.SetZone(Zone.Play, game.Player1);
+		ActivateScript(game, engineer);
+
+		var enemyMinion = CreateMinion(game, game.Player2, "TEST_ENEMY_MINION", null, atk: 2, health: 2, cost: 2);
+		enemyMinion.SetZone(Zone.Graveyard, game.Player2);
+		var enemyWeapon = CreateWeapon(game, game.Player2, "TEST_ENEMY_WEAPON");
+		enemyWeapon.SetZone(Zone.Graveyard, game.Player2);
+
+		game.EventBus.Publish(new DeathEvent(enemyMinion, enemyMinion), MiscPhase.After);
+		Assert.Single(game.Player1.Field.OfType<BuffableEntity>(), entity => entity.CardId == "EX1_029");
+
+		game.EventBus.Publish(new DeathEvent(enemyWeapon, enemyWeapon), MiscPhase.After);
+		Assert.Single(game.Player1.Field.OfType<BuffableEntity>(), entity => entity.CardId == "EX1_029");
 	}
 
 	[Fact]
@@ -738,16 +1072,16 @@ public class Phase5MiscTests
 		var game = CreateTestGame();
 		game.Setup();
 
-		var beast1 = CreateMinion(game, game.Player1, "TEST_BEAST_1", new[] { Race.Beast }, cost: 1);
-		var beast2 = CreateMinion(game, game.Player1, "TEST_BEAST_2", new[] { Race.Beast }, cost: 1);
-		var mech = CreateMinion(game, game.Player1, "TEST_MECH", new[] { Race.Mechanical }, cost: 1);
+		var beast1 = CreateMinion(game, game.Player1, "TEST_BEAST_1", new[] { global::HearthstoneServer.Race.Beast }, cost: 1);
+		var beast2 = CreateMinion(game, game.Player1, "TEST_BEAST_2", new[] { global::HearthstoneServer.Race.Beast }, cost: 1);
+		var mech = CreateMinion(game, game.Player1, "TEST_MECH", new[] { global::HearthstoneServer.Race.Mechanical }, cost: 1);
 		beast1.SetZone(Zone.Play, game.Player1);
 		beast2.SetZone(Zone.Play, game.Player1);
 		mech.SetZone(Zone.Play, game.Player1);
 
 		var knight = CreateMinion(game, game.Player1, "AT_041", null, atk: 6, health: 6, cost: 7);
 
-		Assert.Equal(2, game.Player1.SummonedMinionsThisGame.Count(m => m.CardData?.Races.Contains(Race.Beast) == true));
+		Assert.Equal(2, game.Player1.SummonedMinionsThisGame.Count(m => m.CardData?.Races.Contains(global::HearthstoneServer.Race.Beast) == true));
 		Assert.Equal(5, knight.Cost);
 	}
 

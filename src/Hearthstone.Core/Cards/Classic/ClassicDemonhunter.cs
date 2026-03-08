@@ -34,7 +34,7 @@ public class ClassicDemonhunter : CardPack
 		// 萨特监工 — 你的英雄攻击后，召唤一个 2/2 的萨特
 		b.Card("BT_352",
 			on: When<AfterAttackEvent>(OWN, AFTER, new Summon(S.CONTROLLER, "BT_352t"),
-				when: AttackerIsHero()));
+				when: EventSourceIn<AfterAttackEvent>(S.FRIENDLY_HERO)));
 
 		// 刃缚精锐 — 战吼：若你的英雄本回合已攻击，造成 4 点伤害
 		b.Card("BT_495",

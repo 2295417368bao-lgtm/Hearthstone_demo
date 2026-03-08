@@ -169,11 +169,16 @@ public static class CardScriptUtils
 	// ═══════════════════════════════════════
 
 	/// <summary>
-	/// 发现 — 发现一张牌并加入手牌。
-	/// 传入 Selector（旧写法）或 DiscoverFilter（新的声明式过滤）。
+	/// 发现 — 使用任意 picker/selector/固定卡牌列表创建发现。
 	/// </summary>
-	public static Discover MakeDiscover(params object[] args)
-		=> new(CONTROLLER, args);
+	public static Discover MakeDiscover(object target, object picker)
+		=> new(target, picker);
+
+	/// <summary>
+	/// 发现 — 从固定 cardId 列表中随机展示最多 3 张。
+	/// </summary>
+	public static Discover MakeDiscover(object target, params string[] cardIds)
+		=> new(target, cardIds);
 
 	/// <summary>
 	/// 发现 — 使用 DiscoverFilter 声明式过滤。

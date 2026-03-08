@@ -23,7 +23,7 @@ public class CoreWarrior : CardPack
 		// 暴乱狂战士 CORE_EX1_604 — 每当一个随从受到伤害，获得 +1 攻击力
 		b.Card("CORE_EX1_604",
 			on: When<DamageEvent>(ANY, ON, new Enchant(S.SELF, "CORE_EX1_604e"),
-				when: TargetIsMinion()));
+				when: EventTargetIn<DamageEvent>(S.ALL_MINIONS)));
 
 		// 货物保镖 CORE_SW_030 — 回合结束时获得 3 点护甲
 		b.Card("CORE_SW_030",
@@ -37,7 +37,7 @@ public class CoreWarrior : CardPack
 		b.Card("CORE_NX2_028",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new TargetedAction[] { new GainArmor(S.FRIENDLY_HERO, 4), new DrawCard(S.CONTROLLER) },
-				when: AttackerIsHero()));
+				when: EventSourceIn<AfterAttackEvent>(S.FRIENDLY_HERO)));
 
 		// 血蹄勇士 CORE_OG_218 — 嘲讽，受伤时 +3 攻击力
 		b.Card("CORE_OG_218",
@@ -106,6 +106,6 @@ public class CoreWarrior : CardPack
 		// 埃辛诺斯壁垒 CORE_BT_781 — 英雄受伤时改为武器失去 1 耐久
 		b.Card("CORE_BT_781",
 			on: When<PreDamageEvent>(OWN, ON, new RedirectDamageToWeapon(),
-				when: PreDamageTargetIsFriendlyHero()));
+				when: EventTargetIn<PreDamageEvent>(S.FRIENDLY_HERO)));
 	}
 }

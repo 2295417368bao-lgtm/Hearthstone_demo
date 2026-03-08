@@ -26,7 +26,7 @@ public class ClassicWarrior : CardPack
 						PreDamageWouldReduceTargetBelow(1),
 						new SetCurrentPreDamageAmount(DamageToLeaveTargetAtHealth(1)),
 						NOTHING),
-					when: PreDamageTargetIsFriendlyMinion()),
+					when: EventTargetIn<PreDamageEvent>(S.FRIENDLY_MINIONS)),
 				When<TurnEndEvent>(OWN, ON, new Destroy(S.SELF))
 			});
 		b.Buff("EX1_603e", atk: 2); // 残忍的监工
@@ -41,12 +41,12 @@ public class ClassicWarrior : CardPack
 		// 铸甲师：友方随从受到伤害时，获得 1 点护甲。
 		b.Card("EX1_402",
 			on: When<DamageEvent>(OWN, ON, new GainArmor(S.FRIENDLY_HERO, 1),
-				when: TargetIsMinion()));
+				when: EventTargetIn<DamageEvent>(S.ALL_MINIONS)));
 
 		// 恐怖的奴隶主：每当一个随从受到伤害时，获得 +1 攻击力。
 		b.Card("EX1_604",
 			on: When<DamageEvent>(ANY, ON, new Enchant(S.SELF, "EX1_604o"),
-				when: TargetIsMinion()));
+				when: EventTargetIn<DamageEvent>(S.ALL_MINIONS)));
 
 		// 残忍的监工：战吼，对一个随从造成 1 点伤害，使其获得 +2 攻击力。
 		b.Card("EX1_603",
@@ -137,7 +137,7 @@ public class ClassicWarrior : CardPack
 		b.Card("EX1_411",
 			on: When<WeaponDurabilityLossEvent>(OWN, BEFORE,
 				new ReplaceWeaponDurabilityLoss(WeaponDurabilityLossReplacement.LoseAttackInstead, 1),
-				when: WeaponDurabilityDefenderIsMinion()));
+				when: EventTargetIn<WeaponDurabilityLossEvent>(S.ALL_MINIONS)));
 
 		// 阿拉希武器匠：战吼，装备一把 2/2 的战斧。
 		b.Card("EX1_398",

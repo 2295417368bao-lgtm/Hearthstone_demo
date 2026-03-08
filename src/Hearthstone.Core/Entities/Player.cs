@@ -171,7 +171,7 @@ public class Player : BuffableEntity
 	{
 		get
 		{
-			int power = 0;
+			int power = GetIntProperty("spellpower");
 			foreach (var entity in Field)
 			{
 				if (entity is Minion m && !m.Dormant)

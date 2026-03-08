@@ -42,7 +42,7 @@ public class CoreDruid : CardPack
 		b.Card("CORE_SW_431",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new Enchant(S.FRIENDLY_HERO, "CORE_SW_431e"),
-				when: SelfIsAttacker()));
+				when: EventSourceIn<AfterAttackEvent>(S.SELF)));
 		b.Buff("CORE_SW_431e", atk: 3,
 			on: When<TurnEndEvent>(OWN, ON, new Destroy(S.SELF)));
 

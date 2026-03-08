@@ -1,4 +1,5 @@
 using Serilog;
+using HearthstoneServer.Cards;
 using HearthstoneServer.Entities;
 
 namespace HearthstoneServer.Dsl;

@@ -127,13 +127,13 @@ public class ClassicPaladin : CardPack
 		b.Card("EX1_132",
 			secret: When<DamageEvent>(OWN, ON,
 				new DealDamage(S.ENEMY_HERO, EVT_AMOUNT),
-				when: TargetIsHero()));
+				when: EventTargetIn<DamageEvent>(S.ALL_HEROES)));
 
 		// 救赎：友方随从死亡时以 1 点生命值复活。
 		b.Card("EX1_136",
 			secret: When<DeathEvent>(OWN, ON,
 				new Summon(S.CONTROLLER, "EX1_136t"),
-				when: DeadIsMinion()));
+				when: EventTargetIn<DeathEvent>(S.ALL_MINIONS)));
 
 		// 忏悔：对手打出随从后将其生命值降为 1。
 		b.Card("EX1_379",

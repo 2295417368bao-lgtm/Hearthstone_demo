@@ -222,7 +222,7 @@ public class GvgCards : CardPack
 		// GVG_063 — 博尔瓦·弗塔根：在手中时，每当一个友方随从死亡获得 +1 攻击力
 		b.Card("GVG_063",
 			on: When<DeathEvent>(OWN, AFTER, new Enchant(S.SELF, "GVG_063a"),
-				when: DeadIsMinion()).InHand());
+				when: EventTargetIn<DeathEvent>(S.MINION)).InHand());
 
 		// GVG_101 — 猩红净化者：对所有具有亡语的随从造成 2 点伤害
 		b.Card("GVG_101", battlecry: new DealDamage(S.ALL_MINIONS + S.DEATHRATTLE, 2));
@@ -333,7 +333,7 @@ public class GvgCards : CardPack
 		// GVG_040 — 泥鳍先知：友方鱼人死亡时抽一张牌
 		b.Card("GVG_040",
 			on: When<DeathEvent>(OWN, AFTER, new DrawCard(S.CONTROLLER),
-				when: DeadRace(Race.Murloc)));
+				when: EventTargetIn<DeathEvent>(S.MINION + S.MURLOC)));
 
 		// GVG_042 — 海王：将 4 个随机鱼人置入你的手牌
 		b.Card("GVG_042", battlecry: new AddToHand(S.CONTROLLER, RandomMurloc()) * 4);
@@ -377,7 +377,7 @@ public class GvgCards : CardPack
 		// GVG_100 — 漂浮观察者：你的英雄在你的回合受到伤害时获得 +2/+2
 		b.Card("GVG_100",
 			on: When<DamageEvent>(ANY, AFTER, new Enchant(S.SELF, "GVG_100e"),
-				when: DamagedIsFriendlyHero()));
+				when: EventTargetIn<DamageEvent>(S.FRIENDLY_HERO)));
 
 		// GVG_015 — 暗黑炸弹：造成 3 点伤害
 		b.Card("GVG_015", play: new DealDamage(S.TARGET, 3),
@@ -422,7 +422,7 @@ public class GvgCards : CardPack
 		// GVG_086 — 攻城引擎：每当你获得护甲时获得 +1 攻击力
 		b.Card("GVG_086",
 			on: When<GainArmorEvent>(OWN, ON, new Enchant(S.SELF, "GVG_086e"),
-				when: GainArmorIsFriendly()));
+				when: EventTargetIn<GainArmorEvent>(S.CONTROLLER)));
 
 		// GVG_050 — 弹射之刃：反复对随机随从造成 1 点伤害直至有随从死亡
 		b.Card("GVG_050", play: new RepeatingDamage(S.ALL_MINIONS));
@@ -469,7 +469,7 @@ public class GvgCards : CardPack
 		// GVG_075 — 船载加农炮：每当你召唤一个海盗，对一个随机敌方角色造成 2 点伤害
 		b.Card("GVG_075",
 			on: When<MinionSummonedEvent>(OWN, AFTER, new DealDamage(S.RANDOM_ENEMY_CHARACTER, 2),
-				when: SummonedRace(Race.Pirate)));
+				when: EventTargetIn<MinionSummonedEvent>(S.MINION + S.PIRATE)));
 
 		// GVG_076 — 爆炸绵羊：亡语 — 对所有随从造成 2 点伤害
 		b.Card("GVG_076", deathrattle: new DealDamage(S.ALL_MINIONS, 2));
@@ -546,7 +546,7 @@ public class GvgCards : CardPack
 		// GVG_104 — 大胖：你打出 1 攻随从时使其获得 +2/+2
 		b.Card("GVG_104",
 			on: When<CardPlayedEvent>(OWN, AFTER, new Enchant(S.SELF, "GVG_104a"),
-				when: PlayedAtk(1)));
+				when: And(PlayedType(CardType.Minion), PlayedAtk(1))));
 
 		// GVG_105 — 载人天空魔像：亡语 — 召唤一个随机 4 费随从
 		b.Card("GVG_105", deathrattle: new Summon(S.CONTROLLER, RandomMinion().Cost(4)));
@@ -554,7 +554,7 @@ public class GvgCards : CardPack
 		// GVG_106 — 废铁机器人：友方机械死亡时获得 +2/+2
 		b.Card("GVG_106",
 			on: When<DeathEvent>(OWN, AFTER, new Enchant(S.SELF, "GVG_106e"),
-				when: DeadRace(Race.Mechanical)));
+				when: EventTargetIn<DeathEvent>(S.MINION + S.MECH)));
 
 		// GVG_107 — 强化机甲：随机给友方随从风怒/嘲讽/圣盾
 		b.Card("GVG_107", battlecry: new GrantRandomAbility(S.FRIENDLY_MINIONS));
@@ -600,7 +600,7 @@ public class GvgCards : CardPack
 		b.Card("GVG_113",
 			on: When<AfterAttackEvent>(OWN, AFTER,
 				new DealDamage(S.Adjacent(S.CURRENT_TARGET), new Attr(S.SELF, GameTag.Atk)),
-				when: SelfIsAttacker()));
+				when: EventSourceIn<AfterAttackEvent>(S.SELF)));
 
 		// GVG_114 — 斯尼德的老伐木机：亡语 — 召唤一个随机传说随从
 		b.Card("GVG_114", deathrattle: new Summon(S.CONTROLLER, RandomLegendaryMinion()));
@@ -612,12 +612,12 @@ public class GvgCards : CardPack
 		// GVG_116 — 麦田傀儡工程师：敌方随从死亡时召唤一个麻风侏儒
 		b.Card("GVG_116",
 			on: When<DeathEvent>(ANY, AFTER, new Summon(S.CONTROLLER, "EX1_029"),
-				when: DeadIsEnemy()));
+				when: EventTargetIn<DeathEvent>(S.ENEMY + S.MINION)));
 
 		// GVG_117 — 加兹鲁维：你使用 1 费法术时将一个随机机械置入手牌
 		b.Card("GVG_117",
 			on: When<CardPlayedEvent>(OWN, AFTER, new AddToHand(S.CONTROLLER, RandomMech()),
-				when: PlayedIsSpellCost(1)));
+				when: And(PlayedType(CardType.Spell), PlayedCost(1))));
 
 		// GVG_118 — 大胖岩魔：对手施放法术后召唤一个壮硕的石腭岩魔
 		b.Card("GVG_118",

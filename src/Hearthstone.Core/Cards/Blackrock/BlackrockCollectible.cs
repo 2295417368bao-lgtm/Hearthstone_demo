@@ -61,12 +61,12 @@ public class BlackrockCollectible : CardPack
 		// BRM_019 — 恐怖的奴隶主：每当受到伤害且存活，召唤一个副本
 		b.Card("BRM_019",
 			on: When<DamageEvent>(SELF_TRIGGER, ON, new Summon(S.CONTROLLER, "BRM_019"),
-				when: SelfIsAlive()));
+				when: Condition<DamageEvent>(new LazyNumEvaluator(CURRENT_HEALTH(S.SELF), 1, GE()))));
 
 		// BRM_020 — 龙人巫师：每当你用法术指向该随从时，获得 +1/+1
 		b.Card("BRM_020",
 			on: When<SpellCastEvent>(OWN, AFTER, new Enchant(S.SELF, "BRM_020e"),
-				when: SpellTargetsSelf()));
+				when: SpellTargets(S.SELF)));
 
 		// BRM_022 — 龙蛋：每当该随从受到伤害时，召唤一个 2/1 的雏龙
 		b.Card("BRM_022",
@@ -153,7 +153,7 @@ public class BlackrockCollectible : CardPack
 				new Refresh(S.FRIENDLY_HAND + S.DRAGON, new() { { GameTag.Cost, -2 } })
 			},
 			on: When<CardPlayedEvent>(OWN, AFTER, new Destroy(S.SELF),
-				when: PlayedRace(Race.Dragon)));
+				when: EventCardIn<CardPlayedEvent>(S.Race(Race.Dragon))));
 
 		// ═══════════════════════════════════════
 		// 随从 — 费用修改

@@ -52,6 +52,9 @@ public class Choice : TargetedAction
 	{
 		if (Args.Length < 2) return Array.Empty<object>();
 		var cardsArg = Args[1];
+		var player = target as Player
+			?? (target as BuffableEntity)?.Controller
+			?? (source as BuffableEntity)?.Controller;
 
 		List<BaseEntity> cards;
 		if (cardsArg is Selector sel)
@@ -67,18 +70,9 @@ public class Choice : TargetedAction
 		{
 			cards = new List<BaseEntity>(entityList);
 		}
-		else if (cardsArg is List<string> idList)
+		else if (cardsArg is IEnumerable<string> idList && cardsArg is not string)
 		{
-			cards = new List<BaseEntity>();
-			var controller = (source as BuffableEntity)?.Controller;
-			if (controller != null)
-			{
-				foreach (var id in idList)
-				{
-					var created = controller.CreateCard(id);
-					if (created != null) cards.Add(created);
-				}
-			}
+			cards = CreateCardsFromIds(player, idList);
 		}
 		else
 		{
@@ -86,6 +80,44 @@ public class Choice : TargetedAction
 		}
 
 		return new object[] { cards };
+	}
+
+	public static List<BaseEntity> CreateCardsFromIds(Player? player, IEnumerable<string> cardIds, Zone zone = Zone.SetAside)
+	{
+		var cards = new List<BaseEntity>();
+		if (player == null) return cards;
+
+		foreach (var id in cardIds)
+		{
+			if (string.IsNullOrWhiteSpace(id)) continue;
+			var created = player.CreateCard(id, zone);
+			if (created != null) cards.Add(created);
+		}
+
+		return cards;
+	}
+
+	public static List<BaseEntity> CreateRandomCardsFromIds(
+		BaseEntity source,
+		Player? player,
+		IEnumerable<string> cardIds,
+		int count,
+		Zone zone = Zone.SetAside)
+	{
+		if (player == null || count <= 0) return new List<BaseEntity>();
+
+		var pool = cardIds
+			.Where(id => !string.IsNullOrWhiteSpace(id))
+			.ToList();
+		if (pool.Count == 0) return new List<BaseEntity>();
+
+		var chosen = RandomCardPicker.WeightedCardChoice(
+			source,
+			new List<int> { 1 },
+			new List<List<string>> { pool },
+			Math.Min(count, pool.Count));
+
+		return CreateCardsFromIds(player, chosen, zone);
 	}
 
 	/// <summary>
@@ -292,6 +324,9 @@ public class Discover : TargetedAction
 	{
 		if (Args.Length < 2) return Array.Empty<object>();
 		var picker = Args[1];
+		var player = target as Player
+			?? (target as BuffableEntity)?.Controller
+			?? (source as BuffableEntity)?.Controller;
 
 		List<BaseEntity> cards;
 		if (picker is RandomCardPicker rcp)
@@ -315,9 +350,18 @@ public class Discover : TargetedAction
 			}
 			cards = pool.Take(count).ToList();
 		}
+		else if (picker is IEnumerable<string> idList && picker is not string)
+		{
+			cards = Choice.CreateRandomCardsFromIds(source, player, idList, 3);
+		}
 		else if (picker is List<BaseEntity> entityList)
 		{
 			cards = new List<BaseEntity>(entityList);
+		}
+		else if (picker is LazyValue lv)
+		{
+			var result = lv.Evaluate(source);
+			cards = Choice.EvalToEntityList(result);
 		}
 		else
 		{

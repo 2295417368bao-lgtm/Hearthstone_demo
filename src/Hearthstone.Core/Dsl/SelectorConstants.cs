@@ -46,6 +46,12 @@ public static class S
 			? new List<BaseEntity> { src.EventTarget }
 			: new List<BaseEntity>());
 
+	/// <summary>事件携带的卡牌实体（打出的牌、抽到的牌、弃掉的牌）。由 BusEvent.When 设置。</summary>
+	public static readonly Selector EVT_CARD = new FuncSelector(
+		(_, src) => src.EventCard != null
+			? new List<BaseEntity> { src.EventCard }
+			: new List<BaseEntity>());
+
 	/// <summary>所有已 Pick 的卡牌。</summary>
 	public static readonly Selector PICKED = new FuncSelector(
 		(_, src) => new List<BaseEntity>(src.PickedCards));
@@ -99,6 +105,22 @@ public static class S
 	public static Selector MinCost(int min) => new FilterSelector(
 		(e, _) => e is BuffableEntity be && be.Cost >= min);
 
+	/// <summary>费用 == value 的实体。</summary>
+	public static Selector Cost(int value) => new FilterSelector(
+		(e, _) => e is BuffableEntity be && be.Cost == value);
+
+	/// <summary>当前攻击力 == value 的角色。</summary>
+	public static Selector Atk(int value) => new FilterSelector(
+		(e, _) => e is Character ch && ch.Atk == value);
+
+	/// <summary>当前生命值 == value 的角色。</summary>
+	public static Selector Health(int value) => new FilterSelector(
+		(e, _) => e is Character ch && ch.Health == value);
+
+	/// <summary>最大生命值 == value 的角色。</summary>
+	public static Selector MaxHealth(int value) => new FilterSelector(
+		(e, _) => e is Character ch && ch.MaxHealth == value);
+
 	/// <summary>匹配指定 cardId 的实体。</summary>
 	public static Selector CardId(string cardId) => new FilterSelector(
 		(e, _) => (e as BuffableEntity)?.CardId == cardId);
@@ -147,15 +169,18 @@ public static class S
 
 	// ── Race selectors ──
 
-	public static readonly Selector BEAST = new EnumSelector(Race.Beast);
-	public static readonly Selector DEMON = new EnumSelector(Race.Demon);
-	public static readonly Selector DRAGON = new EnumSelector(Race.Dragon);
-	public static readonly Selector MECH = new EnumSelector(Race.Mechanical);
-	public static readonly Selector MURLOC = new EnumSelector(Race.Murloc);
-	public static readonly Selector PIRATE = new EnumSelector(Race.Pirate);
-	public static readonly Selector TOTEM = new EnumSelector(Race.Totem);
-	public static readonly Selector ELEMENTAL = new EnumSelector(Race.Elemental);
-	public static readonly Selector UNDEAD = new EnumSelector(Race.Undead);
+	public static readonly Selector BEAST = new EnumSelector(global::HearthstoneServer.Race.Beast);
+	public static readonly Selector DEMON = new EnumSelector(global::HearthstoneServer.Race.Demon);
+	public static readonly Selector DRAGON = new EnumSelector(global::HearthstoneServer.Race.Dragon);
+	public static readonly Selector MECH = new EnumSelector(global::HearthstoneServer.Race.Mechanical);
+	public static readonly Selector MURLOC = new EnumSelector(global::HearthstoneServer.Race.Murloc);
+	public static readonly Selector PIRATE = new EnumSelector(global::HearthstoneServer.Race.Pirate);
+	public static readonly Selector TOTEM = new EnumSelector(global::HearthstoneServer.Race.Totem);
+	public static readonly Selector ELEMENTAL = new EnumSelector(global::HearthstoneServer.Race.Elemental);
+	public static readonly Selector UNDEAD = new EnumSelector(global::HearthstoneServer.Race.Undead);
+
+	/// <summary>匹配指定种族的实体。</summary>
+	public static Selector Race(Race race) => new EnumSelector(race);
 
 	// ── Rarity selectors ──
 

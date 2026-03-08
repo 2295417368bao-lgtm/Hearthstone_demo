@@ -121,13 +121,13 @@ public class ClassicMage : CardPack
 		b.Card("EX1_594",
 			secret: When<AttackEvent>(ENEMY, ON,
 				new Destroy(S.EVT_SOURCE),
-				when: And(AttackerIsMinion(), DefenderIsHero())));
+				when: And(EventSourceIn<AttackEvent>(S.ALL_MINIONS), EventTargetIn<AttackEvent>(S.FRIENDLY_HERO))));
 
 		// 寒冰护体：英雄被攻击时获得 8 点护甲。
 		b.Card("EX1_289",
 			secret: When<AttackEvent>(ENEMY, ON,
 				new GainArmor(S.FRIENDLY_HERO, 8),
-				when: DefenderIsHero()));
+				when: EventTargetIn<AttackEvent>(S.FRIENDLY_HERO)));
 
 		// 寒冰屏障：若本次伤害致命，则将本次伤害改为 0，并在本回合内免疫。
 		b.Card("EX1_295",
@@ -138,13 +138,13 @@ public class ClassicMage : CardPack
 						new SetCurrentPreDamageAmount(0),
 						new Enchant(S.FRIENDLY_HERO, "EX1_295e")),
 					NOTHING),
-				when: PreDamageTargetIsFriendlyHero()));
+				when: EventTargetIn<PreDamageEvent>(S.FRIENDLY_HERO)));
 
 		// 法术偏斜者：敌方施放指向法术时，召唤 1/3 作为新目标。
 		b.Card("tt_010",
 			secret: When<SpellCastEvent>(ENEMY, ON,
 				new Summon(S.CONTROLLER, "tt_010a"),
-				when: SpellHasTarget()));
+				when: EventHasTarget<SpellCastEvent>()));
 
 		// 冰枪术：若目标已被冻结，则造成 4 点伤害，否则造成 1 点伤害。
 		b.Card("CS2_031",

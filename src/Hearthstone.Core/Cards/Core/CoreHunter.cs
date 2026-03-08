@@ -99,7 +99,7 @@ public class CoreHunter : CardPack
 		b.Card("CORE_EX1_610",
 			secret: When<AttackEvent>(ENEMY, ON,
 				new DealDamage(S.ENEMY_CHARACTERS, 2),
-				when: DefenderIsHero()));
+				when: EventTargetIn<AttackEvent>(S.FRIENDLY_HERO)));
 
 		// 冰冻陷阱 CORE_EX1_611 — 敌方随从攻击时将其移回手牌，费用+2
 		b.Card("CORE_EX1_611",
@@ -108,7 +108,7 @@ public class CoreHunter : CardPack
 					new ReturnToHand(S.EVT_SOURCE),
 					new Enchant(S.EVT_SOURCE, "CORE_EX1_611e")
 				},
-				when: AttackerIsMinion()));
+				when: EventSourceIn<AttackEvent>(S.ALL_MINIONS)));
 
 		// 捕鼠陷阱 CORE_GIL_577 — 对手一回合打出三张牌后，召唤 6/6 老鼠
 		b.Card("CORE_GIL_577",

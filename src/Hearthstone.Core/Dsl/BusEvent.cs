@@ -138,7 +138,8 @@ public class BusEvent
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
-				evt => OwnerMatches(evt, self, owner) && when(evt, self),
+				evt => OwnerMatches(evt, self, owner)
+					&& BindAndCheck(evt, self, phase, () => when(evt, self)),
 				evt => BindAndRun(evt, self, phase, () => action.Trigger(self)),
 				once,
 				zones);
@@ -157,7 +158,8 @@ public class BusEvent
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
-				evt => OwnerMatches(evt, self, owner) && (when?.Invoke(evt, self) ?? true),
+				evt => OwnerMatches(evt, self, owner)
+					&& BindAndCheck(evt, self, phase, () => when?.Invoke(evt, self) ?? true),
 				evt => BindAndRun(evt, self, phase, () =>
 				{
 					foreach (var action in actions)
@@ -201,7 +203,8 @@ public class BusEvent
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
-				evt => OwnerMatches(evt, self, owner) && when(evt, self),
+				evt => OwnerMatches(evt, self, owner)
+					&& BindAndCheck(evt, self, phase, () => when(evt, self)),
 				evt => BindAndRun(evt, self, phase, () =>
 				{
 					foreach (var action in actions)
@@ -224,7 +227,8 @@ public class BusEvent
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
-				evt => OwnerMatches(evt, self, owner) && when.Check(self),
+				evt => OwnerMatches(evt, self, owner)
+					&& BindAndCheck(evt, self, phase, () => when.Check(self)),
 				evt => BindAndRun(evt, self, phase, () =>
 				{
 					foreach (var action in actions)
@@ -247,7 +251,8 @@ public class BusEvent
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
-				evt => OwnerMatches(evt, self, owner) && when.Check(self),
+				evt => OwnerMatches(evt, self, owner)
+					&& BindAndCheck(evt, self, phase, () => when.Check(self)),
 				evt => BindAndRun(evt, self, phase, () => action.Trigger(self)),
 				once,
 				zones);
@@ -266,7 +271,8 @@ public class BusEvent
 		{
 			bus.Subscribe<TEvent>(
 				self, phase,
-				evt => OwnerMatches(evt, self, owner) && when(evt, self),
+				evt => OwnerMatches(evt, self, owner)
+					&& BindAndCheck(evt, self, phase, () => when(evt, self)),
 				evt => BindAndRun(evt, self, phase, () => action.Trigger(self)),
 				once,
 				zones);
@@ -280,7 +286,24 @@ public class BusEvent
 	private static void BindAndRun<TEvent>(TEvent evt, BuffableEntity self, object phase, System.Action run)
 		where TEvent : GameEvent
 	{
+		BindContext(evt, self, phase, () =>
+		{
+			run();
+			return true;
+		}, revealSecret: true);
+	}
+
+	private static bool BindAndCheck<TEvent>(TEvent evt, BuffableEntity self, object phase, Func<bool> check)
+		where TEvent : GameEvent
+		=> BindContext(evt, self, phase, check, revealSecret: false);
+
+	private static TResult BindContext<TEvent, TResult>(
+		TEvent evt, BuffableEntity self, object phase,
+		Func<TResult> run, bool revealSecret)
+		where TEvent : GameEvent
+	{
 		self.EventSource = GetEventSource(evt);
+		self.EventCard = GetEventCard(evt);
 		self.EventTarget = GetSubject(evt);
 		self.EventAmount = GetEventAmount(evt);
 		if (evt is PreDamageEvent preDamageEvent)
@@ -297,13 +320,14 @@ public class BusEvent
 		}
 		try
 		{
-			if (self.GetBoolProperty("__secret__"))
+			if (revealSecret && self.GetBoolProperty("__secret__"))
 				new RevealSecret(S.SELF).Trigger(self);
-			run();
+			return run();
 		}
 		finally
 		{
 			self.EventSource = null;
+			self.EventCard = null;
 			self.EventTarget = null;
 			self.EventAmount = null;
 			self.ActivePreDamageEvent = null;
@@ -320,12 +344,20 @@ public class BusEvent
 		SpellCastEvent e => e.Spell,
 		CardPlayedEvent e => e.Card,
 		MinionPlayedEvent e => e.Minion,
-		MinionSummonedEvent e => e.Minion,
 		AttackEvent e => e.Attacker,
 		ProposedAttackEvent e => e.Attacker,
 		AfterAttackEvent e => e.Attacker,
 		RevealSecretEvent e => e.Secret,
 		_ => evt.Source,
+	};
+
+	/// <summary>事件携带的卡牌实体。</summary>
+	private static BaseEntity? GetEventCard(GameEvent evt) => evt switch
+	{
+		CardPlayedEvent e => e.Card,
+		DrawCardEvent e => e.Card,
+		DiscardEvent e => e.Card,
+		_ => null,
 	};
 
 	/// <summary>事件主数值。</summary>
@@ -471,10 +503,13 @@ public class BusEvent
 	/// <summary>推导事件主体或受影响实体。</summary>
 	private static BaseEntity? GetSubject(GameEvent evt) => evt switch
 	{
+		SpellCastEvent e => e.Target,
 		DamageEvent e => e.Target,
 		PreDamageEvent e => e.Target,
 		HealEvent e => e.Target,
 		OverhealEvent e => e.Target,
+		GainArmorEvent e => e.Player,
+		MinionSummonedEvent e => e.Minion,
 		DeathEvent e => e.Dead,
 		DrawCardEvent e => e.Card,
 		DiscardEvent e => e.Card,
@@ -482,7 +517,7 @@ public class BusEvent
 		AttackEvent e => e.Defender,
 		ProposedAttackEvent e => e.Defender,
 		WeaponEquipEvent e => e.Weapon,
-		WeaponDurabilityLossEvent e => e.Weapon,
+		WeaponDurabilityLossEvent e => e.Defender,
 		_ => evt.Source,
 	};
 }

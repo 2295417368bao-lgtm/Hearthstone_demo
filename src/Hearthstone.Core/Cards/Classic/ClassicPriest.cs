@@ -25,7 +25,7 @@ public class ClassicPriest : CardPack
 		// 北郡牧师：每当一个随从被治疗时，抽一张牌
 		b.Card("CS2_235",
 			on: When<HealEvent>(ANY, ON, new DrawCard(S.CONTROLLER),
-				when: HealTargetIsMinion()));
+				when: EventTargetIn<HealEvent>(S.ALL_MINIONS)));
 
 		// 暗影狂乱牧师：战吼：夺取攻击力 ≤2 的敌方随从
 		b.Card("EX1_091",

@@ -101,7 +101,7 @@ public class NaxxramasCollectible : CardPack
 		// 送葬者：每当你召唤一个具有亡语的随从，获得 +1 攻击力
 		b.Card("FP1_028",
 			on: When<MinionSummonedEvent>(OWN, AFTER, new Enchant(S.SELF, "FP1_028e"),
-				when: SummonedHas(GameTag.Deathrattle)));
+				when: EventTargetIn<MinionSummonedEvent>(S.MINION + S.DEATHRATTLE)));
 
 		// 克尔苏加德：每个回合结束时，复活本回合死亡的所有友方随从
 		b.Card("FP1_013",
@@ -159,7 +159,7 @@ public class NaxxramasCollectible : CardPack
 					new CopyToHand(S.CONTROLLER, S.EVT_TARGET),
 					new CopyToHand(S.CONTROLLER, S.EVT_TARGET)
 				},
-				when: And(DeadIsFriendly(), DeadIsMinion())));
+				when: EventTargetIn<DeathEvent>(S.FRIENDLY_MINIONS)));
 
 		// 复仇：当一个友方随从死亡时，使一个随机友方随从获得 +3/+2
 		b.Card("FP1_020",

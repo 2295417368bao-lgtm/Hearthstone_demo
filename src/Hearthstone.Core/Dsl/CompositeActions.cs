@@ -396,6 +396,55 @@ public class SetCurrentPreDamageAmount : GameAction
 	}
 }
 
+/// <summary>
+/// Modifies the current pending PreDamageEvent amount.
+/// Supports common transforms such as multiply and clamp-to-max.
+/// </summary>
+public class ModifyPreDamage : GameAction
+{
+	private readonly object? _multiply;
+	private readonly object? _clampMax;
+
+	public ModifyPreDamage(object? multiply = null, object? clampMax = null)
+	{
+		_multiply = multiply;
+		_clampMax = clampMax;
+	}
+
+	public override void Do(BaseEntity source, params object[] args)
+	{
+		var preEvt = source.ActivePreDamageEvent;
+		if (preEvt == null) return;
+
+		int amount = preEvt.Amount;
+
+		if (_multiply != null)
+		{
+			int factor = ResolveModifier(_multiply, source);
+			amount *= factor;
+		}
+
+		if (_clampMax != null)
+		{
+			int max = ResolveModifier(_clampMax, source);
+			amount = Math.Min(amount, max);
+		}
+
+		preEvt.Amount = Math.Max(0, amount);
+	}
+
+	private static int ResolveModifier(object modifier, BaseEntity source)
+	{
+		return modifier switch
+		{
+			int i => i,
+			LazyNum ln => ln.Value(source),
+			LazyValue lv => lv.Evaluate(source) is int value ? value : 0,
+			_ => 0
+		};
+	}
+}
+
 /// <summary>武器耐久损失的替代方式。</summary>
 public enum WeaponDurabilityLossReplacement
 {

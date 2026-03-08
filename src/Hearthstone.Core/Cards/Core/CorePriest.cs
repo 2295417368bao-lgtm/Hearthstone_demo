@@ -27,7 +27,7 @@ public class CorePriest : CardPack
 
 		// 随船外科医师 CORE_WON_065 — 你召唤随从后，使其获得 +1 生命值
 		b.Card("CORE_WON_065",
-			on: When<MinionSummonedEvent>(OWN, ON, new Enchant(S.EVT_SOURCE, "CORE_WON_065e")));
+			on: When<MinionSummonedEvent>(OWN, ON, new Enchant(S.EVT_TARGET, "CORE_WON_065e")));
 		b.Buff("CORE_WON_065e", health: 1);
 
 		// 暗影升腾者 CORE_ICC_210 — 回合结束时，随机使另一个友方随从获得 +1/+1

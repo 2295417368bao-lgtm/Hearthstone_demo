@@ -67,6 +67,9 @@ public abstract class BaseEntity
 	/// <summary>事件上下文：事件发起者（攻击者、施法者、打出的随从等）。由 BusEvent.When 在触发 action 前设置。</summary>
 	public BaseEntity? EventSource { get; set; }
 
+	/// <summary>事件上下文：事件携带的卡牌实体（打出的牌、抽到的牌、弃掉的牌）。由 BusEvent.When 在触发 action 前设置。</summary>
+	public BaseEntity? EventCard { get; set; }
+
 	/// <summary>
 	/// 多步发现选中的卡牌列表（由 DiscoverMode.Pick 追加）。
 	/// 用于 S.PICKED / S.PICKED_1 / S.PICKED_2 选择器。

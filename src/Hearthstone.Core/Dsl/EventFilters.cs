@@ -27,15 +27,15 @@ public static class EventFilters
 
 	/// <summary>死亡的实体是指定种族。</summary>
 	public static Func<DeathEvent, BuffableEntity, bool> DeadRace(Race race)
-		=> (evt, self) => evt.Dead.Data?.Races?.Contains(race) == true;
+		=> EventTargetIn<DeathEvent>(S.MINION + S.Race(race));
 
 	/// <summary>死亡的实体是指定卡牌 ID。</summary>
 	public static Func<DeathEvent, BuffableEntity, bool> DeadId(string cardId)
-		=> (evt, self) => (evt.Dead as BuffableEntity)?.CardId == cardId;
+		=> EventTargetIn<DeathEvent>(S.Id(cardId));
 
 	/// <summary>死亡的是敌方实体。</summary>
 	public static Func<DeathEvent, BuffableEntity, bool> DeadIsEnemy()
-		=> (evt, self) => (evt.Dead as BuffableEntity)?.Controller != self.Controller;
+		=> EventTargetIn<DeathEvent>(S.ENEMY);
 
 	/// <summary>死亡的是友方实体。</summary>
 	public static Func<DeathEvent, BuffableEntity, bool> DeadIsFriendly()
@@ -43,19 +43,52 @@ public static class EventFilters
 
 	/// <summary>死亡的是随从。</summary>
 	public static Func<DeathEvent, BuffableEntity, bool> DeadIsMinion()
-		=> (evt, self) => evt.Dead is Minion;
+		=> EventTargetIn<DeathEvent>(S.MINION);
 
 	// ─── CardPlayedEvent / SpellCastEvent 过滤 ───
 
 	/// <summary>法术的目标是 self（用于"当你以法术指向该随从"）。</summary>
 	public static Func<SpellCastEvent, BuffableEntity, bool> SpellTargetsSelf()
-		=> (evt, self) => evt.Target == self;
+		=> SpellTargets(S.SELF);
+
+	public static Func<TEvent, BuffableEntity, bool> EventTargetIn<TEvent>(Selector selector)
+		where TEvent : GameEvent
+		=> (_, self) => SelectorContains(self, self.EventTarget, selector);
+
+	public static Func<TEvent, BuffableEntity, bool> EventSourceIn<TEvent>(Selector selector)
+		where TEvent : GameEvent
+		=> (_, self) => SelectorContains(self, self.EventSource, selector);
+
+	public static Func<TEvent, BuffableEntity, bool> EventCardIn<TEvent>(Selector selector)
+		where TEvent : GameEvent
+		=> (_, self) => SelectorContains(self, self.EventCard, selector);
+
+	public static Func<SpellCastEvent, BuffableEntity, bool> SpellTargets(Selector selector)
+		=> EventTargetIn<SpellCastEvent>(selector);
+
+	public static Func<SpellCastEvent, BuffableEntity, bool> SpellSourceIn(Selector selector)
+		=> EventSourceIn<SpellCastEvent>(selector);
+
+	public static Func<SpellCastEvent, BuffableEntity, bool> SpellTargetsFriendlyOtherMinion()
+		=> SpellTargets(S.FRIENDLY_MINIONS - S.SELF);
+
+	public static Func<TEvent, BuffableEntity, bool> EventHasTarget<TEvent>()
+		where TEvent : GameEvent
+		=> (evt, self) => evt switch
+		{
+			SpellCastEvent e => e.Target != null,
+			CardPlayedEvent e => e.Target != null,
+			_ => self.EventTarget != null,
+		};
+
+	public static Evaluator SelectorCountAtLeast(Selector selector, int count)
+		=> new LazyNumEvaluator(new Count(selector), count, GE());
 
 	// ─── MinionSummonedEvent 过滤 ───
 
 	/// <summary>召唤的随从是指定种族。</summary>
 	public static Func<MinionSummonedEvent, BuffableEntity, bool> SummonedRace(Race race)
-		=> (evt, self) => evt.Minion.Data?.Races?.Contains(race) == true;
+		=> EventTargetIn<MinionSummonedEvent>(S.MINION + S.Race(race));
 
 	/// <summary>召唤的随从攻击力 == value。</summary>
 	public static Func<MinionSummonedEvent, BuffableEntity, bool> SummonedAtk(int value)
@@ -71,11 +104,17 @@ public static class EventFilters
 	public static Func<MinionPlayedEvent, BuffableEntity, bool> PlayedHas(GameTag tag)
 		=> (evt, self) => evt.Minion.GetBoolProperty(tag);
 
+	public static Func<CardPlayedEvent, BuffableEntity, bool> PlayedType(CardType type)
+		=> EventCardIn<CardPlayedEvent>(new EnumSelector(type));
+
+	public static Func<CardPlayedEvent, BuffableEntity, bool> PlayedCost(int cost)
+		=> EventCardIn<CardPlayedEvent>(S.Cost(cost));
+
 	// ─── DamageEvent 过滤 ───
 
 	/// <summary>受伤的是友方英雄。</summary>
 	public static Func<DamageEvent, BuffableEntity, bool> DamagedIsFriendlyHero()
-		=> (evt, self) => evt.Target is Hero h && h.Controller == self.Controller;
+		=> EventTargetIn<DamageEvent>(S.FRIENDLY_HERO);
 
 	public static Func<DamageEvent, BuffableEntity, bool> SelfTookDamage()
 		=> (evt, self) => evt.Target == self;
@@ -87,7 +126,7 @@ public static class EventFilters
 		=> (evt, self) => evt.Player != self.Controller;
 
 	public static Func<DrawCardEvent, BuffableEntity, bool> DrawSourceIsHeroPower()
-		=> (evt, self) => evt.Source is HeroPower;
+		=> EventSourceIn<DrawCardEvent>(S.FRIENDLY_HERO_POWER);
 
 	// ─── 通用过滤 ───
 
@@ -97,15 +136,15 @@ public static class EventFilters
 
 	/// <summary>事件来自对手。</summary>
 	public static Func<CardPlayedEvent, BuffableEntity, bool> PlayedByOpponent()
-		=> (evt, self) => evt.Card.Controller != self.Controller;
+		=> EventCardIn<CardPlayedEvent>(S.ENEMY);
 
 	/// <summary>打出的卡是随从。</summary>
 	public static Func<CardPlayedEvent, BuffableEntity, bool> PlayedIsMinion()
-		=> (evt, self) => evt.Card is Minion;
+		=> EventCardIn<CardPlayedEvent>(S.MINION);
 
 	/// <summary>打出的卡是法术。</summary>
 	public static Func<CardPlayedEvent, BuffableEntity, bool> PlayedIsSpell()
-		=> (evt, self) => evt.Card.CardData?.CardType == CardType.Spell;
+		=> EventCardIn<CardPlayedEvent>(S.SPELL);
 
 	/// <summary>打出的卡拥有指定机制（连击、战吼等）。</summary>
 	public static Func<CardPlayedEvent, BuffableEntity, bool> PlayedHasMechanic(Mechanic mechanic)
@@ -113,11 +152,11 @@ public static class EventFilters
 
 	/// <summary>打出的随从攻击力 == value。</summary>
 	public static Func<CardPlayedEvent, BuffableEntity, bool> PlayedAtk(int value)
-		=> (evt, self) => evt.Card is Minion m && m.Atk == value;
+		=> EventCardIn<CardPlayedEvent>(S.MINION + S.Atk(value));
 
 	/// <summary>打出的卡是龙族。</summary>
 	public static Func<CardPlayedEvent, BuffableEntity, bool> PlayedRace(Race race)
-		=> (evt, self) => evt.Card.Data?.Races?.Contains(race) == true;
+		=> EventCardIn<CardPlayedEvent>(S.Race(race));
 
 	// ─── 组合过滤 ───
 
@@ -145,13 +184,13 @@ public static class EventFilters
 
 	/// <summary>打出的卡是法术且费用 == cost。</summary>
 	public static Func<CardPlayedEvent, BuffableEntity, bool> PlayedIsSpellCost(int cost)
-		=> (evt, self) => evt.Card is not Minion && evt.Card is BuffableEntity be && be.Cost == cost;
+		=> And(PlayedType(CardType.Spell), PlayedCost(cost));
 
 	// ─── GainArmorEvent 过滤 ───
 
 	/// <summary>获得护甲的英雄是友方英雄。</summary>
 	public static Func<GainArmorEvent, BuffableEntity, bool> GainArmorIsFriendly()
-		=> (evt, self) => evt.Player == self.Controller;
+		=> EventTargetIn<GainArmorEvent>(S.CONTROLLER);
 
 	// ─── 区域过滤 ───
 
@@ -181,11 +220,11 @@ public static class EventFilters
 
 	/// <summary>自身就是攻击者。</summary>
 	public static Func<AfterAttackEvent, BuffableEntity, bool> SelfIsAttacker()
-		=> (evt, self) => evt.Attacker == self;
+		=> EventSourceIn<AfterAttackEvent>(S.SELF);
 
 	/// <summary>攻击者是友方英雄。</summary>
 	public static Func<AfterAttackEvent, BuffableEntity, bool> AttackerIsHero()
-		=> (evt, self) => evt.Attacker is Hero && evt.Attacker.Controller == self.Controller;
+		=> EventSourceIn<AfterAttackEvent>(S.FRIENDLY_HERO);
 
 	/// <summary>防御者已死亡（击杀触发）。</summary>
 	public static Func<AfterAttackEvent, BuffableEntity, bool> DefenderDied()
@@ -193,61 +232,61 @@ public static class EventFilters
 
 	/// <summary>攻击者是友方随从。</summary>
 	public static Func<AfterAttackEvent, BuffableEntity, bool> AttackerIsFriendlyMinion()
-		=> (evt, self) => evt.Attacker is Minion && evt.Attacker.Controller == self.Controller;
+		=> EventSourceIn<AfterAttackEvent>(S.FRIENDLY_MINIONS);
 
 	public static Func<AfterAttackEvent, BuffableEntity, bool> SelfAttacksMinion()
-		=> (evt, self) => evt.Attacker == self && evt.Defender is Minion;
+		=> And(EventSourceIn<AfterAttackEvent>(S.SELF), EventTargetIn<AfterAttackEvent>(S.ALL_MINIONS));
 
 	public static Func<WeaponEquipEvent, BuffableEntity, bool> WeaponEquipSourceIsHeroPower()
-		=> (evt, self) => evt.Source is HeroPower;
+		=> EventSourceIn<WeaponEquipEvent>(S.FRIENDLY_HERO_POWER);
 
 	public static Func<WeaponDurabilityLossEvent, BuffableEntity, bool> WeaponDurabilityDefenderIsMinion()
-		=> (evt, self) => evt.Defender is Minion;
+		=> EventTargetIn<WeaponDurabilityLossEvent>(S.ALL_MINIONS);
 
 	// ─── 声明式事件过滤器 ───
 
 	/// <summary>攻击者是随从。</summary>
 	public static Func<AttackEvent, BuffableEntity, bool> AttackerIsMinion()
-		=> (evt, self) => evt.Attacker is Minion;
+		=> EventSourceIn<AttackEvent>(S.ALL_MINIONS);
 
 	/// <summary>攻击宣言中的防御者是己方英雄。</summary>
 	public static Func<ProposedAttackEvent, BuffableEntity, bool> ProposedDefenderIsHero()
-		=> (evt, self) => evt.Defender == self.Controller?.Hero;
+		=> EventTargetIn<ProposedAttackEvent>(S.FRIENDLY_HERO);
 
 	/// <summary>防御者是己方英雄。</summary>
 	public static Func<AttackEvent, BuffableEntity, bool> DefenderIsHero()
-		=> (evt, self) => evt.Defender == self.Controller?.Hero;
+		=> EventTargetIn<AttackEvent>(S.FRIENDLY_HERO);
 
 	/// <summary>防御者是随从。</summary>
 	public static Func<AttackEvent, BuffableEntity, bool> DefenderIsMinion()
-		=> (evt, self) => evt.Defender is Minion;
+		=> EventTargetIn<AttackEvent>(S.ALL_MINIONS);
 
 	/// <summary>防御者是己方随从。</summary>
 	public static Func<AttackEvent, BuffableEntity, bool> DefenderIsFriendlyMinion()
-		=> (evt, self) => evt.Defender is Minion minion && minion.Controller == self.Controller;
+		=> EventTargetIn<AttackEvent>(S.FRIENDLY_MINIONS);
 
 	/// <summary>受伤目标是英雄。</summary>
 	public static Func<DamageEvent, BuffableEntity, bool> TargetIsHero()
-		=> (evt, self) => evt.Target is Hero;
+		=> EventTargetIn<DamageEvent>(S.ALL_HEROES);
 
 	/// <summary>PreDamage 目标是己方英雄。</summary>
 	public static Func<PreDamageEvent, BuffableEntity, bool> PreDamageTargetIsFriendlyHero()
-		=> (evt, self) => evt.Target is Hero && evt.Target.Controller == self.Controller;
+		=> EventTargetIn<PreDamageEvent>(S.FRIENDLY_HERO);
 
 	public static Func<PreDamageEvent, BuffableEntity, bool> PreDamageTargetIsFriendlyMinion()
-		=> (evt, self) => evt.Target is Minion minion && minion.Controller == self.Controller;
+		=> EventTargetIn<PreDamageEvent>(S.FRIENDLY_MINIONS);
 
 	/// <summary>本次即将受到伤害的是己方英雄，且重定向目标不是自身。</summary>
 	public static Func<PreDamageEvent, BuffableEntity, bool> FriendlyHeroWouldTakeDamage()
-		=> (evt, self) => evt.Target is Hero && evt.Target.Controller == self.Controller && evt.Target != self;
+		=> EventTargetIn<PreDamageEvent>(S.FRIENDLY_HERO);
 
 	/// <summary>受伤目标是随从。</summary>
 	public static Func<DamageEvent, BuffableEntity, bool> TargetIsMinion()
-		=> (evt, self) => evt.Target is Minion;
+		=> EventTargetIn<DamageEvent>(S.ALL_MINIONS);
 
 	/// <summary>治疗目标是随从。</summary>
 	public static Func<HealEvent, BuffableEntity, bool> HealTargetIsMinion()
-		=> (evt, self) => evt.Target is Minion;
+		=> EventTargetIn<HealEvent>(S.ALL_MINIONS);
 
 	/// <summary>治疗目标是友方英雄。</summary>
 	public static Func<HealEvent, BuffableEntity, bool> HealTargetIsHero()
@@ -255,11 +294,11 @@ public static class EventFilters
 
 	/// <summary>死亡实体属于某种族。</summary>
 	public static Func<DeathEvent, BuffableEntity, bool> DeadIsRace(Race race)
-		=> (evt, self) => evt.Dead is Character c && c.Races.Contains(race);
+		=> EventTargetIn<DeathEvent>(S.MINION + S.Race(race));
 
 	/// <summary>法术有目标。</summary>
 	public static Func<SpellCastEvent, BuffableEntity, bool> SpellHasTarget()
-		=> (evt, self) => evt.Target != null;
+		=> EventHasTarget<SpellCastEvent>();
 
 	/// <summary>自身存活（生命值 > 0），用于"受伤后若存活"触发。</summary>
 	public static Func<DamageEvent, BuffableEntity, bool> SelfIsAlive()
@@ -287,4 +326,9 @@ public static class EventFilters
 	/// <summary>取反任意过滤器。</summary>
 	public static Func<T, BuffableEntity, bool> Not<T>(Func<T, BuffableEntity, bool> f) where T : GameEvent
 		=> (evt, self) => !f(evt, self);
+	private static bool SelectorContains(BuffableEntity self, BaseEntity? entity, Selector selector)
+	{
+		if (entity == null || self.Game == null) return false;
+		return selector.Eval(self.Game.Entities, self).Contains(entity);
+	}
 }

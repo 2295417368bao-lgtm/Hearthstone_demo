@@ -128,7 +128,10 @@ public class EnumSelector : Selector
 
 	private static bool HasRace(BaseEntity e, Race r)
 	{
-		// Data?.Races is Race[]
+		if (e is Entities.Character ch)
+			return ch.Races.Contains(r);
+		if (e is BuffableEntity be)
+			return be.CardData?.Races.Contains(r) == true;
 		var races = e.Data?.Races;
 		return races != null && races.Contains(r);
 	}

@@ -271,9 +271,9 @@ public class NaxxramasAdventure : CardPack
 		// NAX12_03 — 巨颚：亡语随从死亡时获得 +2 攻击力
 		b.Card("NAX12_03",
 			on: When<DeathEvent>(ANY, AFTER, new Enchant(S.SELF, "NAX12_03e"),
-				when: DeadHas(GameTag.Deathrattle)));
+				when: EventTargetIn<DeathEvent>(S.MINION + S.DEATHRATTLE)));
 		b.Card("NAX12_03H",
 			on: When<DeathEvent>(ANY, AFTER, new Enchant(S.SELF, "NAX12_03e"),
-				when: DeadHas(GameTag.Deathrattle)));
+				when: EventTargetIn<DeathEvent>(S.MINION + S.DEATHRATTLE)));
 	}
 }
